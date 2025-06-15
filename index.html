@@ -99,6 +99,11 @@
             color: white;
         }
         
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+        
         .btn:disabled {
             background-color: #95a5a6;
             cursor: not-allowed;
@@ -187,7 +192,7 @@
             font-weight: bold;
         }
         
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -279,6 +284,81 @@
             font-weight: bold;
         }
         
+        .admin-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .admin-panel h2 {
+            color: var(--dark);
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .create-account-btn {
+            background-color: var(--warning);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .account-form {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .account-list {
+            margin-top: 20px;
+        }
+        
+        .account-item {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .account-info {
+            flex: 1;
+        }
+        
+        .account-actions button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .edit-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .show-password-btn {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
         @media (max-width: 768px) {
             .permission-section {
                 flex-direction: column;
@@ -291,6 +371,18 @@
             
             .date {
                 font-size: 1rem;
+            }
+            
+            .account-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .account-actions {
+                margin-top: 10px;
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
             }
         }
     </style>
@@ -314,6 +406,48 @@
         <div class="header">
             <h1>Sistem Izin Keluar Staff</h1>
             <p>Durasi izin keluar maksimal 15 menit</p>
+        </div>
+        
+        <!-- Panel Admin (hanya tampil untuk admin) -->
+        <div id="admin-panel" class="admin-panel hidden">
+            <h2>Admin Panel</h2>
+            <button id="create-account-btn" class="create-account-btn">+ Buat Akun Baru</button>
+            
+            <div id="account-form" class="account-form hidden">
+                <h3 id="form-title">Buat Akun Baru</h3>
+                <div class="form-group">
+                    <label for="new-username">Username</label>
+                    <input type="text" id="new-username" placeholder="Masukkan username">
+                </div>
+                <div class="form-group">
+                    <label for="new-password">Password</label>
+                    <input type="password" id="new-password" placeholder="Masukkan password">
+                </div>
+                <div class="form-group">
+                    <label for="new-name">Nama Lengkap</label>
+                    <input type="text" id="new-name" placeholder="Masukkan nama lengkap">
+                </div>
+                <div class="form-group">
+                    <label for="new-position">Posisi</label>
+                    <select id="new-position">
+                        <option value="kasir">Staff Kasir</option>
+                        <option value="cs">Staff CS</option>
+                        <option value="khemer">Staff Khemer</option>
+                        <option value="kapten">Staff Kapten</option>
+                        <option value="admin">Admin Master</option>
+                    </select>
+                </div>
+                <button id="save-account-btn" class="btn btn-primary">Simpan</button>
+                <button id="cancel-account-btn" class="btn btn-danger">Batal</button>
+                <input type="hidden" id="edit-account-id" value="">
+            </div>
+            
+            <div class="account-list">
+                <h3>Daftar Akun</h3>
+                <div id="accounts-list">
+                    <!-- Daftar akun akan dimuat di sini -->
+                </div>
+            </div>
         </div>
         
         <div class="clock-container">
@@ -370,7 +504,7 @@
 
     <script>
         // Data staff (simulasi database)
-        const staffDatabase = [
+        let staffDatabase = [
             { id: 1, username: 'admin', password: 'a1', name: 'Admin Master', position: 'admin', permissions: 0 },
             { id: 2, username: 'kasir1', password: 'k1', name: 'Budi Santoso', position: 'kasir', permissions: 0 },
             { id: 3, username: 'kasir2', password: 'k2', name: 'Ani Wijaya', position: 'kasir', permissions: 0 },
@@ -392,6 +526,9 @@
 
         // User yang sedang login
         let currentUser = null;
+        
+        // Mode edit akun
+        let isEditingAccount = false;
         
         // Timer untuk jam
         function updateClock() {
@@ -531,6 +668,159 @@
             }
         }
         
+        // Fungsi untuk memuat daftar akun (hanya admin)
+        function loadAccountsList() {
+            if (!currentUser || currentUser.position !== 'admin') return;
+            
+            const accountsListElement = document.getElementById('accounts-list');
+            accountsListElement.innerHTML = '';
+            
+            staffDatabase.forEach(account => {
+                if (account.id === currentUser.id) return; // Skip akun sendiri
+                
+                const accountItem = document.createElement('div');
+                accountItem.className = 'account-item';
+                accountItem.innerHTML = `
+                    <div class="account-info">
+                        <div class="staff-name">${account.name}</div>
+                        <div class="staff-position">${getPositionName(account.position)}</div>
+                        <div class="staff-position">Username: ${account.username}</div>
+                    </div>
+                    <div class="account-actions">
+                        <button class="show-password-btn" data-id="${account.id}">Lihat Password</button>
+                        <button class="edit-btn" data-id="${account.id}">Edit</button>
+                        <button class="delete-btn" data-id="${account.id}">Hapus</button>
+                    </div>
+                `;
+                
+                accountsListElement.appendChild(accountItem);
+            });
+            
+            // Tambahkan event listener untuk tombol aksi
+            document.querySelectorAll('.show-password-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const accountId = parseInt(this.getAttribute('data-id'));
+                    const account = staffDatabase.find(a => a.id === accountId);
+                    if (account) {
+                        alert(`Password untuk ${account.name} adalah: ${account.password}`);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const accountId = parseInt(this.getAttribute('data-id'));
+                    editAccount(accountId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const accountId = parseInt(this.getAttribute('data-id'));
+                    deleteAccount(accountId);
+                });
+            });
+        }
+        
+        // Fungsi untuk menampilkan form buat akun
+        function showAccountForm(editMode = false, accountId = null) {
+            const form = document.getElementById('account-form');
+            const title = document.getElementById('form-title');
+            
+            if (editMode && accountId) {
+                // Mode edit
+                const account = staffDatabase.find(a => a.id === accountId);
+                if (account) {
+                    document.getElementById('new-username').value = account.username;
+                    document.getElementById('new-password').value = account.password;
+                    document.getElementById('new-name').value = account.name;
+                    document.getElementById('new-position').value = account.position;
+                    document.getElementById('edit-account-id').value = account.id;
+                    title.textContent = 'Edit Akun';
+                    isEditingAccount = true;
+                }
+            } else {
+                // Mode buat baru
+                document.getElementById('new-username').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('new-name').value = '';
+                document.getElementById('new-position').value = 'kasir';
+                document.getElementById('edit-account-id').value = '';
+                title.textContent = 'Buat Akun Baru';
+                isEditingAccount = false;
+            }
+            
+            form.classList.remove('hidden');
+        }
+        
+        // Fungsi untuk menyembunyikan form buat akun
+        function hideAccountForm() {
+            document.getElementById('account-form').classList.add('hidden');
+        }
+        
+        // Fungsi untuk menyimpan akun (buat baru atau edit)
+        function saveAccount() {
+            const username = document.getElementById('new-username').value.trim();
+            const password = document.getElementById('new-password').value.trim();
+            const name = document.getElementById('new-name').value.trim();
+            const position = document.getElementById('new-position').value;
+            const accountId = document.getElementById('edit-account-id').value;
+            
+            // Validasi input
+            if (!username || !password || !name) {
+                alert('Semua field harus diisi!');
+                return;
+            }
+            
+            // Cek apakah username sudah ada (kecuali dalam mode edit)
+            if (!isEditingAccount && staffDatabase.some(a => a.username === username)) {
+                alert('Username sudah digunakan!');
+                return;
+            }
+            
+            if (isEditingAccount && accountId) {
+                // Mode edit
+                const index = staffDatabase.findIndex(a => a.id === parseInt(accountId));
+                if (index !== -1) {
+                    staffDatabase[index] = {
+                        ...staffDatabase[index],
+                        username,
+                        password,
+                        name,
+                        position
+                    };
+                }
+            } else {
+                // Mode buat baru
+                const newId = staffDatabase.length > 0 ? Math.max(...staffDatabase.map(a => a.id)) + 1 : 1;
+                staffDatabase.push({
+                    id: newId,
+                    username,
+                    password,
+                    name,
+                    position,
+                    permissions: 0
+                });
+            }
+            
+            // Refresh daftar akun
+            loadAccountsList();
+            hideAccountForm();
+        }
+        
+        // Fungsi untuk edit akun
+        function editAccount(accountId) {
+            showAccountForm(true, accountId);
+        }
+        
+        // Fungsi untuk hapus akun
+        function deleteAccount(accountId) {
+            if (confirm('Apakah Anda yakin ingin menghapus akun ini?')) {
+                staffDatabase = staffDatabase.filter(a => a.id !== accountId);
+                loadAccountsList();
+            }
+        }
+        
         // Event listener untuk login
         document.getElementById('login-btn').addEventListener('click', function() {
             const username = document.getElementById('username').value;
@@ -543,13 +833,19 @@
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('main-page').classList.remove('hidden');
                 
+                // Tampilkan admin panel jika user adalah admin
+                if (currentUser.position === 'admin') {
+                    document.getElementById('admin-panel').classList.remove('hidden');
+                    loadAccountsList();
+                }
+                
                 // Update dashboard
                 updateStaffOutDashboard();
                 updateYesterdayData();
                 updatePermissionCount();
                 
                 // Set nama user di header
-                document.querySelector('.header h1').textContent += ` - ${currentUser.name}`;
+                document.querySelector('.header h1').textContent = `Sistem Izin Keluar Staff - ${currentUser.name}`;
             } else {
                 alert('Username atau password salah!');
             }
@@ -605,6 +901,17 @@
                 alert('Anda tidak tercatat sedang izin keluar.');
             }
         });
+        
+        // Event listener untuk tombol buat akun
+        document.getElementById('create-account-btn').addEventListener('click', function() {
+            showAccountForm();
+        });
+        
+        // Event listener untuk tombol simpan akun
+        document.getElementById('save-account-btn').addEventListener('click', saveAccount);
+        
+        // Event listener untuk tombol batal
+        document.getElementById('cancel-account-btn').addEventListener('click', hideAccountForm);
         
         // Cek otomatis waktu izin setiap menit
         setInterval(function() {
