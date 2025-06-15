@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Izin Keluar Staff</title>
+    <title>JAMIZIN STAFF</title>
     <style>
         :root {
             --primary: #3498db;
@@ -12,21 +12,106 @@
             --warning: #f39c12;
             --dark: #34495e;
             --light: #ecf0f1;
+            --lime: #00FF00;
+            --line-color: #00C300;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             min-height: 100vh;
-            color: #333;
+            background: #f5f5f5;
+        }
+
+        /* Tampilan Login */
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
         }
         
+        .login-header {
+            background-color: var(--lime);
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+        
+        .login-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .login-body {
+            padding: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .error-message {
+            color: var(--danger);
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            height: 20px;
+        }
+        
+        /* Tampilan Utama */
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            display: none; /* Awalnya disembunyikan */
         }
         
         .header {
@@ -109,11 +194,6 @@
             cursor: not-allowed;
         }
         
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
         .dashboard {
             background: white;
             border-radius: 10px;
@@ -167,112 +247,8 @@
             font-weight: bold;
         }
         
-        .login-container {
-            max-width: 400px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .login-container h2 {
-            text-align: center;
-            color: var(--dark);
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .login-btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .counter {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-top: 10px;
-        }
-        
-        .position-limits {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        
-        .limit-card {
-            background: white;
-            border-radius: 5px;
-            padding: 10px 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            flex: 1;
-            min-width: 120px;
-        }
-        
-        .limit-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-        
-        .limit-label {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-        
-        .yesterday-data {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-        
-        .yesterday-data h3 {
-            margin-top: 0;
-            color: var(--dark);
-            border-bottom: 1px solid var(--light);
-            padding-bottom: 10px;
-        }
-        
         .logout-btn {
-            position: absolute;
+            position: fixed;
             top: 20px;
             right: 20px;
             background-color: var(--danger);
@@ -282,21 +258,33 @@
             padding: 8px 15px;
             cursor: pointer;
             font-weight: bold;
+            z-index: 1000;
         }
         
+        .user-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .user-position {
+            color: #666;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+        
+        /* Admin Panel */
         .admin-panel {
             background: white;
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
-        }
-        
-        .admin-panel h2 {
-            color: var(--dark);
-            border-bottom: 2px solid var(--light);
-            padding-bottom: 10px;
-            margin-top: 0;
         }
         
         .create-account-btn {
@@ -332,10 +320,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        .account-info {
-            flex: 1;
-        }
-        
         .account-actions button {
             margin-left: 10px;
             padding: 5px 10px;
@@ -344,83 +328,83 @@
             cursor: pointer;
         }
         
-        .edit-btn {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .delete-btn {
-            background-color: var(--danger);
-            color: white;
-        }
-        
-        .show-password-btn {
-            background-color: var(--secondary);
-            color: white;
-        }
-        
-        .empty-message {
-            text-align: center;
-            color: #7f8c8d;
-            font-style: italic;
-            padding: 20px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         @media (max-width: 768px) {
             .permission-section {
                 flex-direction: column;
-                align-items: center;
             }
             
             .time {
                 font-size: 2rem;
             }
-            
-            .date {
-                font-size: 1rem;
-            }
-            
-            .account-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .account-actions {
-                margin-top: 10px;
-                width: 100%;
-                display: flex;
-                justify-content: flex-end;
-            }
         }
     </style>
 </head>
 <body>
+    <!-- Tampilan Login -->
     <div id="login-page" class="login-container">
-        <h2>Login Sistem Izin Keluar</h2>
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="Masukkan username">
+        <div class="login-header">
+            <h1>JAMIZIN STAFF</h1>
         </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Masukkan password">
+        <div class="login-body">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Masukkan username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Masukkan password">
+            </div>
+            <button id="login-btn" class="login-btn">LOGIN</button>
+            <div id="error-message" class="error-message"></div>
         </div>
-        <button id="login-btn" class="login-btn">Login</button>
     </div>
 
-    <div id="main-page" class="container hidden">
-        <button id="logout-btn" class="logout-btn">Logout</button>
+    <!-- Tampilan Utama -->
+    <div id="main-page" class="container">
+        <button id="logout-btn" class="logout-btn">LOGOUT</button>
+        
         <div class="header">
-            <h1>Sistem Izin Keluar Staff</h1>
+            <h1>JAMIZIN STAFF</h1>
             <p>Durasi izin keluar maksimal 15 menit</p>
         </div>
         
-        <!-- Panel Admin (hanya tampil untuk admin) -->
-        <div id="admin-panel" class="admin-panel hidden">
+        <div class="user-info">
+            <div class="user-name" id="display-name"></div>
+            <div class="user-position" id="display-position"></div>
+        </div>
+        
+        <div class="clock-container">
+            <div class="clock">
+                <div class="time" id="time">00:00:00</div>
+                <div class="date" id="date">Hari, DD Bulan YYYY</div>
+            </div>
+        </div>
+        
+        <div class="permission-section">
+            <button id="izin-keluar" class="btn btn-primary">IZIN KELUAR</button>
+            <button id="izin-masuk" class="btn btn-secondary">IZIN MASUK</button>
+        </div>
+        
+        <div class="dashboard">
+            <h2>Staff Yang Sedang Izin</h2>
+            <div id="staff-out-list" class="staff-list">
+                <div style="text-align: center; grid-column: 1/-1; color: #7f8c8d;">
+                    Tidak ada staff yang sedang izin
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Panel -->
+        <div id="admin-panel" class="admin-panel">
             <h2>Admin Panel</h2>
             <button id="create-account-btn" class="create-account-btn">+ Buat Akun Baru</button>
             
-            <div id="account-form" class="account-form hidden">
+            <div id="account-form" class="account-form" style="display: none;">
                 <h3 id="form-title">Buat Akun Baru</h3>
                 <div class="form-group">
                     <label for="new-username">Username</label>
@@ -450,59 +434,12 @@
             </div>
             
             <div class="account-list">
-                <h3>Daftar Akun</h3>
+                <h3>Daftar Akun Staff</h3>
                 <div id="accounts-list">
-                    <div class="empty-message">Tidak ada akun staff</div>
+                    <div style="text-align: center; color: #7f8c8d;">
+                        Tidak ada akun staff
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <div class="clock-container">
-            <div class="clock">
-                <div class="time" id="time">00:00:00</div>
-                <div class="date" id="date">Hari, DD Bulan YYYY</div>
-            </div>
-        </div>
-        
-        <div class="position-limits">
-            <div class="limit-card">
-                <div class="limit-value" id="kasir-count">0/3</div>
-                <div class="limit-label">Staff Kasir</div>
-            </div>
-            <div class="limit-card">
-                <div class="limit-value" id="cs-count">0/3</div>
-                <div class="limit-label">Staff CS</div>
-            </div>
-            <div class="limit-card">
-                <div class="limit-value" id="khemer-count">0/1</div>
-                <div class="limit-label">Staff Khemer</div>
-            </div>
-            <div class="limit-card">
-                <div class="limit-value" id="kapten-count">0/1</div>
-                <div class="limit-label">Staff Kapten</div>
-            </div>
-        </div>
-        
-        <div class="permission-section">
-            <button id="izin-keluar" class="btn btn-primary">IZIN KELUAR</button>
-            <button id="izin-masuk" class="btn btn-secondary">IZIN MASUK</button>
-        </div>
-        
-        <div class="counter">
-            Izin keluar hari ini: <span id="izin-count">0</span>/4 kali
-        </div>
-        
-        <div class="dashboard">
-            <h2>Dashboard Staff Yang Sedang Keluar</h2>
-            <div id="staff-out-list" class="staff-list">
-                <div class="empty-message">Tidak ada staff yang sedang keluar</div>
-            </div>
-        </div>
-        
-        <div class="yesterday-data">
-            <h3>Data Izin Keluar Kemarin (<span id="yesterday-date">DD/MM/YYYY</span>)</h3>
-            <div id="yesterday-staff-list" class="staff-list">
-                <div class="empty-message">Tidak ada data izin keluar kemarin</div>
             </div>
         </div>
     </div>
@@ -521,6 +458,15 @@
         
         // Mode edit akun
         let isEditingAccount = false;
+        
+        // Fungsi untuk menampilkan pesan error
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            setTimeout(() => {
+                errorElement.textContent = '';
+            }, 3000);
+        }
         
         // Fungsi untuk menyimpan data ke localStorage
         function saveToLocalStorage() {
@@ -541,24 +487,17 @@
             const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             const dateString = now.toLocaleDateString('id-ID', dateOptions);
             document.getElementById('date').textContent = dateString;
-            
-            // Update tanggal kemarin
-            const yesterday = new Date(now);
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayString = yesterday.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            document.getElementById('yesterday-date').textContent = yesterdayString;
         }
         
         // Update clock setiap detik
         setInterval(updateClock, 1000);
-        updateClock(); // Panggil sekali saat pertama kali load
         
         // Fungsi untuk update dashboard staff yang sedang keluar
         function updateStaffOutDashboard() {
             const staffListElement = document.getElementById('staff-out-list');
             
             if (staffOut.length === 0) {
-                staffListElement.innerHTML = '<div class="empty-message">Tidak ada staff yang sedang keluar</div>';
+                staffListElement.innerHTML = '<div style="text-align: center; grid-column: 1/-1; color: #7f8c8d;">Tidak ada staff yang sedang izin</div>';
                 return;
             }
             
@@ -582,10 +521,6 @@
                 
                 staffListElement.appendChild(staffCard);
             });
-            
-            // Update counter untuk setiap posisi
-            updatePositionCounts();
-            saveToLocalStorage();
         }
         
         // Fungsi untuk mendapatkan nama posisi
@@ -600,58 +535,34 @@
             return positions[position] || position;
         }
         
-        // Fungsi untuk update counter posisi
-        function updatePositionCounts() {
-            const kasirCount = staffOut.filter(s => s.position === 'kasir').length;
-            const csCount = staffOut.filter(s => s.position === 'cs').length;
-            const khemerCount = staffOut.filter(s => s.position === 'khemer').length;
-            const kaptenCount = staffOut.filter(s => s.position === 'kapten').length;
-            
-            document.getElementById('kasir-count').textContent = `${kasirCount}/3`;
-            document.getElementById('cs-count').textContent = `${csCount}/3`;
-            document.getElementById('khemer-count').textContent = `${khemerCount}/1`;
-            document.getElementById('kapten-count').textContent = `${kaptenCount}/1`;
-            
-            // Update status tombol izin keluar berdasarkan posisi
-            const izinKeluarBtn = document.getElementById('izin-keluar');
-            
+        // Fungsi untuk update counter izin
+        function updatePermissionCount() {
             if (currentUser) {
                 const position = currentUser.position;
+                const currentCount = staffOut.filter(s => s.position === position).length;
                 const maxLimit = {
                     'kasir': 3,
                     'cs': 3,
                     'khemer': 1,
                     'kapten': 1
-                }[position];
+                }[position] || 0;
                 
-                const currentCount = {
-                    'kasir': kasirCount,
-                    'cs': csCount,
-                    'khemer': khemerCount,
-                    'kapten': kaptenCount
-                }[position];
-                
-                izinKeluarBtn.disabled = currentCount >= maxLimit || currentUser.permissions >= 4;
-            }
-        }
-        
-        // Fungsi untuk update counter izin
-        function updatePermissionCount() {
-            if (currentUser) {
-                document.getElementById('izin-count').textContent = currentUser.permissions;
-                const izinKeluarBtn = document.getElementById('izin-keluar');
-                izinKeluarBtn.disabled = currentUser.permissions >= 4;
+                document.getElementById('izin-keluar').disabled = currentCount >= maxLimit || currentUser.permissions >= 4;
             }
         }
         
         // Fungsi untuk memuat daftar akun (hanya admin)
         function loadAccountsList() {
-            if (!currentUser || currentUser.position !== 'admin') return;
+            if (!currentUser || currentUser.position !== 'admin') {
+                document.getElementById('admin-panel').style.display = 'none';
+                return;
+            }
             
+            document.getElementById('admin-panel').style.display = 'block';
             const accountsListElement = document.getElementById('accounts-list');
             
-            if (staffDatabase.length <= 1) { // Hanya admin yang ada
-                accountsListElement.innerHTML = '<div class="empty-message">Tidak ada akun staff</div>';
+            if (staffDatabase.length <= 1) {
+                accountsListElement.innerHTML = '<div style="text-align: center; color: #7f8c8d;">Tidak ada akun staff</div>';
                 return;
             }
             
@@ -663,14 +574,14 @@
                 const accountItem = document.createElement('div');
                 accountItem.className = 'account-item';
                 accountItem.innerHTML = `
-                    <div class="account-info">
-                        <div class="staff-name">${account.name}</div>
-                        <div class="staff-position">${getPositionName(account.position)}</div>
+                    <div>
+                        <div style="font-weight: bold;">${account.name}</div>
+                        <div style="font-size: 0.8rem; color: #7f8c8d;">${getPositionName(account.position)}</div>
                     </div>
                     <div class="account-actions">
-                        <button class="show-password-btn" data-id="${account.id}">Lihat Password</button>
-                        <button class="edit-btn" data-id="${account.id}">Edit</button>
-                        <button class="delete-btn" data-id="${account.id}">Hapus</button>
+                        <button class="show-password-btn" data-id="${account.id}" style="background-color: var(--secondary); color: white;">Password</button>
+                        <button class="edit-btn" data-id="${account.id}" style="background-color: var(--primary); color: white;">Edit</button>
+                        <button class="delete-btn" data-id="${account.id}" style="background-color: var(--danger); color: white;">Hapus</button>
                     </div>
                 `;
                 
@@ -731,12 +642,12 @@
                 isEditingAccount = false;
             }
             
-            form.classList.remove('hidden');
+            form.style.display = 'block';
         }
         
         // Fungsi untuk menyembunyikan form buat akun
         function hideAccountForm() {
-            document.getElementById('account-form').classList.add('hidden');
+            document.getElementById('account-form').style.display = 'none';
         }
         
         // Fungsi untuk menyimpan akun (buat baru atau edit)
@@ -788,6 +699,8 @@
             loadAccountsList();
             hideAccountForm();
             saveToLocalStorage();
+            
+            alert('Akun berhasil disimpan! Staff sekarang bisa login dengan username dan password tersebut.');
         }
         
         // Fungsi untuk edit akun
@@ -809,28 +722,33 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
+            if (!username || !password) {
+                showError('Username dan password harus diisi!');
+                return;
+            }
+            
             const user = staffDatabase.find(u => u.username === username && u.password === password);
             
             if (user) {
                 currentUser = {...user};
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('main-page').classList.remove('hidden');
+                saveToLocalStorage();
                 
-                // Tampilkan admin panel jika user adalah admin
-                if (currentUser.position === 'admin') {
-                    document.getElementById('admin-panel').classList.remove('hidden');
-                    loadAccountsList();
-                }
+                // Sembunyikan login dan tampilkan main page
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-page').style.display = 'block';
                 
-                // Update dashboard
+                // Update tampilan user
+                document.getElementById('display-name').textContent = currentUser.name.toUpperCase();
+                document.getElementById('display-position').textContent = getPositionName(currentUser.position).toUpperCase();
+                
+                // Inisialisasi data
+                updateClock();
                 updateStaffOutDashboard();
                 updatePermissionCount();
-                
-                // Set nama user di header
-                document.querySelector('.header h1').textContent = `Sistem Izin Keluar Staff - ${currentUser.name}`;
+                loadAccountsList();
             } else {
-                alert('Username atau password salah!');
+                showError('Username atau password salah!');
+                document.getElementById('password').value = '';
             }
         });
         
@@ -838,8 +756,8 @@
         document.getElementById('logout-btn').addEventListener('click', function() {
             currentUser = null;
             localStorage.removeItem('currentUser');
-            document.getElementById('main-page').classList.add('hidden');
-            document.getElementById('login-page').classList.remove('hidden');
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'block';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         });
@@ -926,23 +844,22 @@
         function initialize() {
             updateClock();
             
-            // Jika ada user yang login, tampilkan halaman utama
+            // Jika ada user yang login, tampilkan main page
             if (currentUser) {
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('main-page').classList.remove('hidden');
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-page').style.display = 'block';
                 
-                // Tampilkan admin panel jika user adalah admin
-                if (currentUser.position === 'admin') {
-                    document.getElementById('admin-panel').classList.remove('hidden');
-                    loadAccountsList();
-                }
+                // Update tampilan user
+                document.getElementById('display-name').textContent = currentUser.name.toUpperCase();
+                document.getElementById('display-position').textContent = getPositionName(currentUser.position).toUpperCase();
                 
-                // Update dashboard
+                // Inisialisasi data
                 updateStaffOutDashboard();
                 updatePermissionCount();
-                
-                // Set nama user di header
-                document.querySelector('.header h1').textContent = `Sistem Izin Keluar Staff - ${currentUser.name}`;
+                loadAccountsList();
+            } else {
+                document.getElementById('login-page').style.display = 'block';
+                document.getElementById('main-page').style.display = 'none';
             }
         }
         
