@@ -1,682 +1,1450 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Izin Keluar - Lengkap</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            color: #333;
-            text-align: center;
-        }
-        .clock {
-            font-size: 2.5em;
-            text-align: center;
-            margin: 20px 0;
-            color: #2c3e50;
-            font-weight: bold;
-        }
-        .button-container {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-        }
-        button {
-            padding: 12px 25px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        #keluarBtn {
-            background-color: #e74c3c;
-            color: white;
-        }
-        #keluarBtn:hover {
-            background-color: #c0392b;
-        }
-        #masukBtn {
-            background-color: #2ecc71;
-            color: white;
-        }
-        #masukBtn:hover {
-            background-color: #27ae60;
-        }
-        .timer {
-            font-size: 1.5em;
-            text-align: center;
-            margin: 20px 0;
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        .login-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            max-width: 400px;
-            margin: 50px auto;
-        }
-        .login-form input, .login-form select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .login-form button {
-            width: 100%;
-            padding: 10px;
-            background-color: #3498db;
-            color: white;
-        }
-        .login-form button:hover {
-            background-color: #2980b9;
-        }
-        .hidden {
-            display: none;
-        }
-        .status {
-            text-align: center;
-            font-size: 1.2em;
-            margin: 20px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .izin-keluar {
-            background-color: #fdebd0;
-            color: #e67e22;
-        }
-        .izin-masuk {
-            background-color: #d5f5e3;
-            color: #27ae60;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .tab-container {
-            margin-top: 20px;
-        }
-        .tab-buttons {
-            display: flex;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        .tab-button {
-            padding: 10px 20px;
-            background-color: #eee;
-            border: none;
-            cursor: pointer;
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-        .tab-button.active {
-            background-color: #3498db;
-            color: white;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .role-info {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        .role-info h3 {
-            margin-top: 0;
-        }
-        .warning {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        .staff-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .staff-card {
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
-            width: calc(33% - 10px);
-            box-sizing: border-box;
-        }
-        @media (max-width: 768px) {
-            .staff-card {
-                width: calc(50% - 10px);
-            }
-        }
-        @media (max-width: 480px) {
-            .staff-card {
-                width: 100%;
-            }
-        }
-        .staff-name {
-            font-weight: bold;
-        }
-        .staff-role {
-            color: #7f8c8d;
-            font-size: 0.9em;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistem Izin Keluar | Modern</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+--primary: #4361ee;
+--primary-light: #4895ef;
+--secondary: #3f37c9;
+--success: #4cc9f0;
+--danger: #f72585;
+--warning: #f8961e;
+--light: #f8f9fa;
+--dark: #212529;
+--gray: #6c757d;
+--white: #ffffff;
+--shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+--transition: all 0.3s ease;
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Poppins', sans-serif;
+background-color: #f5f7fa;
+color: var(--dark);
+line-height: 1.6;
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 0 20px;
+}
+
+/* Login Page */
+.login-page {
+display: flex;
+min-height: 100vh;
+background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
+.login-container {
+display: flex;
+width: 100%;
+align-items: center;
+justify-content: center;
+padding: 40px 20px;
+}
+
+.login-box {
+background-color: var(--white);
+border-radius: 16px;
+box-shadow: var(--shadow);
+width: 100%;
+max-width: 450px;
+padding: 40px;
+position: relative;
+overflow: hidden;
+transition: var(--transition);
+}
+
+.login-box::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 8px;
+background: linear-gradient(90deg, var(--primary) 0%, var(--success) 100%);
+}
+
+.login-header {
+text-align: center;
+margin-bottom: 30px;
+}
+
+.login-header h1 {
+color: var(--primary);
+font-size: 28px;
+font-weight: 700;
+margin-bottom: 10px;
+}
+
+.login-header p {
+color: var(--gray);
+font-size: 14px;
+}
+
+.login-logo {
+width: 80px;
+height: 80px;
+margin: 0 auto 20px;
+background-color: var(--primary-light);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: white;
+font-size: 32px;
+box-shadow: var(--shadow);
+}
+
+.form-group {
+margin-bottom: 20px;
+position: relative;
+}
+
+.form-group label {
+display: block;
+margin-bottom: 8px;
+font-weight: 500;
+color: var(--dark);
+font-size: 14px;
+}
+
+.form-control {
+width: 100%;
+padding: 12px 15px;
+border: 2px solid #e9ecef;
+border-radius: 8px;
+font-size: 14px;
+transition: var(--transition);
+background-color: #f8f9fa;
+}
+
+.form-control:focus {
+outline: none;
+border-color: var(--primary);
+background-color: var(--white);
+box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+.input-icon {
+position: absolute;
+right: 15px;
+top: 38px;
+color: var(--gray);
+}
+
+.btn {
+display: inline-block;
+background-color: var(--primary);
+color: white;
+border: none;
+padding: 12px 20px;
+border-radius: 8px;
+cursor: pointer;
+font-size: 16px;
+font-weight: 500;
+width: 100%;
+transition: var(--transition);
+text-align: center;
+box-shadow: var(--shadow);
+}
+
+.btn:hover {
+background-color: var(--secondary);
+transform: translateY(-2px);
+}
+
+.btn:active {
+transform: translateY(0);
+}
+
+.btn-block {
+display: block;
+width: 100%;
+}
+
+.error-message {
+color: var(--danger);
+margin-top: 5px;
+font-size: 12px;
+display: none;
+}
+
+/* Dashboard */
+.dashboard {
+display: none;
+min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+width: 250px;
+background-color: var(--white);
+box-shadow: var(--shadow);
+position: fixed;
+top: 0;
+left: 0;
+height: 100vh;
+padding: 20px 0;
+z-index: 100;
+transition: var(--transition);
+}
+
+.sidebar-header {
+padding: 0 20px 20px;
+border-bottom: 1px solid #e9ecef;
+margin-bottom: 20px;
+}
+
+.sidebar-header h3 {
+color: var(--primary);
+font-size: 18px;
+font-weight: 600;
+display: flex;
+align-items: center;
+}
+
+.sidebar-header h3 i {
+margin-right: 10px;
+color: var(--primary);
+}
+
+.sidebar-menu {
+list-style: none;
+}
+
+.sidebar-menu li a {
+display: flex;
+align-items: center;
+padding: 12px 20px;
+color: var(--dark);
+text-decoration: none;
+transition: var(--transition);
+border-left: 3px solid transparent;
+}
+
+.sidebar-menu li a:hover {
+background-color: #f8f9fa;
+border-left: 3px solid var(--primary);
+color: var(--primary);
+}
+
+.sidebar-menu li a.active {
+background-color: #f8f9fa;
+border-left: 3px solid var(--primary);
+color: var(--primary);
+}
+
+.sidebar-menu li a i {
+margin-right: 10px;
+width: 20px;
+text-align: center;
+}
+
+/* Main Content */
+.main-content {
+margin-left: 250px;
+width: calc(100% - 250px);
+padding: 20px;
+transition: var(--transition);
+}
+
+/* Header */
+.header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 15px 20px;
+background-color: var(--white);
+border-radius: 8px;
+box-shadow: var(--shadow);
+margin-bottom: 30px;
+}
+
+.page-title h2 {
+color: var(--dark);
+font-size: 22px;
+font-weight: 600;
+}
+
+.page-title p {
+color: var(--gray);
+font-size: 13px;
+margin-top: 5px;
+}
+
+.user-menu {
+display: flex;
+align-items: center;
+}
+
+.user-info {
+display: flex;
+align-items: center;
+}
+
+.user-avatar {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+background-color: var(--primary-light);
+color: white;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-right: 10px;
+font-weight: 600;
+}
+
+.user-name {
+font-weight: 500;
+margin-right: 10px;
+}
+
+.logout-btn {
+background-color: var(--danger);
+color: white;
+border: none;
+padding: 8px 15px;
+border-radius: 6px;
+cursor: pointer;
+font-size: 13px;
+transition: var(--transition);
+display: flex;
+align-items: center;
+}
+
+.logout-btn:hover {
+background-color: #d1146a;
+}
+
+.logout-btn i {
+margin-right: 5px;
+}
+
+/* Cards */
+.card {
+background-color: var(--white);
+border-radius: 10px;
+box-shadow: var(--shadow);
+padding: 20px;
+margin-bottom: 20px;
+transition: var(--transition);
+}
+
+.card:hover {
+transform: translateY(-5px);
+box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
+padding-bottom: 15px;
+border-bottom: 1px solid #e9ecef;
+}
+
+.card-title {
+font-size: 18px;
+font-weight: 600;
+color: var(--dark);
+display: flex;
+align-items: center;
+}
+
+.card-title i {
+margin-right: 10px;
+color: var(--primary);
+}
+
+/* Form */
+.form-row {
+display: flex;
+flex-wrap: wrap;
+margin: 0 -10px;
+}
+
+.form-col {
+flex: 0 0 50%;
+max-width: 50%;
+padding: 0 10px;
+margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+.form-col {
+flex: 0 0 100%;
+max-width: 100%;
+}
+}
+
+/* Table */
+.table-responsive {
+width: 100%;
+overflow-x: auto;
+}
+
+.table {
+width: 100%;
+border-collapse: collapse;
+margin-bottom: 20px;
+}
+
+.table th {
+background-color: #f8f9fa;
+padding: 12px 15px;
+text-align: left;
+font-weight: 600;
+color: var(--dark);
+border-bottom: 2px solid #e9ecef;
+}
+
+.table td {
+padding: 12px 15px;
+border-bottom: 1px solid #e9ecef;
+vertical-align: middle;
+}
+
+.table tr:last-child td {
+border-bottom: none;
+}
+
+.table tr:hover {
+background-color: #f8f9fa;
+}
+
+.status-badge {
+display: inline-block;
+padding: 5px 10px;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 500;
+}
+
+.status-pending {
+background-color: #fff3cd;
+color: #856404;
+}
+
+.status-approved {
+background-color: #d4edda;
+color: #155724;
+}
+
+.status-rejected {
+background-color: #f8d7da;
+color: #721c24;
+}
+
+.action-btn {
+background: none;
+border: none;
+cursor: pointer;
+margin: 0 5px;
+font-size: 14px;
+transition: var(--transition);
+width: 30px;
+height: 30px;
+border-radius: 50%;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+}
+
+.action-btn:hover {
+background-color: #f8f9fa;
+}
+
+.view-btn {
+color: var(--primary);
+}
+
+.edit-btn {
+color: var(--warning);
+}
+
+.delete-btn {
+color: var(--danger);
+}
+
+/* Modal */
+.modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+z-index: 1000;
+justify-content: center;
+align-items: center;
+}
+
+.modal-content {
+background-color: var(--white);
+border-radius: 10px;
+width: 90%;
+max-width: 600px;
+max-height: 80vh;
+overflow-y: auto;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+from {
+opacity: 0;
+transform: translateY(-20px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+.modal-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 15px 20px;
+border-bottom: 1px solid #e9ecef;
+}
+
+.modal-title {
+font-size: 18px;
+font-weight: 600;
+color: var(--dark);
+display: flex;
+align-items: center;
+}
+
+.modal-title i {
+margin-right: 10px;
+color: var(--primary);
+}
+
+.close-btn {
+background: none;
+border: none;
+font-size: 20px;
+cursor: pointer;
+color: var(--gray);
+transition: var(--transition);
+}
+
+.close-btn:hover {
+color: var(--danger);
+transform: rotate(90deg);
+}
+
+.modal-body {
+padding: 20px;
+}
+
+.modal-footer {
+padding: 15px 20px;
+border-top: 1px solid #e9ecef;
+display: flex;
+justify-content: flex-end;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+.sidebar {
+width: 70px;
+overflow: hidden;
+}
+
+.sidebar-header h3 span,
+.sidebar-menu li a span {
+display: none;
+}
+
+.sidebar-menu li a {
+justify-content: center;
+}
+
+.sidebar-menu li a i {
+margin-right: 0;
+font-size: 18px;
+}
+
+.main-content {
+margin-left: 70px;
+width: calc(100% - 70px);
+}
+}
+
+@media (max-width: 768px) {
+.sidebar {
+transform: translateX(-100%);
+}
+
+.sidebar.active {
+transform: translateX(0);
+}
+
+.main-content {
+margin-left: 0;
+width: 100%;
+}
+
+.menu-toggle {
+display: block;
+}
+}
+
+/* Animation */
+@keyframes fadeIn {
+from {
+opacity: 0;
+transform: translateY(10px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+.fade-in {
+animation: fadeIn 0.5s ease forwards;
+}
+</style>
 </head>
 <body>
-    <!-- Login Form -->
-    <div id="loginContainer" class="login-container">
-        <h1>Login Sistem Izin</h1>
-        <form id="loginForm" class="login-form">
-            <select id="username" required>
-                <option value="">Pilih Nama Staf</option>
-                <!-- Options will be filled by JavaScript -->
-            </select>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-    </div>
+<!-- Login Page -->
+<div class="login-page" id="login-page">
+<div class="login-container">
+<div class="login-box fade-in">
+<div class="login-header">
+<div class="login-logo">
+<i class="fas fa-door-open"></i>
+</div>
+<h1>Sistem Izin Keluar</h1>
+<p>Silakan login untuk mengakses sistem</p>
+</div>
 
-    <!-- Main App (Hidden until login) -->
-    <div id="appContainer" class="container hidden">
-        <h1>Sistem Izin Keluar</h1>
-        <div class="clock" id="currentTime"></div>
-        
-        <div class="role-info">
-            <h3>Informasi Role</h3>
-            <p>Nama Staf: <strong><span id="currentStaff"></span></strong></p>
-            <p>Role: <strong><span id="currentRole"></span></strong></p>
-            <p>Max Izin per Orang: <strong><span id="maxPerPerson"></span></strong></p>
-            <p>Max Izin per Role: <strong><span id="maxPerRole"></span></strong></p>
-            <p>Izin digunakan hari ini: <strong><span id="usedToday"></span>/<span id="maxPerRole2"></span></strong></p>
-            <p id="roleWarning" class="warning"></p>
-        </div>
-        
-        <div class="status hidden" id="statusMessage"></div>
-        
-        <div class="timer hidden" id="countdownTimer"></div>
-        
-        <div class="button-container">
-            <button id="keluarBtn">IZIN KELUAR</button>
-            <button id="masukBtn">IZIN MASUK</button>
-        </div>
-        
-        <p style="text-align: center; color: #7f8c8d;">Durasi izin: 15 menit</p>
-        
-        <div class="tab-container">
-            <div class="tab-buttons">
-                <button class="tab-button active" data-tab="today">Riwayat Hari Ini</button>
-                <button class="tab-button" data-tab="all">Semua Riwayat</button>
-                <button class="tab-button" data-tab="staff">Daftar Staf</button>
-            </div>
-            
-            <div id="today" class="tab-content active">
-                <h2>Riwayat Izin Hari Ini</h2>
-                <table id="todayTable">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Staf</th>
-                            <th>Role</th>
-                            <th>Waktu Keluar</th>
-                            <th>Waktu Kembali</th>
-                            <th>Durasi</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            
-            <div id="all" class="tab-content">
-                <h2>Semua Riwayat Izin</h2>
-                <table id="allTable">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Nama Staf</th>
-                            <th>Role</th>
-                            <th>Waktu Keluar</th>
-                            <th>Waktu Kembali</th>
-                            <th>Durasi</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            
-            <div id="staff" class="tab-content">
-                <h2>Daftar Staf</h2>
-                <div class="staff-list" id="staffList">
-                    <!-- Staff cards will be filled by JavaScript -->
-                </div>
-            </div>
-        </div>
-    </div>
+<form id="loginForm">
+<div class="form-group">
+<label for="username">Username</label>
+<div class="input-wrapper">
+<input type="text" class="form-control" id="username" placeholder="Masukkan username" required>
+<i class="fas fa-user input-icon"></i>
+</div>
+<div class="error-message" id="username-error"></div>
+</div>
 
-    <script>
-        // Data Staff
-        const staffList = [
-            { name: "WIDJAYA", role: "CS", password: "s1" },
-            { name: "DAVID", role: "CS", password: "s1" },
-            { name: "FALLEN HARDINANSAH TAJU", role: "CS", password: "s1" },
-            { name: "SHOFIAN KURNIADY", role: "CS", password: "s1" },
-            { name: "CHARLIE", role: "CS", password: "s1" },
-            { name: "HARIANTO", role: "CS", password: "s1" },
-            { name: "RINAL ABDILLAH NASUTION", role: "CS", password: "s1" },
-            { name: "ERI HARIANTO", role: "CS", password: "s1" },
-            { name: "MAHENDRAN", role: "CS", password: "s1" },
-            { name: "ANDHIKA DWI PUTRA", role: "CS", password: "s1" },
-            { name: "TOMMY HASIM", role: "CS", password: "s1" },
-            { name: "EGI SETIAWAN", role: "CS", password: "s1" },
-            { name: "RANJIT", role: "CS", password: "s1" },
-            { name: "WILLY PERAYUDA", role: "CS", password: "s1" },
-            { name: "ANGGA AZMAL HARAHAP", role: "CS", password: "s1" },
-            { name: "LALU MUHAMMAD ADNAN ZAKARIA", role: "CS", password: "s1" },
-            { name: "ANDI", role: "CS", password: "s1" },
-            { name: "ARI ROMANDUS FERNAND", role: "CS", password: "s1" },
-            { name: "ALFINO MUKTI", role: "CS", password: "s1" },
-            { name: "AKAS FARMA", role: "CS", password: "s1" },
-            { name: "SAMSUL MAARIF", role: "CS", password: "s1" },
-            { name: "PARIS AMRULLOH", role: "CS", password: "s1" },
-            { name: "SUHAN RAZ", role: "Kapten Kasir", password: "s1" },
-            { name: "NOVAL MUTTAWALI HAKIM", role: "Kapten Kasir", password: "s1" },
-            { name: "WILIAM", role: "Kapten Kasir", password: "s1" },
-            { name: "FIQAL KANA", role: "Kapten Kasir", password: "s1" },
-            { name: "MARJOKI SANG", role: "Kapten Kasir", password: "s1" },
-            { name: "DANIEL", role: "Kapten Kasir", password: "s1" },
-            { name: "PUTRA ANUGRAH RIZKI", role: "Kasir", password: "s1" },
-            { name: "PUTRA RAMADHANI", role: "Kasir", password: "s1" },
-            { name: "LAILI MARITSA", role: "Kasir", password: "s1" },
-            { name: "ANNEN", role: "Kasir", password: "s1" },
-            { name: "JONROMAN PURBA", role: "Kasir", password: "s1" },
-            { name: "RAAZ JESEN STEPANUS", role: "Kasir", password: "s1" },
-            { name: "M FAJAR SIDDIK", role: "Kasir", password: "s1" },
-            { name: "RAHMADI SORMIN", role: "Kasir", password: "s1" },
-            { name: "AMRUL", role: "Kasir", password: "s1" },
-            { name: "RAM KIRAN", role: "Kasir", password: "s1" },
-            { name: "BOBY KASANDRA BANCIN", role: "Kasir", password: "s1" },
-            { name: "KIKI YUNITA", role: "Kasir", password: "s1" },
-            { name: "MAHAT SANJAYA HARAHAP", role: "Kasir", password: "s1" },
-            { name: "CHARLOIPO MANULLANG", role: "Kasir", password: "s1" },
-            { name: "FAHMI AZIS HARAHAP", role: "Kasir", password: "s1" },
-            { name: "FAHRI FIRMANSYAH", role: "Kasir", password: "s1" },
-            { name: "PRIMA NUGRAHA", role: "Kasir", password: "s1" },
-            { name: "ROY DILEN", role: "Kasir", password: "s1" },
-            { name: "GALI PRATAMA", role: "Kasir", password: "s1" },
-            { name: "RIDZKY RAMADHAN", role: "Kasir", password: "s1" },
-            { name: "AGUNG DEDI IRAWAN", role: "Kasir", password: "s1" },
-            { name: "MAICEL TAMPUBOLON", role: "Kasir", password: "s1" },
-            { name: "ADE CHAIRUNNISA", role: "Kasir", password: "s1" },
-            { name: "M REZI SYAPUTRA", role: "Kasir", password: "s1" },
-            { name: "KHOIRUDDIN", role: "Kasir", password: "s1" },
-            { name: "BAMBANG AGUNG SUTRISNO", role: "Kasir", password: "s1" },
-            { name: "PUTRA INSANY", role: "Kasir", password: "s1" },
-            { name: "ANDRIANUS", role: "Kasir", password: "s1" },
-            { name: "FERA SALMA", role: "Kasir", password: "s1" },
-            { name: "RIVLAN RIZKY", role: "Kasir", password: "s1" },
-            { name: "MAULANA ALI SAID", role: "Kasir", password: "s1" },
-            { name: "AHMAD ANDIKA", role: "Kasir", password: "s1" },
-            { name: "ANGGARA K S", role: "Kasir", password: "s1" },
-            { name: "DIMAS ADHITYA", role: "Kasir", password: "s1" },
-            { name: "GABRIEL RONI ARGANTA HUTABALIAN", role: "Kasir", password: "s1" },
-            { name: "DANDI PRAYOGA MANURUNG", role: "Kasir", password: "s1" },
-            { name: "EGA PRAYUDA", role: "Kasir", password: "s1" },
-            { name: "ARJUN PRAISYA", role: "Kasir", password: "s1" },
-            { name: "ADITYA PANCA", role: "Kasir", password: "s1" },
-            { name: "AUDIS OYONG DUANSYAH", role: "Kasir", password: "s1" },
-            { name: "ADE OJI SHAPUTRA", role: "Kasir", password: "s1" },
-            { name: "ALFIANSYAH", role: "Kasir", password: "s1" },
-            { name: "ANDY PUTRA", role: "Kasir", password: "s1" }
-        ];
+<div class="form-group">
+<label for="password">Password</label>
+<div class="input-wrapper">
+<input type="password" class="form-control" id="password" placeholder="Masukkan password" required>
+<i class="fas fa-lock input-icon"></i>
+</div>
+<div class="error-message" id="password-error"></div>
+</div>
 
-        // Data Roles
-        const roles = {
-            'CS': { maxPerPerson: 4, maxPerRole: 3 },
-            'Kasir': { maxPerPerson: 4, maxPerRole: 3 },
-            'Staff Khmer': { maxPerPerson: 4, maxPerRole: 1 },
-            'Kapten Kasir': { maxPerPerson: 4, maxPerRole: 2 }
-        };
+<button type="submit" class="btn btn-block">
+<i class="fas fa-sign-in-alt"></i> Login
+</button>
+</form>
+</div>
+</div>
+</div>
 
-        // Initialize staff dropdown
-        const usernameSelect = document.getElementById('username');
-        staffList.forEach(staff => {
-            const option = document.createElement('option');
-            option.value = staff.name;
-            option.textContent = `${staff.name} (${staff.role})`;
-            usernameSelect.appendChild(option);
-        });
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+<!-- Sidebar -->
+<div class="sidebar">
+<div class="sidebar-header">
+<h3><i class="fas fa-door-open"></i> <span>Izin Keluar</span></h3>
+</div>
+<ul class="sidebar-menu">
+<li>
+<a href="#" class="active" id="menu-dashboard">
+<i class="fas fa-tachometer-alt"></i>
+<span>Dashboard</span>
+</a>
+</li>
+<li>
+<a href="#" id="menu-izin">
+<i class="fas fa-file-alt"></i>
+<span>Pengajuan Izin</span>
+</a>
+</li>
+<li>
+<a href="#" id="menu-history">
+<i class="fas fa-history"></i>
+<span>Riwayat Izin</span>
+</a>
+</li>
+<li id="admin-menu" style="display: none;">
+<a href="#" id="menu-admin">
+<i class="fas fa-users-cog"></i>
+<span>Admin Panel</span>
+</a>
+</li>
+</ul>
+</div>
 
-        // Initialize staff list display
-        function initStaffList() {
-            const staffListContainer = document.getElementById('staffList');
-            staffListContainer.innerHTML = '';
-            
-            staffList.forEach(staff => {
-                const card = document.createElement('div');
-                card.className = 'staff-card';
-                card.innerHTML = `
-                    <div class="staff-name">${staff.name}</div>
-                    <div class="staff-role">${staff.role}</div>
-                `;
-                staffListContainer.appendChild(card);
-            });
-        }
+<!-- Main Content -->
+<div class="main-content">
+<!-- Header -->
+<div class="header">
+<div class="page-title">
+<h2 id="page-title">Dashboard</h2>
+<p id="page-subtitle">Ringkasan sistem izin keluar</p>
+</div>
+<div class="user-menu">
+<div class="user-info">
+<div class="user-avatar" id="user-avatar">AD</div>
+<span class="user-name" id="user-name">Administrator</span>
+</div>
+<button class="logout-btn" onclick="logout()">
+<i class="fas fa-sign-out-alt"></i> Logout
+</button>
+</div>
+</div>
 
-        // Tab System
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', function() {
-                // Remove active class from all buttons and contents
-                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                
-                // Add active class to clicked button and corresponding content
-                this.classList.add('active');
-                const tabId = this.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
-                
-                // If staff tab is clicked, initialize staff list
-                if (tabId === 'staff') {
-                    initStaffList();
-                }
-            });
-        });
+<!-- Dashboard Content -->
+<div id="dashboard-content">
+<div class="row">
+<div class="form-col">
+<div class="card">
+<div class="card-header">
+<h3 class="card-title">
+<i class="fas fa-edit"></i> Ajukan Izin Keluar
+</h3>
+</div>
+<form id="izinForm">
+<div class="form-row">
+<div class="form-col">
+<div class="form-group">
+<label for="tanggal">Tanggal Izin</label>
+<input type="date" class="form-control" id="tanggal" required>
+<div class="error-message" id="tanggal-error"></div>
+</div>
+</div>
+<div class="form-col">
+<div class="form-group">
+<label for="alasan">Alasan</label>
+<select class="form-control" id="alasan" required>
+<option value="">Pilih alasan...</option>
+<option value="Urusan Keluarga">Urusan Keluarga</option>
+<option value="Urusan Kesehatan">Urusan Kesehatan</option>
+<option value="Urusan Pribadi">Urusan Pribadi</option>
+<option value="Lainnya">Lainnya</option>
+</select>
+<div class="error-message" id="alasan-error"></div>
+</div>
+</div>
+</div>
+<div class="form-row">
+<div class="form-col">
+<div class="form-group">
+<label for="jam-keluar">Jam Keluar</label>
+<input type="time" class="form-control" id="jam-keluar" required>
+<div class="error-message" id="jam-keluar-error"></div>
+</div>
+</div>
+<div class="form-col">
+<div class="form-group">
+<label for="jam-kembali">Jam Kembali</label>
+<input type="time" class="form-control" id="jam-kembali" required>
+<div class="error-message" id="jam-kembali-error"></div>
+</div>
+</div>
+</div>
+<div class="form-group">
+<label for="keterangan">Keterangan (Detail)</label>
+<textarea class="form-control" id="keterangan" rows="3" required></textarea>
+<div class="error-message" id="keterangan-error"></div>
+</div>
+<button type="submit" class="btn">
+<i class="fas fa-paper-plane"></i> Ajukan Izin
+</button>
+</form>
+</div>
+</div>
 
-        // Login System
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            const staff = staffList.find(s => s.name === username);
-            
-            if (staff && password === staff.password) {
-                // Successful login
-                document.getElementById('loginContainer').classList.add('hidden');
-                document.getElementById('appContainer').classList.remove('hidden');
-                document.getElementById('currentStaff').textContent = staff.name;
-                
-                // Set role information
-                currentRole = staff.role;
-                currentStaff = staff.name;
-                document.getElementById('currentRole').textContent = staff.role;
-                document.getElementById('maxPerPerson').textContent = roles[staff.role]?.maxPerPerson || 0;
-                document.getElementById('maxPerRole').textContent = roles[staff.role]?.maxPerRole || 0;
-                document.getElementById('maxPerRole2').textContent = roles[staff.role]?.maxPerRole || 0;
-                
-                // Load history
-                loadHistory();
-                updateRoleUsage();
-            } else {
-                alert('Username atau password salah!');
-            }
-        });
+<div class="form-col">
+<div class="card">
+<div class="card-header">
+<h3 class="card-title">
+<i class="fas fa-history"></i> Riwayat Terakhir
+</h3>
+</div>
+<div class="table-responsive">
+<table class="table">
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Jam</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="recent-izin">
+<tr>
+<td colspan="4" style="text-align: center;">Belum ada data izin</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 
-        // Clock Function
-        function updateClock() {
-            const now = new Date();
-            
-            // Convert to WIB (UTC+7)
-            const wibOffset = 7 * 60 * 60 * 1000;
-            const wibTime = new Date(now.getTime() + wibOffset);
-            
-            const hours = String(wibTime.getUTCHours()).padStart(2, '0');
-            const minutes = String(wibTime.getUTCMinutes()).padStart(2, '0');
-            const seconds = String(wibTime.getUTCSeconds()).padStart(2, '0');
-            
-            document.getElementById('currentTime').textContent = `${hours}:${minutes}:${seconds} WIB`;
-        }
-        
-        setInterval(updateClock, 1000);
-        updateClock(); // Initial call
+<div class="card">
+<div class="card-header">
+<h3 class="card-title">
+<i class="fas fa-list"></i> Daftar Izin Anda
+</h3>
+</div>
+<div class="table-responsive">
+<table class="table">
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Jam Keluar</th>
+<th>Jam Kembali</th>
+<th>Alasan</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="izinTableBody">
+<tr>
+<td colspan="6" style="text-align: center;">Belum ada data izin</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 
-        // Izin System
-        let izinTimer;
-        let izinEndTime;
-        let isIzinKeluar = false;
-        let currentRole;
-        let currentStaff;
-        let history = JSON.parse(localStorage.getItem('izinHistory')) || [];
-        let todayHistory = [];
+<!-- Admin Content -->
+<div id="admin-content" style="display: none;">
+<div class="card">
+<div class="card-header">
+<h3 class="card-title">
+<i class="fas fa-tasks"></i> Semua Pengajuan Izin
+</h3>
+</div>
+<div class="table-responsive">
+<table class="table">
+<thead>
+<tr>
+<th>Nama</th>
+<th>Tanggal</th>
+<th>Jam</th>
+<th>Alasan</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="adminIzinTableBody">
+<tr>
+<td colspan="6" style="text-align: center;">Memuat data...</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-        document.getElementById('keluarBtn').addEventListener('click', function() {
-            if (isIzinKeluar) {
-                alert('Anda sudah izin keluar!');
-                return;
-            }
-            
-            // Check role limits
-            const today = new Date().toLocaleDateString();
-            const roleTodayCount = history.filter(item => 
-                item.role === currentRole && 
-                new Date(item.startTime).toLocaleDateString() === today
-            ).length;
-            
-            if (roleTodayCount >= roles[currentRole]?.maxPerRole) {
-                alert(`Maaf, kuota izin untuk role ${currentRole} hari ini sudah habis!`);
-                return;
-            }
-            
-            isIzinKeluar = true;
-            const now = new Date();
-            izinEndTime = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes from now
-            
-            // Show status
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.textContent = `Anda izin keluar pada ${formatTime(now)}. Harap kembali sebelum ${formatTime(izinEndTime)}`;
-            statusElement.className = 'status izin-keluar';
-            statusElement.classList.remove('hidden');
-            
-            // Show and start countdown
-            document.getElementById('countdownTimer').classList.remove('hidden');
-            updateCountdown();
-            
-            // Start countdown timer
-            izinTimer = setInterval(updateCountdown, 1000);
-            
-            // Disable keluar button, enable masuk button
-            this.disabled = true;
-            document.getElementById('masukBtn').disabled = false;
-        });
+<!-- Modal Detail Izin -->
+<div class="modal" id="detailModal">
+<div class="modal-content">
+<div class="modal-header">
+<h3 class="modal-title">
+<i class="fas fa-info-circle"></i> Detail Izin Keluar
+</h3>
+<button class="close-btn" onclick="closeModal()">&times;</button>
+</div>
+<div class="modal-body" id="modalBody">
+<!-- Konten akan diisi oleh JavaScript -->
+</div>
+<div class="modal-footer">
+<button class="btn" onclick="closeModal()">
+<i class="fas fa-times"></i> Tutup
+</button>
+</div>
+</div>
+</div>
 
-        document.getElementById('masukBtn').addEventListener('click', function() {
-            if (!isIzinKeluar) {
-                alert('Anda belum izin keluar!');
-                return;
-            }
-            
-            isIzinKeluar = false;
-            clearInterval(izinTimer);
-            
-            const now = new Date();
-            const statusElement = document.getElementById('statusMessage');
-            const isLate = now > izinEndTime;
-            
-            // Create history record
-            const record = {
-                id: Date.now(),
-                staffName: currentStaff,
-                role: currentRole,
-                date: now.toLocaleDateString(),
-                startTime: new Date(now.getTime() - 15 * 60 * 1000), // 15 minutes ago
-                endTime: now,
-                duration: 15,
-                status: isLate ? 'Telat' : 'Tepat Waktu'
-            };
-            
-            history.push(record);
-            localStorage.setItem('izinHistory', JSON.stringify(history));
-            
-            if (isLate) {
-                statusElement.textContent = `Anda terlambat kembali! Izin berakhir pada ${formatTime(izinEndTime)}`;
-                statusElement.className = 'status izin-keluar';
-            } else {
-                statusElement.textContent = `Anda telah kembali pada ${formatTime(now)}. Izin selesai.`;
-                statusElement.className = 'status izin-masuk';
-            }
-            
-            // Hide countdown
-            document.getElementById('countdownTimer').classList.add('hidden');
-            
-            // Enable keluar button, disable masuk button
-            document.getElementById('keluarBtn').disabled = false;
-            this.disabled = true;
-            
-            // Update history tables
-            loadHistory();
-            updateRoleUsage();
-        });
+<script>
+// Database sederhana
+const users = [
+{
+id: 1,
+username: "user1",
+password: "password1",
+name: "WIDJAYA  C6202945 ",
+role: "user"
+},
+{
+id: 2,
+username: "user2",
+password: "password2",
+name: "Jane Smith",
+role: "user"
+},
+{
+id: 3,
+username: "ADMIN",
+password: "asd123",
+name: "SAMUEL KRISTANTO",
+role: "admin"
+}
+];
 
-        // Initially disable masuk button
-        document.getElementById('masukBtn').disabled = true;
+let allIzinData = [];
+let currentUserIzin = [];
+let currentUser = null;
 
-        function updateCountdown() {
-            const now = new Date();
-            const diff = izinEndTime - now;
-            
-            if (diff <= 0) {
-                clearInterval(izinTimer);
-                document.getElementById('countdownTimer').textContent = "Waktu izin telah habis!";
-                return;
-            }
-            
-            const minutes = Math.floor(diff / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            document.getElementById('countdownTimer').textContent = 
-                `Waktu tersisa: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }
+// Fungsi untuk menampilkan pesan error
+function showError(elementId, message) {
+const errorElement = document.getElementById(elementId);
+errorElement.textContent = message;
+errorElement.style.display = 'block';
+}
 
-        function formatTime(date) {
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${hours}:${minutes}`;
-        }
+// Fungsi untuk menghilangkan pesan error
+function hideError(elementId) {
+document.getElementById(elementId).style.display = 'none';
+}
 
-        function loadHistory() {
-            const today = new Date().toLocaleDateString();
-            todayHistory = history.filter(item => 
-                item.staffName === currentStaff && 
-                new Date(item.startTime).toLocaleDateString() === today
-            );
-            
-            const allStaffHistory = history.filter(item => item.staffName === currentStaff);
-            
-            // Populate today's table
-            const todayTable = document.querySelector('#todayTable tbody');
-            todayTable.innerHTML = '';
-            
-            todayHistory.forEach((record, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${record.staffName}</td>
-                    <td>${record.role}</td>
-                    <td>${formatTime(new Date(record.startTime))}</td>
-                    <td>${formatTime(new Date(record.endTime))}</td>
-                    <td>${record.duration} menit</td>
-                    <td>${record.status}</td>
-                `;
-                todayTable.appendChild(row);
-            });
-            
-            // Populate all history table
-            const allTable = document.querySelector('#allTable tbody');
-            allTable.innerHTML = '';
-            
-            allStaffHistory.forEach((record, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${new Date(record.startTime).toLocaleDateString()}</td>
-                    <td>${record.staffName}</td>
-                    <td>${record.role}</td>
-                    <td>${formatTime(new Date(record.startTime))}</td>
-                    <td>${formatTime(new Date(record.endTime))}</td>
-                    <td>${record.duration} menit</td>
-                    <td>${record.status}</td>
-                `;
-                allTable.appendChild(row);
-            });
-        }
+// Fungsi untuk validasi login
+function validateLogin(username, password) {
+hideError('username-error');
+hideError('password-error');
 
-        function updateRoleUsage() {
-            const today = new Date().toLocaleDateString();
-            const roleTodayCount = history.filter(item => 
-                item.role === currentRole && 
-                new Date(item.startTime).toLocaleDateString() === today
-            ).length;
-            
-            document.getElementById('usedToday').textContent = roleTodayCount;
-            
-            const warningElement = document.getElementById('roleWarning');
-            if (roleTodayCount >= roles[currentRole]?.maxPerRole) {
-                warningElement.textContent = 'Peringatan: Kuota izin untuk role ini hari ini sudah habis!';
-            } else {
-                warningElement.textContent = '';
-            }
-        }
+let isValid = true;
 
-        // Initialize sample data if empty
-        if (history.length === 0) {
-            const now = new Date();
-            const sampleData = [
-                {
-                    id: 1,
-                    staffName: "ADMIN",
-                    role: "CS",
-                    date: now.toLocaleDateString(),
-                    startTime: new Date(now.getTime() - 60 * 60 * 1000),
-                    endTime: new Date(now.getTime() - 45 * 60 * 1000),
-                    duration: 15,
-                    status: "Tepat Waktu"
-                },
-                {
-                    id: 2,
-                    staffName: "ADMIN",
-                    role: "CS",
-                    date: now.toLocaleDateString(),
-                    startTime: new Date(now.getTime() - 30 * 60 * 1000),
-                    endTime: new Date(now.getTime() - 10 * 60 * 1000),
-                    duration: 15,
-                    status: "Telat"
-                }
-            ];
-            history = sampleData;
-            localStorage.setItem('izinHistory', JSON.stringify(history));
-        }
-    </script>
+if (!username) {
+showError('username-error', 'Username harus diisi');
+isValid = false;
+}
+
+if (!password) {
+showError('password-error', 'Password harus diisi');
+isValid = false;
+}
+
+return isValid;
+}
+
+// Fungsi untuk login
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+e.preventDefault();
+
+const username = document.getElementById('username').value;
+const password = document.getElementById('password').value;
+
+if (!validateLogin(username, password)) {
+return;
+}
+
+// Cari user
+const user = users.find(u => u.username === username && u.password === password);
+
+if (user) {
+currentUser = user;
+localStorage.setItem('currentUser', JSON.stringify(user));
+
+// Update UI
+document.getElementById('login-page').style.display = 'none';
+document.getElementById('dashboard').style.display = 'block';
+document.getElementById('user-name').textContent = user.name;
+document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+
+// Tampilkan menu admin jika role admin
+if (user.role === 'admin') {
+document.getElementById('admin-menu').style.display = 'block';
+}
+
+loadIzinData();
+
+// Reset form login
+document.getElementById('loginForm').reset();
+} else {
+showError('password-error', 'Username atau password salah');
+}
+});
+
+// Fungsi untuk load data izin
+function loadIzinData() {
+// Contoh data izin
+allIzinData = [
+{
+id: 1,
+userId: 1,
+userName: "WIDJAYA C6202945 ",
+tanggal: new Date().toISOString().split('T')[0],
+jamKeluar: '10:00',
+jamKembali: '12:00',
+alasan: 'Urusan Keluarga',
+keterangan: 'Mengantar anak ke dokter',
+status: 'approved',
+tanggalPengajuan: new Date().toISOString()
+},
+{
+id: 2,
+userId: 1,
+userName: "WIDJAYA C6202945 ",
+tanggal: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0],
+jamKeluar: '14:00',
+jamKembali: '16:30',
+alasan: 'Urusan Pribadi',
+keterangan: 'Perpanjang SIM',
+status: 'pending',
+tanggalPengajuan: new Date().toISOString()
+},
+{
+id: 3,
+userId: 2,
+userName: "Jane Smith",
+tanggal: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
+jamKeluar: '09:00',
+jamKembali: '11:00',
+alasan: 'Urusan Kesehatan',
+keterangan: 'Kontrol ke dokter',
+status: 'pending',
+tanggalPengajuan: new Date().toISOString()
+}
+];
+
+// Filter izin untuk user yang login
+currentUserIzin = allIzinData.filter(izin => izin.userId === currentUser.id);
+
+renderUserIzinTable();
+renderRecentIzin();
+
+// Jika admin, render juga tabel admin
+if (currentUser.role === 'admin') {
+renderAdminIzinTable();
+}
+}
+
+// Fungsi untuk render tabel izin user
+function renderUserIzinTable() {
+const tableBody = document.getElementById('izinTableBody');
+tableBody.innerHTML = '';
+
+if (currentUserIzin.length === 0) {
+tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Belum ada data izin</td></tr>';
+return;
+}
+
+// Urutkan berdasarkan tanggal pengajuan (terbaru pertama)
+currentUserIzin.sort((a, b) => new Date(b.tanggalPengajuan) - new Date(a.tanggalPengajuan));
+
+currentUserIzin.forEach(izin => {
+const row = document.createElement('tr');
+
+// Tentukan kelas status
+const statusInfo = getStatusInfo(izin.status);
+
+row.innerHTML = `
+<td>${formatTanggal(izin.tanggal)}</td>
+<td>${izin.jamKeluar}</td>
+<td>${izin.jamKembali}</td>
+<td>${izin.alasan}</td>
+<td><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
+<td>
+<button onclick="showDetail(${izin.id})" class="action-btn view-btn" title="Lihat Detail">
+<i class="fas fa-eye"></i>
+</button>
+</td>
+`;
+
+tableBody.appendChild(row);
+});
+}
+
+// Fungsi untuk render riwayat terakhir
+function renderRecentIzin() {
+const tableBody = document.getElementById('recent-izin');
+tableBody.innerHTML = '';
+
+if (currentUserIzin.length === 0) {
+tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Belum ada data izin</td></tr>';
+return;
+}
+
+// Ambil 3 data terbaru
+const recentData = currentUserIzin.slice(0, 3);
+
+recentData.forEach(izin => {
+const row = document.createElement('tr');
+
+// Tentukan kelas status
+const statusInfo = getStatusInfo(izin.status);
+
+row.innerHTML = `
+<td>${formatTanggal(izin.tanggal)}</td>
+<td>${izin.jamKeluar} - ${izin.jamKembali}</td>
+<td><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
+<td>
+<button onclick="showDetail(${izin.id})" class="action-btn view-btn" title="Lihat Detail">
+<i class="fas fa-eye"></i>
+</button>
+</td>
+`;
+
+tableBody.appendChild(row);
+});
+}
+
+// Fungsi untuk render tabel izin admin
+function renderAdminIzinTable() {
+const tableBody = document.getElementById('adminIzinTableBody');
+tableBody.innerHTML = '';
+
+if (allIzinData.length === 0) {
+tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Belum ada data izin</td></tr>';
+return;
+}
+
+// Urutkan berdasarkan tanggal pengajuan (terbaru pertama)
+allIzinData.sort((a, b) => new Date(b.tanggalPengajuan) - new Date(a.tanggalPengajuan));
+
+allIzinData.forEach(izin => {
+const row = document.createElement('tr');
+
+// Tentukan kelas status
+const statusInfo = getStatusInfo(izin.status);
+
+row.innerHTML = `
+<td>${izin.userName}</td>
+<td>${formatTanggal(izin.tanggal)}</td>
+<td>${izin.jamKeluar} - ${izin.jamKembali}</td>
+<td>${izin.alasan}</td>
+<td><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
+<td>
+${izin.status === 'pending' ? `
+<button onclick="approveIzin(${izin.id})" class="action-btn edit-btn" title="Setujui">
+<i class="fas fa-check"></i>
+</button>
+<button onclick="rejectIzin(${izin.id})" class="action-btn delete-btn" title="Tolak">
+<i class="fas fa-times"></i>
+</button>
+` : ''}
+<button onclick="showDetail(${izin.id}, true)" class="action-btn view-btn" title="Lihat Detail">
+<i class="fas fa-eye"></i>
+</button>
+</td>
+`;
+
+tableBody.appendChild(row);
+});
+}
+
+// Fungsi untuk mendapatkan info status
+function getStatusInfo(status) {
+if (status === 'approved') {
+return { class: 'status-approved', text: 'Disetujui' };
+} else if (status === 'rejected') {
+return { class: 'status-rejected', text: 'Ditolak' };
+} else {
+return { class: 'status-pending', text: 'Menunggu' };
+}
+}
+
+// Fungsi untuk format tanggal
+function formatTanggal(tanggal) {
+const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+return new Date(tanggal).toLocaleDateString('id-ID', options);
+}
+
+// Fungsi untuk validasi form izin
+function validateIzinForm() {
+let isValid = true;
+
+// Sembunyikan semua error terlebih dahulu
+hideError('tanggal-error');
+hideError('jam-keluar-error');
+hideError('jam-kembali-error');
+hideError('alasan-error');
+hideError('keterangan-error');
+
+// Validasi tanggal
+const tanggal = document.getElementById('tanggal').value;
+if (!tanggal) {
+showError('tanggal-error', 'Tanggal harus diisi');
+isValid = false;
+} else if (new Date(tanggal) < new Date(new Date().setHours(0, 0, 0, 0))) {
+showError('tanggal-error', 'Tanggal tidak boleh hari kemarin');
+isValid = false;
+}
+
+// Validasi jam
+const jamKeluar = document.getElementById('jam-keluar').value;
+const jamKembali = document.getElementById('jam-kembali').value;
+
+if (!jamKeluar) {
+showError('jam-keluar-error', 'Jam keluar harus diisi');
+isValid = false;
+}
+
+if (!jamKembali) {
+showError('jam-kembali-error', 'Jam kembali harus diisi');
+isValid = false;
+}
+
+if (jamKeluar && jamKembali && jamKembali <= jamKeluar) {
+showError('jam-kembali-error', 'Jam kembali harus setelah jam keluar');
+isValid = false;
+}
+
+// Validasi alasan
+const alasan = document.getElementById('alasan').value;
+if (!alasan) {
+showError('alasan-error', 'Alasan harus dipilih');
+isValid = false;
+}
+
+// Validasi keterangan
+const keterangan = document.getElementById('keterangan').value;
+if (!keterangan) {
+showError('keterangan-error', 'Keterangan harus diisi');
+isValid = false;
+}
+
+return isValid;
+}
+
+// Fungsi untuk menampilkan detail izin
+function showDetail(izinId, isAdmin = false) {
+const izin = isAdmin
+? allIzinData.find(item => item.id === izinId)
+: currentUserIzin.find(item => item.id === izinId);
+
+if (!izin) return;
+
+const modalBody = document.getElementById('modalBody');
+const statusInfo = getStatusInfo(izin.status);
+
+modalBody.innerHTML = `
+<div class="form-group">
+<label>Nama:</label>
+<p>${izin.userName || 'Tidak tersedia'}</p>
+</div>
+
+<div class="form-group">
+<label>Tanggal Izin:</label>
+<p>${formatTanggal(izin.tanggal)}</p>
+</div>
+
+<div class="form-group">
+<label>Jam Keluar:</label>
+<p>${izin.jamKeluar}</p>
+</div>
+
+<div class="form-group">
+<label>Jam Kembali:</label>
+<p>${izin.jamKembali}</p>
+</div>
+
+<div class="form-group">
+<label>Alasan:</label>
+<p>${izin.alasan}</p>
+</div>
+
+<div class="form-group">
+<label>Keterangan:</label>
+<p>${izin.keterangan}</p>
+</div>
+
+<div class="form-group">
+<label>Status:</label>
+<p><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></p>
+</div>
+
+<div class="form-group">
+<label>Tanggal Pengajuan:</label>
+<p>${new Date(izin.tanggalPengajuan).toLocaleString('id-ID')}</p>
+</div>
+`;
+
+document.getElementById('detailModal').style.display = 'flex';
+}
+
+// Fungsi untuk menyetujui izin (admin)
+function approveIzin(izinId) {
+const izin = allIzinData.find(item => item.id === izinId);
+if (izin) {
+izin.status = 'approved';
+
+// Update di currentUserIzin jika ada
+const userIzin = currentUserIzin.find(item => item.id === izinId);
+if (userIzin) {
+userIzin.status = 'approved';
+}
+
+renderAdminIzinTable();
+renderUserIzinTable();
+renderRecentIzin();
+alert('Izin telah disetujui!');
+}
+}
+
+// Fungsi untuk menolak izin (admin)
+function rejectIzin(izinId) {
+const izin = allIzinData.find(item => item.id === izinId);
+if (izin) {
+izin.status = 'rejected';
+
+// Update di currentUserIzin jika ada
+const userIzin = currentUserIzin.find(item => item.id === izinId);
+if (userIzin) {
+userIzin.status = 'rejected';
+}
+
+renderAdminIzinTable();
+renderUserIzinTable();
+renderRecentIzin();
+alert('Izin telah ditolak!');
+}
+}
+
+// Fungsi untuk menutup modal
+function closeModal() {
+document.getElementById('detailModal').style.display = 'none';
+}
+
+// Fungsi untuk mengajukan izin baru
+document.getElementById('izinForm').addEventListener('submit', function(e) {
+e.preventDefault();
+
+if (!validateIzinForm()) {
+return;
+}
+
+const tanggal = document.getElementById('tanggal').value;
+const jamKeluar = document.getElementById('jam-keluar').value;
+const jamKembali = document.getElementById('jam-kembali').value;
+const alasan = document.getElementById('alasan').value;
+const keterangan = document.getElementById('keterangan').value;
+
+// Buat objek izin baru
+const newIzin = {
+id: allIzinData.length > 0 ? Math.max(...allIzinData.map(i => i.id)) + 1 : 1,
+userId: currentUser.id,
+userName: currentUser.name,
+tanggal: tanggal,
+jamKeluar: jamKeluar,
+jamKembali: jamKembali,
+alasan: alasan,
+keterangan: keterangan,
+status: 'pending',
+tanggalPengajuan: new Date().toISOString()
+};
+
+// Tambahkan ke array allIzinData
+allIzinData.unshift(newIzin);
+currentUserIzin.unshift(newIzin);
+
+// Render ulang tabel
+renderUserIzinTable();
+renderRecentIzin();
+
+// Jika admin sedang login, update juga tabel admin
+if (currentUser.role === 'admin') {
+renderAdminIzinTable();
+}
+
+// Reset form
+document.getElementById('izinForm').reset();
+
+// Tampilkan pesan sukses
+alert('Izin keluar berhasil diajukan!');
+});
+
+// Fungsi untuk logout
+function logout() {
+currentUser = null;
+localStorage.removeItem('currentUser');
+
+document.getElementById('dashboard').style.display = 'none';
+document.getElementById('login-page').style.display = 'flex';
+
+// Reset form login
+document.getElementById('loginForm').reset();
+}
+
+// Menu navigation
+document.getElementById('menu-dashboard').addEventListener('click', function(e) {
+e.preventDefault();
+document.getElementById('dashboard-content').style.display = 'block';
+document.getElementById('admin-content').style.display = 'none';
+document.getElementById('page-title').textContent = 'Dashboard';
+document.getElementById('page-subtitle').textContent = 'Ringkasan sistem izin keluar';
+});
+
+document.getElementById('menu-izin').addEventListener('click', function(e) {
+e.preventDefault();
+document.getElementById('dashboard-content').style.display = 'block';
+document.getElementById('admin-content').style.display = 'none';
+document.getElementById('page-title').textContent = 'Pengajuan Izin';
+document.getElementById('page-subtitle').textContent = 'Form pengajuan izin keluar';
+});
+
+document.getElementById('menu-history').addEventListener('click', function(e) {
+e.preventDefault();
+document.getElementById('dashboard-content').style.display = 'block';
+document.getElementById('admin-content').style.display = 'none';
+document.getElementById('page-title').textContent = 'Riwayat Izin';
+document.getElementById('page-subtitle').textContent = 'Daftar riwayat pengajuan izin';
+});
+
+document.getElementById('menu-admin').addEventListener('click', function(e) {
+e.preventDefault();
+document.getElementById('dashboard-content').style.display = 'none';
+document.getElementById('admin-content').style.display = 'block';
+document.getElementById('page-title').textContent = 'Admin Panel';
+document.getElementById('page-subtitle').textContent = 'Kelola semua pengajuan izin';
+});
+
+// Cek apakah user sudah login saat page load
+window.onload = function() {
+const savedUser = localStorage.getItem('currentUser');
+
+if (savedUser) {
+currentUser = JSON.parse(savedUser);
+
+// Update UI
+document.getElementById('login-page').style.display = 'none';
+document.getElementById('dashboard').style.display = 'block';
+document.getElementById('user-name').textContent = currentUser.name;
+document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+
+// Tampilkan menu admin jika role admin
+if (currentUser.role === 'admin') {
+document.getElementById('admin-menu').style.display = 'block';
+}
+
+loadIzinData();
+}
+};
+</script>
 </body>
 </html>
