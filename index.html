@@ -1,1 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Izin Keluar - 15 Menit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .clock {
+            font-size: 2.5em;
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        #keluarBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        #keluarBtn:hover {
+            background-color: #c0392b;
+        }
+        #masukBtn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        #masukBtn:hover {
+            background-color: #27ae60;
+        }
+        .timer {
+            font-size: 1.5em;
+            text-align: center;
+            margin: 20px 0;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .login-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 50px auto;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+        }
+        .login-form button:hover {
+            background-color: #2980b9;
+        }
+        .hidden {
+            display: none;
+        }
+        .status {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .izin-keluar {
+            background-color: #fdebd0;
+            color: #e67e22;
+        }
+        .izin-masuk {
+            background-color: #d5f5e3;
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div id="loginContainer" class="login-container">
+        <h1>Login Sistem Izin</h1>
+        <form id="loginForm" class="login-form">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 
+    <!-- Main App (Hidden until login) -->
+    <div id="appContainer" class="container hidden">
+        <h1>Sistem Izin Keluar</h1>
+        <div class="clock" id="currentTime"></div>
+        
+        <div class="status hidden" id="statusMessage"></div>
+        
+        <div class="timer hidden" id="countdownTimer"></div>
+        
+        <div class="button-container">
+            <button id="keluarBtn">IZIN KELUAR</button>
+            <button id="masukBtn">IZIN MASUK</button>
+        </div>
+        
+        <p style="text-align: center; color: #7f8c8d;">Durasi izin: 15 menit</p>
+        <p style="text-align: center; color: #7f8c8d;">User: <span id="loggedInUser"></span></p>
+    </div>
+
+    <script>
+        // Login System
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'ADMIN' && password === 's1') {
+                // Successful login
+                document.getElementById('loginContainer').classList.add('hidden');
+                document.getElementById('appContainer').classList.remove('hidden');
+                document.getElementById('loggedInUser').textContent = username;
+            } else {
+                alert('Username atau password salah!');
+            }
+        });
+
+        // Clock Function
+        function updateClock() {
+            const now = new Date();
+            
+            // Convert to WIB (UTC+7)
+            const wibOffset = 7 * 60 * 60 * 1000;
+            const wibTime = new Date(now.getTime() + wibOffset);
+            
+            const hours = String(wibTime.getUTCHours()).padStart(2, '0');
+            const minutes = String(wibTime.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(wibTime.getUTCSeconds()).padStart(2, '0');
+            
+            document.getElementById('currentTime').textContent = `${hours}:${minutes}:${seconds} WIB`;
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call
+
+        // Izin System
+        let izinTimer;
+        let izinEndTime;
+        let isIzinKeluar = false;
+
+        document.getElementById('keluarBtn').addEventListener('click', function() {
+            if (isIzinKeluar) {
+                alert('Anda sudah izin keluar!');
+                return;
+            }
+            
+            isIzinKeluar = true;
+            const now = new Date();
+            izinEndTime = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes from now
+            
+            // Show status
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = `Anda izin keluar pada ${formatTime(now)}. Harap kembali sebelum ${formatTime(izinEndTime)}`;
+            statusElement.className = 'status izin-keluar';
+            statusElement.classList.remove('hidden');
+            
+            // Show and start countdown
+            document.getElementById('countdownTimer').classList.remove('hidden');
+            updateCountdown();
+            
+            // Start countdown timer
+            izinTimer = setInterval(updateCountdown, 1000);
+            
+            // Disable keluar button, enable masuk button
+            this.disabled = true;
+            document.getElementById('masukBtn').disabled = false;
+        });
+
+        document.getElementById('masukBtn').addEventListener('click', function() {
+            if (!isIzinKeluar) {
+                alert('Anda belum izin keluar!');
+                return;
+            }
+            
+            isIzinKeluar = false;
+            clearInterval(izinTimer);
+            
+            const now = new Date();
+            const statusElement = document.getElementById('statusMessage');
+            
+            if (now > izinEndTime) {
+                statusElement.textContent = `Anda terlambat kembali! Izin berakhir pada ${formatTime(izinEndTime)}`;
+                statusElement.className = 'status izin-keluar';
+            } else {
+                statusElement.textContent = `Anda telah kembali pada ${formatTime(now)}. Izin selesai.`;
+                statusElement.className = 'status izin-masuk';
+            }
+            
+            // Hide countdown
+            document.getElementById('countdownTimer').classList.add('hidden');
+            
+            // Enable keluar button, disable masuk button
+            document.getElementById('keluarBtn').disabled = false;
+            this.disabled = true;
+        });
+
+        // Initially disable masuk button
+        document.getElementById('masukBtn').disabled = true;
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = izinEndTime - now;
+            
+            if (diff <= 0) {
+                clearInterval(izinTimer);
+                document.getElementById('countdownTimer').textContent = "Waktu izin telah habis!";
+                return;
+            }
+            
+            const minutes = Math.floor(diff / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('countdownTimer').textContent = 
+                `Waktu tersisa: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function formatTime(date) {
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+    </script>
+</body>
+</html>
