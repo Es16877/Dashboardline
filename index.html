@@ -175,6 +175,29 @@
         .staff-list {
             margin-top: 20px;
         }
+        .auto-login {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .session-warning {
+            color: #d35400;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .message {
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -189,8 +212,15 @@
             <label for="password">Password:</label>
             <input type="password" id="password" placeholder="Masukkan password">
         </div>
+        <div class="auto-login">
+            <label>
+                <input type="checkbox" id="rememberMe" checked>
+                Tetap masuk
+            </label>
+            <div class="session-warning">* Data login akan tersimpan di browser ini</div>
+        </div>
         <button class="login-btn" onclick="login()">Login</button>
-        <p id="loginError" style="color: red; text-align: center; margin-top: 10px;"></p>
+        <p id="loginError" class="message error" style="display: none;"></p>
     </div>
 
     <!-- Main App (hidden initially) -->
@@ -259,7 +289,7 @@
                     <input type="password" id="newStaffPassword" placeholder="Password untuk login">
                 </div>
                 <button onclick="addNewStaff()">Tambah Staff</button>
-                <p id="addStaffMessage" style="color: green; text-align: center; margin-top: 10px;"></p>
+                <div id="addStaffMessage" class="message" style="display: none;"></div>
             </div>
             
             <!-- Tab Kelola Staff -->
@@ -271,6 +301,7 @@
                             <tr>
                                 <th>Nama</th>
                                 <th>Username</th>
+                                <th>Terakhir Login</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -293,16 +324,70 @@
         let staffOut = [];
         let isAdmin = false;
 
-        // Data pengguna (disimpan di localStorage)
-        let users = JSON.parse(localStorage.getItem('users')) || [
-            { username: "admin", password: "a1", isAdmin: true, name: "Administrator" },
-            { username: "staff1", password: "s1", isAdmin: false, name: "John Doe" },
-            { username: "staff2", password: "s2", isAdmin: false, name: "Jane Smith" }
-        ];
+        // Inisialisasi data
+        initializeData();
 
-        // Inisialisasi localStorage jika kosong
-        if (!localStorage.getItem('users')) {
-            localStorage.setItem('users', JSON.stringify(users));
+        // Fungsi inisialisasi data
+        function initializeData() {
+            // Load data dari localStorage atau buat default
+            if (!localStorage.getItem('izin_users')) {
+                const defaultUsers = [
+                    { 
+                        username: "admin", 
+                        password: "a1", 
+                        isAdmin: true, 
+                        name: "Administrator",
+                        lastLogin: null,
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('izin_users', JSON.stringify(defaultUsers));
+            }
+            
+            // Load session jika ada
+            if (localStorage.getItem('izin_session')) {
+                const session = JSON.parse(localStorage.getItem('izin_session'));
+                const users = JSON.parse(localStorage.getItem('izin_users'));
+                const user = users.find(u => u.username === session.username && u.password === session.password);
+                
+                if (user) {
+                    // Auto login
+                    currentUser = user;
+                    isAdmin = user.isAdmin;
+                    setupUIAfterLogin();
+                    
+                    // Update last login
+                    user.lastLogin = new Date().toISOString();
+                    localStorage.setItem('izin_users', JSON.stringify(users));
+                }
+            }
+            
+            // Load data staff yang sedang keluar
+            if (localStorage.getItem('izin_staff_out')) {
+                staffOut = JSON.parse(localStorage.getItem('izin_staff_out'));
+            } else {
+                // Data dummy untuk demo
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('id-ID', { 
+                    timeZone: 'Asia/Jakarta',
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit',
+                    hour12: false
+                });
+                
+                staffOut = [
+                    { name: "John Doe", exitTime: "10:15:30", returnTime: "10:30:45", status: "Sudah kembali" },
+                    { name: "Jane Smith", exitTime: timeStr, returnTime: "-", status: "Sedang keluar" }
+                ];
+                localStorage.setItem('izin_staff_out', JSON.stringify(staffOut));
+            }
+            
+            updateStaffTable();
+            
+            // Setel waktu saat ini dan perbarui setiap detik
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
         }
 
         // Fungsi untuk menampilkan waktu saat ini WIB
@@ -385,6 +470,7 @@
                 });
                 
                 updateStaffTable();
+                saveStaffOut();
             }
         }
 
@@ -412,6 +498,7 @@
                 staffOut[staffIndex].returnTime = returnTime;
                 staffOut[staffIndex].status = "Sudah kembali";
                 updateStaffTable();
+                saveStaffOut();
             }
         }
 
@@ -432,41 +519,75 @@
             });
         }
 
+        // Fungsi untuk menyimpan data staff yang keluar
+        function saveStaffOut() {
+            localStorage.setItem('izin_staff_out', JSON.stringify(staffOut));
+        }
+
         // Fungsi login
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
             
+            const users = JSON.parse(localStorage.getItem('izin_users'));
             const user = users.find(u => u.username === username && u.password === password);
             
             if (user) {
                 currentUser = user;
                 isAdmin = user.isAdmin || false;
-                document.getElementById('loggedInUser').textContent = `Selamat datang, ${user.name || user.username}`;
-                document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('appSection').classList.remove('hidden');
+                setupUIAfterLogin();
                 
-                // Tampilkan admin panel jika admin
-                if (isAdmin) {
-                    document.getElementById('adminPanel').classList.remove('hidden');
-                    loadAllStaff();
+                // Setel session untuk auto-login
+                if (rememberMe) {
+                    saveSession(user);
                 } else {
-                    document.getElementById('adminPanel').classList.add('hidden');
+                    // Session sementara (hanya untuk tab ini)
+                    saveSession(user);
                 }
                 
-                // Setel waktu saat ini dan perbarui setiap detik
-                updateCurrentTime();
-                setInterval(updateCurrentTime, 1000);
+                // Update last login
+                user.lastLogin = new Date().toISOString();
+                localStorage.setItem('izin_users', JSON.stringify(users));
                 
                 // Reset error message
-                document.getElementById('loginError').textContent = '';
+                document.getElementById('loginError').style.display = 'none';
             } else {
                 document.getElementById('loginError').textContent = 'Username atau password salah!';
+                document.getElementById('loginError').style.display = 'block';
             }
+        }
+
+        // Fungsi untuk setup UI setelah login
+        function setupUIAfterLogin() {
+            document.getElementById('loggedInUser').textContent = `Selamat datang, ${currentUser.name || currentUser.username}`;
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            
+            // Tampilkan admin panel jika admin
+            if (isAdmin) {
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadAllStaff();
+            } else {
+                document.getElementById('adminPanel').classList.add('hidden');
+            }
+        }
+
+        // Fungsi untuk menyimpan session
+        function saveSession(user) {
+            const session = {
+                username: user.username,
+                password: user.password,
+                lastActivity: new Date().toISOString()
+            };
+            localStorage.setItem('izin_session', JSON.stringify(session));
         }
 
         // Fungsi logout
         function logout() {
+            // Hapus session
+            localStorage.removeItem('izin_session');
+            
             currentUser = null;
             document.getElementById('appSection').classList.add('hidden');
             document.getElementById('loginSection').classList.remove('hidden');
@@ -486,15 +607,25 @@
             const password = document.getElementById('newStaffPassword').value.trim();
             
             if (!name || !username || !password) {
-                document.getElementById('addStaffMessage').textContent = 'Harap isi semua field!';
-                document.getElementById('addStaffMessage').style.color = 'red';
+                showMessage('addStaffMessage', 'Harap isi semua field!', 'error');
                 return;
             }
             
+            if (username.length < 3) {
+                showMessage('addStaffMessage', 'Username minimal 3 karakter!', 'error');
+                return;
+            }
+            
+            if (password.length < 3) {
+                showMessage('addStaffMessage', 'Password minimal 3 karakter!', 'error');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('izin_users'));
+            
             // Cek apakah username sudah ada
             if (users.some(u => u.username === username)) {
-                document.getElementById('addStaffMessage').textContent = 'Username sudah digunakan!';
-                document.getElementById('addStaffMessage').style.color = 'red';
+                showMessage('addStaffMessage', 'Username sudah digunakan!', 'error');
                 return;
             }
             
@@ -503,15 +634,16 @@
                 username: username,
                 password: password,
                 isAdmin: false,
-                name: name
+                name: name,
+                lastLogin: null,
+                createdAt: new Date().toISOString()
             };
             
             users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('izin_users', JSON.stringify(users));
             
             // Tampilkan pesan sukses
-            document.getElementById('addStaffMessage').textContent = `Staff ${name} berhasil ditambahkan!`;
-            document.getElementById('addStaffMessage').style.color = 'green';
+            showMessage('addStaffMessage', `Staff ${name} berhasil ditambahkan!`, 'success');
             
             // Reset form
             document.getElementById('newStaffName').value = '';
@@ -527,16 +659,27 @@
             const tbody = document.querySelector('#allStaffTable tbody');
             tbody.innerHTML = '';
             
+            const users = JSON.parse(localStorage.getItem('izin_users'));
+            
             // Filter hanya staff (bukan admin)
             const staffList = users.filter(u => !u.isAdmin);
             
             staffList.forEach((staff, index) => {
                 const row = document.createElement('tr');
+                
+                // Format last login
+                let lastLogin = '-';
+                if (staff.lastLogin) {
+                    const date = new Date(staff.lastLogin);
+                    lastLogin = date.toLocaleString('id-ID');
+                }
+                
                 row.innerHTML = `
                     <td>${staff.name}</td>
                     <td>${staff.username}</td>
+                    <td>${lastLogin}</td>
                     <td>
-                        <button onclick="deleteStaff(${index})">Hapus</button>
+                        <button onclick="deleteStaff('${staff.username}')">Hapus</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -544,17 +687,41 @@
         }
 
         // Fungsi untuk menghapus staff
-        function deleteStaff(index) {
+        function deleteStaff(username) {
             if (confirm("Apakah Anda yakin ingin menghapus staff ini?")) {
-                // Pastikan tidak menghapus admin
-                if (users[index].isAdmin) {
-                    alert("Tidak dapat menghapus akun admin!");
+                const users = JSON.parse(localStorage.getItem('izin_users'));
+                const userIndex = users.findIndex(u => u.username === username);
+                
+                // Pastikan tidak menghapus admin atau user yang sedang login
+                if (users[userIndex].isAdmin) {
+                    showMessage('addStaffMessage', 'Tidak dapat menghapus akun admin!', 'error');
                     return;
                 }
                 
-                users.splice(index, 1);
-                localStorage.setItem('users', JSON.stringify(users));
+                if (currentUser && currentUser.username === username) {
+                    showMessage('addStaffMessage', 'Tidak dapat menghapus akun yang sedang digunakan!', 'error');
+                    return;
+                }
+                
+                users.splice(userIndex, 1);
+                localStorage.setItem('izin_users', JSON.stringify(users));
                 loadAllStaff();
+                
+                showMessage('addStaffMessage', 'Staff berhasil dihapus!', 'success');
+            }
+        }
+
+        // Fungsi untuk menampilkan pesan
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 3000);
             }
         }
 
@@ -573,27 +740,6 @@
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
         }
-
-        // Inisialisasi
-        document.addEventListener('DOMContentLoaded', () => {
-            // Contoh data staff yang sedang keluar (untuk demo)
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('id-ID', { 
-                timeZone: 'Asia/Jakarta',
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit',
-                hour12: false
-            });
-            
-            // Data dummy untuk demo
-            staffOut = [
-                { name: "John Doe", exitTime: "10:15:30", returnTime: "10:30:45", status: "Sudah kembali" },
-                { name: "Jane Smith", exitTime: timeStr, returnTime: "-", status: "Sedang keluar" }
-            ];
-            
-            updateStaffTable();
-        });
     </script>
 </body>
 </html>
