@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Izin Keluar - 15 Menit</title>
+    <title>Sistem Izin Keluar - Lengkap</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
@@ -18,7 +18,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1 {
+        h1, h2 {
             color: #333;
             text-align: center;
         }
@@ -71,7 +71,7 @@
             max-width: 400px;
             margin: 50px auto;
         }
-        .login-form input {
+        .login-form input, .login-form select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -105,6 +105,91 @@
             background-color: #d5f5e3;
             color: #27ae60;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .tab-container {
+            margin-top: 20px;
+        }
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .tab-button {
+            padding: 10px 20px;
+            background-color: #eee;
+            border: none;
+            cursor: pointer;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .tab-button.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .role-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .role-info h3 {
+            margin-top: 0;
+        }
+        .warning {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .staff-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .staff-card {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            width: calc(33% - 10px);
+            box-sizing: border-box;
+        }
+        @media (max-width: 768px) {
+            .staff-card {
+                width: calc(50% - 10px);
+            }
+        }
+        @media (max-width: 480px) {
+            .staff-card {
+                width: 100%;
+            }
+        }
+        .staff-name {
+            font-weight: bold;
+        }
+        .staff-role {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -112,7 +197,10 @@
     <div id="loginContainer" class="login-container">
         <h1>Login Sistem Izin</h1>
         <form id="loginForm" class="login-form">
-            <input type="text" id="username" placeholder="Username" required>
+            <select id="username" required>
+                <option value="">Pilih Nama Staf</option>
+                <!-- Options will be filled by JavaScript -->
+            </select>
             <input type="password" id="password" placeholder="Password" required>
             <button type="submit">Login</button>
         </form>
@@ -122,6 +210,16 @@
     <div id="appContainer" class="container hidden">
         <h1>Sistem Izin Keluar</h1>
         <div class="clock" id="currentTime"></div>
+        
+        <div class="role-info">
+            <h3>Informasi Role</h3>
+            <p>Nama Staf: <strong><span id="currentStaff"></span></strong></p>
+            <p>Role: <strong><span id="currentRole"></span></strong></p>
+            <p>Max Izin per Orang: <strong><span id="maxPerPerson"></span></strong></p>
+            <p>Max Izin per Role: <strong><span id="maxPerRole"></span></strong></p>
+            <p>Izin digunakan hari ini: <strong><span id="usedToday"></span>/<span id="maxPerRole2"></span></strong></p>
+            <p id="roleWarning" class="warning"></p>
+        </div>
         
         <div class="status hidden" id="statusMessage"></div>
         
@@ -133,10 +231,188 @@
         </div>
         
         <p style="text-align: center; color: #7f8c8d;">Durasi izin: 15 menit</p>
-        <p style="text-align: center; color: #7f8c8d;">User: <span id="loggedInUser"></span></p>
+        
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="today">Riwayat Hari Ini</button>
+                <button class="tab-button" data-tab="all">Semua Riwayat</button>
+                <button class="tab-button" data-tab="staff">Daftar Staf</button>
+            </div>
+            
+            <div id="today" class="tab-content active">
+                <h2>Riwayat Izin Hari Ini</h2>
+                <table id="todayTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Staf</th>
+                            <th>Role</th>
+                            <th>Waktu Keluar</th>
+                            <th>Waktu Kembali</th>
+                            <th>Durasi</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div id="all" class="tab-content">
+                <h2>Semua Riwayat Izin</h2>
+                <table id="allTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Nama Staf</th>
+                            <th>Role</th>
+                            <th>Waktu Keluar</th>
+                            <th>Waktu Kembali</th>
+                            <th>Durasi</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div id="staff" class="tab-content">
+                <h2>Daftar Staf</h2>
+                <div class="staff-list" id="staffList">
+                    <!-- Staff cards will be filled by JavaScript -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        // Data Staff
+        const staffList = [
+            { name: "WIDJAYA", role: "CS", password: "s1" },
+            { name: "DAVID", role: "CS", password: "s1" },
+            { name: "FALLEN HARDINANSAH TAJU", role: "CS", password: "s1" },
+            { name: "SHOFIAN KURNIADY", role: "CS", password: "s1" },
+            { name: "CHARLIE", role: "CS", password: "s1" },
+            { name: "HARIANTO", role: "CS", password: "s1" },
+            { name: "RINAL ABDILLAH NASUTION", role: "CS", password: "s1" },
+            { name: "ERI HARIANTO", role: "CS", password: "s1" },
+            { name: "MAHENDRAN", role: "CS", password: "s1" },
+            { name: "ANDHIKA DWI PUTRA", role: "CS", password: "s1" },
+            { name: "TOMMY HASIM", role: "CS", password: "s1" },
+            { name: "EGI SETIAWAN", role: "CS", password: "s1" },
+            { name: "RANJIT", role: "CS", password: "s1" },
+            { name: "WILLY PERAYUDA", role: "CS", password: "s1" },
+            { name: "ANGGA AZMAL HARAHAP", role: "CS", password: "s1" },
+            { name: "LALU MUHAMMAD ADNAN ZAKARIA", role: "CS", password: "s1" },
+            { name: "ANDI", role: "CS", password: "s1" },
+            { name: "ARI ROMANDUS FERNAND", role: "CS", password: "s1" },
+            { name: "ALFINO MUKTI", role: "CS", password: "s1" },
+            { name: "AKAS FARMA", role: "CS", password: "s1" },
+            { name: "SAMSUL MAARIF", role: "CS", password: "s1" },
+            { name: "PARIS AMRULLOH", role: "CS", password: "s1" },
+            { name: "SUHAN RAZ", role: "Kapten Kasir", password: "s1" },
+            { name: "NOVAL MUTTAWALI HAKIM", role: "Kapten Kasir", password: "s1" },
+            { name: "WILIAM", role: "Kapten Kasir", password: "s1" },
+            { name: "FIQAL KANA", role: "Kapten Kasir", password: "s1" },
+            { name: "MARJOKI SANG", role: "Kapten Kasir", password: "s1" },
+            { name: "DANIEL", role: "Kapten Kasir", password: "s1" },
+            { name: "PUTRA ANUGRAH RIZKI", role: "Kasir", password: "s1" },
+            { name: "PUTRA RAMADHANI", role: "Kasir", password: "s1" },
+            { name: "LAILI MARITSA", role: "Kasir", password: "s1" },
+            { name: "ANNEN", role: "Kasir", password: "s1" },
+            { name: "JONROMAN PURBA", role: "Kasir", password: "s1" },
+            { name: "RAAZ JESEN STEPANUS", role: "Kasir", password: "s1" },
+            { name: "M FAJAR SIDDIK", role: "Kasir", password: "s1" },
+            { name: "RAHMADI SORMIN", role: "Kasir", password: "s1" },
+            { name: "AMRUL", role: "Kasir", password: "s1" },
+            { name: "RAM KIRAN", role: "Kasir", password: "s1" },
+            { name: "BOBY KASANDRA BANCIN", role: "Kasir", password: "s1" },
+            { name: "KIKI YUNITA", role: "Kasir", password: "s1" },
+            { name: "MAHAT SANJAYA HARAHAP", role: "Kasir", password: "s1" },
+            { name: "CHARLOIPO MANULLANG", role: "Kasir", password: "s1" },
+            { name: "FAHMI AZIS HARAHAP", role: "Kasir", password: "s1" },
+            { name: "FAHRI FIRMANSYAH", role: "Kasir", password: "s1" },
+            { name: "PRIMA NUGRAHA", role: "Kasir", password: "s1" },
+            { name: "ROY DILEN", role: "Kasir", password: "s1" },
+            { name: "GALI PRATAMA", role: "Kasir", password: "s1" },
+            { name: "RIDZKY RAMADHAN", role: "Kasir", password: "s1" },
+            { name: "AGUNG DEDI IRAWAN", role: "Kasir", password: "s1" },
+            { name: "MAICEL TAMPUBOLON", role: "Kasir", password: "s1" },
+            { name: "ADE CHAIRUNNISA", role: "Kasir", password: "s1" },
+            { name: "M REZI SYAPUTRA", role: "Kasir", password: "s1" },
+            { name: "KHOIRUDDIN", role: "Kasir", password: "s1" },
+            { name: "BAMBANG AGUNG SUTRISNO", role: "Kasir", password: "s1" },
+            { name: "PUTRA INSANY", role: "Kasir", password: "s1" },
+            { name: "ANDRIANUS", role: "Kasir", password: "s1" },
+            { name: "FERA SALMA", role: "Kasir", password: "s1" },
+            { name: "RIVLAN RIZKY", role: "Kasir", password: "s1" },
+            { name: "MAULANA ALI SAID", role: "Kasir", password: "s1" },
+            { name: "AHMAD ANDIKA", role: "Kasir", password: "s1" },
+            { name: "ANGGARA K S", role: "Kasir", password: "s1" },
+            { name: "DIMAS ADHITYA", role: "Kasir", password: "s1" },
+            { name: "GABRIEL RONI ARGANTA HUTABALIAN", role: "Kasir", password: "s1" },
+            { name: "DANDI PRAYOGA MANURUNG", role: "Kasir", password: "s1" },
+            { name: "EGA PRAYUDA", role: "Kasir", password: "s1" },
+            { name: "ARJUN PRAISYA", role: "Kasir", password: "s1" },
+            { name: "ADITYA PANCA", role: "Kasir", password: "s1" },
+            { name: "AUDIS OYONG DUANSYAH", role: "Kasir", password: "s1" },
+            { name: "ADE OJI SHAPUTRA", role: "Kasir", password: "s1" },
+            { name: "ALFIANSYAH", role: "Kasir", password: "s1" },
+            { name: "ANDY PUTRA", role: "Kasir", password: "s1" }
+        ];
+
+        // Data Roles
+        const roles = {
+            'CS': { maxPerPerson: 4, maxPerRole: 3 },
+            'Kasir': { maxPerPerson: 4, maxPerRole: 3 },
+            'Staff Khmer': { maxPerPerson: 4, maxPerRole: 1 },
+            'Kapten Kasir': { maxPerPerson: 4, maxPerRole: 2 }
+        };
+
+        // Initialize staff dropdown
+        const usernameSelect = document.getElementById('username');
+        staffList.forEach(staff => {
+            const option = document.createElement('option');
+            option.value = staff.name;
+            option.textContent = `${staff.name} (${staff.role})`;
+            usernameSelect.appendChild(option);
+        });
+
+        // Initialize staff list display
+        function initStaffList() {
+            const staffListContainer = document.getElementById('staffList');
+            staffListContainer.innerHTML = '';
+            
+            staffList.forEach(staff => {
+                const card = document.createElement('div');
+                card.className = 'staff-card';
+                card.innerHTML = `
+                    <div class="staff-name">${staff.name}</div>
+                    <div class="staff-role">${staff.role}</div>
+                `;
+                staffListContainer.appendChild(card);
+            });
+        }
+
+        // Tab System
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons and contents
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+                
+                // If staff tab is clicked, initialize staff list
+                if (tabId === 'staff') {
+                    initStaffList();
+                }
+            });
+        });
+
         // Login System
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -144,11 +420,25 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            if (username === 'ADMIN' && password === 's1') {
+            const staff = staffList.find(s => s.name === username);
+            
+            if (staff && password === staff.password) {
                 // Successful login
                 document.getElementById('loginContainer').classList.add('hidden');
                 document.getElementById('appContainer').classList.remove('hidden');
-                document.getElementById('loggedInUser').textContent = username;
+                document.getElementById('currentStaff').textContent = staff.name;
+                
+                // Set role information
+                currentRole = staff.role;
+                currentStaff = staff.name;
+                document.getElementById('currentRole').textContent = staff.role;
+                document.getElementById('maxPerPerson').textContent = roles[staff.role]?.maxPerPerson || 0;
+                document.getElementById('maxPerRole').textContent = roles[staff.role]?.maxPerRole || 0;
+                document.getElementById('maxPerRole2').textContent = roles[staff.role]?.maxPerRole || 0;
+                
+                // Load history
+                loadHistory();
+                updateRoleUsage();
             } else {
                 alert('Username atau password salah!');
             }
@@ -176,10 +466,26 @@
         let izinTimer;
         let izinEndTime;
         let isIzinKeluar = false;
+        let currentRole;
+        let currentStaff;
+        let history = JSON.parse(localStorage.getItem('izinHistory')) || [];
+        let todayHistory = [];
 
         document.getElementById('keluarBtn').addEventListener('click', function() {
             if (isIzinKeluar) {
                 alert('Anda sudah izin keluar!');
+                return;
+            }
+            
+            // Check role limits
+            const today = new Date().toLocaleDateString();
+            const roleTodayCount = history.filter(item => 
+                item.role === currentRole && 
+                new Date(item.startTime).toLocaleDateString() === today
+            ).length;
+            
+            if (roleTodayCount >= roles[currentRole]?.maxPerRole) {
+                alert(`Maaf, kuota izin untuk role ${currentRole} hari ini sudah habis!`);
                 return;
             }
             
@@ -216,8 +522,24 @@
             
             const now = new Date();
             const statusElement = document.getElementById('statusMessage');
+            const isLate = now > izinEndTime;
             
-            if (now > izinEndTime) {
+            // Create history record
+            const record = {
+                id: Date.now(),
+                staffName: currentStaff,
+                role: currentRole,
+                date: now.toLocaleDateString(),
+                startTime: new Date(now.getTime() - 15 * 60 * 1000), // 15 minutes ago
+                endTime: now,
+                duration: 15,
+                status: isLate ? 'Telat' : 'Tepat Waktu'
+            };
+            
+            history.push(record);
+            localStorage.setItem('izinHistory', JSON.stringify(history));
+            
+            if (isLate) {
                 statusElement.textContent = `Anda terlambat kembali! Izin berakhir pada ${formatTime(izinEndTime)}`;
                 statusElement.className = 'status izin-keluar';
             } else {
@@ -231,6 +553,10 @@
             // Enable keluar button, disable masuk button
             document.getElementById('keluarBtn').disabled = false;
             this.disabled = true;
+            
+            // Update history tables
+            loadHistory();
+            updateRoleUsage();
         });
 
         // Initially disable masuk button
@@ -257,6 +583,99 @@
             const hours = String(date.getHours()).padStart(2, '0');
             const minutes = String(date.getMinutes()).padStart(2, '0');
             return `${hours}:${minutes}`;
+        }
+
+        function loadHistory() {
+            const today = new Date().toLocaleDateString();
+            todayHistory = history.filter(item => 
+                item.staffName === currentStaff && 
+                new Date(item.startTime).toLocaleDateString() === today
+            );
+            
+            const allStaffHistory = history.filter(item => item.staffName === currentStaff);
+            
+            // Populate today's table
+            const todayTable = document.querySelector('#todayTable tbody');
+            todayTable.innerHTML = '';
+            
+            todayHistory.forEach((record, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${record.staffName}</td>
+                    <td>${record.role}</td>
+                    <td>${formatTime(new Date(record.startTime))}</td>
+                    <td>${formatTime(new Date(record.endTime))}</td>
+                    <td>${record.duration} menit</td>
+                    <td>${record.status}</td>
+                `;
+                todayTable.appendChild(row);
+            });
+            
+            // Populate all history table
+            const allTable = document.querySelector('#allTable tbody');
+            allTable.innerHTML = '';
+            
+            allStaffHistory.forEach((record, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${new Date(record.startTime).toLocaleDateString()}</td>
+                    <td>${record.staffName}</td>
+                    <td>${record.role}</td>
+                    <td>${formatTime(new Date(record.startTime))}</td>
+                    <td>${formatTime(new Date(record.endTime))}</td>
+                    <td>${record.duration} menit</td>
+                    <td>${record.status}</td>
+                `;
+                allTable.appendChild(row);
+            });
+        }
+
+        function updateRoleUsage() {
+            const today = new Date().toLocaleDateString();
+            const roleTodayCount = history.filter(item => 
+                item.role === currentRole && 
+                new Date(item.startTime).toLocaleDateString() === today
+            ).length;
+            
+            document.getElementById('usedToday').textContent = roleTodayCount;
+            
+            const warningElement = document.getElementById('roleWarning');
+            if (roleTodayCount >= roles[currentRole]?.maxPerRole) {
+                warningElement.textContent = 'Peringatan: Kuota izin untuk role ini hari ini sudah habis!';
+            } else {
+                warningElement.textContent = '';
+            }
+        }
+
+        // Initialize sample data if empty
+        if (history.length === 0) {
+            const now = new Date();
+            const sampleData = [
+                {
+                    id: 1,
+                    staffName: "ADMIN",
+                    role: "CS",
+                    date: now.toLocaleDateString(),
+                    startTime: new Date(now.getTime() - 60 * 60 * 1000),
+                    endTime: new Date(now.getTime() - 45 * 60 * 1000),
+                    duration: 15,
+                    status: "Tepat Waktu"
+                },
+                {
+                    id: 2,
+                    staffName: "ADMIN",
+                    role: "CS",
+                    date: now.toLocaleDateString(),
+                    startTime: new Date(now.getTime() - 30 * 60 * 1000),
+                    endTime: new Date(now.getTime() - 10 * 60 * 1000),
+                    duration: 15,
+                    status: "Telat"
+                }
+            ];
+            history = sampleData;
+            localStorage.setItem('izinHistory', JSON.stringify(history));
         }
     </script>
 </body>
