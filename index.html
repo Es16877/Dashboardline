@@ -504,7 +504,7 @@
 
     <script>
         // Data staff (simulasi database)
-        let staffDatabase = [
+        let staffDatabase = JSON.parse(localStorage.getItem('staffDatabase')) || [
             { id: 1, username: 'admin', password: 'a1', name: 'Admin Master', position: 'admin', permissions: 0 },
             { id: 2, username: 'kasir1', password: 'k1', name: 'Budi Santoso', position: 'kasir', permissions: 0 },
             { id: 3, username: 'kasir2', password: 'k2', name: 'Ani Wijaya', position: 'kasir', permissions: 0 },
@@ -515,7 +515,7 @@
         ];
 
         // Data staff yang sedang keluar
-        let staffOut = [];
+        let staffOut = JSON.parse(localStorage.getItem('staffOut')) || [];
         
         // Data izin kemarin (simulasi)
         const yesterdayData = [
@@ -525,10 +525,19 @@
         ];
 
         // User yang sedang login
-        let currentUser = null;
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
         
         // Mode edit akun
         let isEditingAccount = false;
+        
+        // Fungsi untuk menyimpan data ke localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('staffDatabase', JSON.stringify(staffDatabase));
+            localStorage.setItem('staffOut', JSON.stringify(staffOut));
+            if (currentUser) {
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+        }
         
         // Timer untuk jam
         function updateClock() {
@@ -584,6 +593,7 @@
             
             // Update counter untuk setiap posisi
             updatePositionCounts();
+            saveToLocalStorage();
         }
         
         // Fungsi untuk update data kemarin
@@ -806,6 +816,7 @@
             // Refresh daftar akun
             loadAccountsList();
             hideAccountForm();
+            saveToLocalStorage();
         }
         
         // Fungsi untuk edit akun
@@ -818,6 +829,7 @@
             if (confirm('Apakah Anda yakin ingin menghapus akun ini?')) {
                 staffDatabase = staffDatabase.filter(a => a.id !== accountId);
                 loadAccountsList();
+                saveToLocalStorage();
             }
         }
         
@@ -830,6 +842,7 @@
             
             if (user) {
                 currentUser = {...user};
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('main-page').classList.remove('hidden');
                 
@@ -854,6 +867,7 @@
         // Event listener untuk logout
         document.getElementById('logout-btn').addEventListener('click', function() {
             currentUser = null;
+            localStorage.removeItem('currentUser');
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
             document.getElementById('username').value = '';
@@ -878,6 +892,7 @@
             // Update dashboard
             updateStaffOutDashboard();
             updatePermissionCount();
+            saveToLocalStorage();
             
             alert('Izin keluar tercatat. Durasi 15 menit dimulai sekarang.');
         });
@@ -895,6 +910,7 @@
                 
                 // Update dashboard
                 updateStaffOutDashboard();
+                saveToLocalStorage();
                 
                 alert('Izin masuk tercatat. Selamat bekerja kembali!');
             } else {
@@ -932,11 +948,37 @@
             
             if (needUpdate) {
                 updateStaffOutDashboard();
+                saveToLocalStorage();
             }
         }, 60000); // Cek setiap menit
         
-        // Inisialisasi
-        updateYesterdayData();
+        // Inisialisasi saat halaman dimuat
+        function initialize() {
+            updateYesterdayData();
+            updateClock();
+            
+            // Jika ada user yang login, tampilkan halaman utama
+            if (currentUser) {
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('main-page').classList.remove('hidden');
+                
+                // Tampilkan admin panel jika user adalah admin
+                if (currentUser.position === 'admin') {
+                    document.getElementById('admin-panel').classList.remove('hidden');
+                    loadAccountsList();
+                }
+                
+                // Update dashboard
+                updateStaffOutDashboard();
+                updatePermissionCount();
+                
+                // Set nama user di header
+                document.querySelector('.header h1').textContent = `Sistem Izin Keluar Staff - ${currentUser.name}`;
+            }
+        }
+        
+        // Panggil fungsi inisialisasi saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', initialize);
     </script>
 </body>
 </html>
