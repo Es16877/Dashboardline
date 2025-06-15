@@ -41,12 +41,14 @@
             padding: 25px;
             text-align: center;
             color: white;
+            position: relative;
         }
         
         .login-header h1 {
             margin: 0;
             font-size: 24px;
             font-weight: bold;
+            letter-spacing: 1px;
         }
         
         .login-body {
@@ -96,6 +98,7 @@
         .login-btn:hover {
             background-color: #2980b9;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
         .error-message {
@@ -103,24 +106,63 @@
             text-align: center;
             margin-top: 15px;
             font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
             height: 20px;
         }
         
+        .show-error {
+            opacity: 1;
+        }
+        
         /* Tampilan Utama */
-        .container {
+        .main-container {
+            width: 100%;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            display: none; /* Awalnya disembunyikan */
+            display: none;
         }
         
-        .header {
+        .main-header {
             text-align: center;
             margin-bottom: 30px;
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .user-position {
+            color: #666;
+            font-size: 1rem;
+            text-transform: uppercase;
         }
         
         .clock-container {
@@ -176,16 +218,6 @@
         
         .btn-secondary {
             background-color: var(--secondary);
-            color: white;
-        }
-        
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-        }
-        
-        .btn-warning {
-            background-color: var(--warning);
             color: white;
         }
         
@@ -247,37 +279,6 @@
             font-weight: bold;
         }
         
-        .logout-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 8px 15px;
-            cursor: pointer;
-            font-weight: bold;
-            z-index: 1000;
-        }
-        
-        .user-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .user-name {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--dark);
-        }
-        
-        .user-position {
-            color: #666;
-            font-size: 1rem;
-            text-transform: uppercase;
-        }
-        
         /* Admin Panel */
         .admin-panel {
             background: white;
@@ -303,6 +304,7 @@
             padding: 20px;
             border-radius: 5px;
             margin-top: 20px;
+            display: none;
         }
         
         .account-list {
@@ -326,13 +328,41 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
+            font-size: 0.8rem;
         }
         
+        .show-password-btn {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .edit-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        /* Animasi */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        /* Responsive */
         @media (max-width: 768px) {
             .permission-section {
                 flex-direction: column;
@@ -340,6 +370,10 @@
             
             .time {
                 font-size: 2rem;
+            }
+            
+            .clock {
+                width: 100%;
             }
         }
     </style>
@@ -365,12 +399,11 @@
     </div>
 
     <!-- Tampilan Utama -->
-    <div id="main-page" class="container">
-        <button id="logout-btn" class="logout-btn">LOGOUT</button>
-        
-        <div class="header">
+    <div id="main-page" class="main-container">
+        <div class="main-header">
             <h1>JAMIZIN STAFF</h1>
             <p>Durasi izin keluar maksimal 15 menit</p>
+            <button id="logout-btn" class="logout-btn">LOGOUT</button>
         </div>
         
         <div class="user-info">
@@ -404,7 +437,7 @@
             <h2>Admin Panel</h2>
             <button id="create-account-btn" class="create-account-btn">+ Buat Akun Baru</button>
             
-            <div id="account-form" class="account-form" style="display: none;">
+            <div id="account-form" class="account-form">
                 <h3 id="form-title">Buat Akun Baru</h3>
                 <div class="form-group">
                     <label for="new-username">Username</label>
@@ -463,8 +496,15 @@
         function showError(message) {
             const errorElement = document.getElementById('error-message');
             errorElement.textContent = message;
+            errorElement.classList.add('show-error');
+            document.getElementById('login-page').classList.add('shake');
+            
             setTimeout(() => {
-                errorElement.textContent = '';
+                document.getElementById('login-page').classList.remove('shake');
+            }, 500);
+            
+            setTimeout(() => {
+                errorElement.classList.remove('show-error');
             }, 3000);
         }
         
@@ -480,13 +520,22 @@
         // Timer untuk jam
         function updateClock() {
             const now = new Date();
-            const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            const timeString = now.toLocaleTimeString('id-ID', options);
-            document.getElementById('time').textContent = timeString;
+            const timeOptions = { 
+                timeZone: 'Asia/Jakarta', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false
+            };
+            const dateOptions = { 
+                weekday: 'long', 
+                day: 'numeric', 
+                month: 'long', 
+                year: 'numeric' 
+            };
             
-            const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-            const dateString = now.toLocaleDateString('id-ID', dateOptions);
-            document.getElementById('date').textContent = dateString;
+            document.getElementById('time').textContent = now.toLocaleTimeString('id-ID', timeOptions);
+            document.getElementById('date').textContent = now.toLocaleDateString('id-ID', dateOptions);
         }
         
         // Update clock setiap detik
@@ -579,9 +628,9 @@
                         <div style="font-size: 0.8rem; color: #7f8c8d;">${getPositionName(account.position)}</div>
                     </div>
                     <div class="account-actions">
-                        <button class="show-password-btn" data-id="${account.id}" style="background-color: var(--secondary); color: white;">Password</button>
-                        <button class="edit-btn" data-id="${account.id}" style="background-color: var(--primary); color: white;">Edit</button>
-                        <button class="delete-btn" data-id="${account.id}" style="background-color: var(--danger); color: white;">Hapus</button>
+                        <button class="show-password-btn" data-id="${account.id}">Password</button>
+                        <button class="edit-btn" data-id="${account.id}">Edit</button>
+                        <button class="delete-btn" data-id="${account.id}">Hapus</button>
                     </div>
                 `;
                 
@@ -660,13 +709,13 @@
             
             // Validasi input
             if (!username || !password || !name) {
-                alert('Semua field harus diisi!');
+                showError('Semua field harus diisi!');
                 return;
             }
             
             // Cek apakah username sudah ada (kecuali dalam mode edit)
             if (!isEditingAccount && staffDatabase.some(a => a.username === username)) {
-                alert('Username sudah digunakan!');
+                showError('Username sudah digunakan!');
                 return;
             }
             
@@ -681,6 +730,7 @@
                         name,
                         position
                     };
+                    alert('Akun berhasil diperbarui!');
                 }
             } else {
                 // Mode buat baru
@@ -693,14 +743,13 @@
                     position,
                     permissions: 0
                 });
+                alert('Akun baru berhasil dibuat! Staff sekarang bisa login.');
             }
             
             // Refresh daftar akun
             loadAccountsList();
             hideAccountForm();
             saveToLocalStorage();
-            
-            alert('Akun berhasil disimpan! Staff sekarang bisa login dengan username dan password tersebut.');
         }
         
         // Fungsi untuk edit akun
@@ -714,6 +763,7 @@
                 staffDatabase = staffDatabase.filter(a => a.id !== accountId);
                 loadAccountsList();
                 saveToLocalStorage();
+                alert('Akun berhasil dihapus!');
             }
         }
         
@@ -838,7 +888,7 @@
                 updateStaffOutDashboard();
                 saveToLocalStorage();
             }
-        }, 60000); // Cek setiap menit
+        }, 60000);
         
         // Inisialisasi saat halaman dimuat
         function initialize() {
