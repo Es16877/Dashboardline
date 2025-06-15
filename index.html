@@ -359,6 +359,13 @@
             color: white;
         }
         
+        .empty-message {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 20px;
+        }
+        
         @media (max-width: 768px) {
             .permission-section {
                 flex-direction: column;
@@ -445,7 +452,7 @@
             <div class="account-list">
                 <h3>Daftar Akun</h3>
                 <div id="accounts-list">
-                    <!-- Daftar akun akan dimuat di sini -->
+                    <div class="empty-message">Tidak ada akun staff</div>
                 </div>
             </div>
         </div>
@@ -488,7 +495,6 @@
         <div class="dashboard">
             <h2>Dashboard Staff Yang Sedang Keluar</h2>
             <div id="staff-out-list" class="staff-list">
-                <!-- Staff yang sedang keluar akan muncul di sini -->
                 <div class="empty-message">Tidak ada staff yang sedang keluar</div>
             </div>
         </div>
@@ -496,7 +502,6 @@
         <div class="yesterday-data">
             <h3>Data Izin Keluar Kemarin (<span id="yesterday-date">DD/MM/YYYY</span>)</h3>
             <div id="yesterday-staff-list" class="staff-list">
-                <!-- Data staff yang keluar kemarin akan muncul di sini -->
                 <div class="empty-message">Tidak ada data izin keluar kemarin</div>
             </div>
         </div>
@@ -505,25 +510,12 @@
     <script>
         // Data staff (simulasi database)
         let staffDatabase = JSON.parse(localStorage.getItem('staffDatabase')) || [
-            { id: 1, username: 'admin', password: 'a1', name: 'Admin Master', position: 'admin', permissions: 0 },
-            { id: 2, username: 'kasir1', password: 'k1', name: 'Budi Santoso', position: 'kasir', permissions: 0 },
-            { id: 3, username: 'kasir2', password: 'k2', name: 'Ani Wijaya', position: 'kasir', permissions: 0 },
-            { id: 4, username: 'cs1', password: 'c1', name: 'Citra Dewi', position: 'cs', permissions: 0 },
-            { id: 5, username: 'cs2', password: 'c2', name: 'Dodi Pratama', position: 'cs', permissions: 0 },
-            { id: 6, username: 'khemer1', password: 'h1', name: 'Eka Putra', position: 'khemer', permissions: 0 },
-            { id: 7, username: 'kapten1', password: 'p1', name: 'Fajar Setiawan', position: 'kapten', permissions: 0 }
+            { id: 1, username: 'admin', password: 'a1', name: 'Admin Master', position: 'admin', permissions: 0 }
         ];
 
         // Data staff yang sedang keluar
         let staffOut = JSON.parse(localStorage.getItem('staffOut')) || [];
         
-        // Data izin kemarin (simulasi)
-        const yesterdayData = [
-            { name: 'Budi Santoso', position: 'kasir', outTime: '14:30', inTime: '14:45' },
-            { name: 'Ani Wijaya', position: 'kasir', outTime: '15:15', inTime: '15:30' },
-            { name: 'Citra Dewi', position: 'cs', outTime: '16:00', inTime: '16:15' }
-        ];
-
         // User yang sedang login
         let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
         
@@ -596,32 +588,6 @@
             saveToLocalStorage();
         }
         
-        // Fungsi untuk update data kemarin
-        function updateYesterdayData() {
-            const yesterdayListElement = document.getElementById('yesterday-staff-list');
-            
-            if (yesterdayData.length === 0) {
-                yesterdayListElement.innerHTML = '<div class="empty-message">Tidak ada data izin keluar kemarin</div>';
-                return;
-            }
-            
-            yesterdayListElement.innerHTML = '';
-            
-            yesterdayData.forEach(staff => {
-                const staffCard = document.createElement('div');
-                staffCard.className = 'staff-card';
-                staffCard.innerHTML = `
-                    <div class="staff-info">
-                        <div class="staff-name">${staff.name}</div>
-                        <div class="staff-position">${getPositionName(staff.position)}</div>
-                        <div class="staff-time">${staff.outTime} - ${staff.inTime}</div>
-                    </div>
-                `;
-                
-                yesterdayListElement.appendChild(staffCard);
-            });
-        }
-        
         // Fungsi untuk mendapatkan nama posisi
         function getPositionName(position) {
             const positions = {
@@ -683,6 +649,12 @@
             if (!currentUser || currentUser.position !== 'admin') return;
             
             const accountsListElement = document.getElementById('accounts-list');
+            
+            if (staffDatabase.length <= 1) { // Hanya admin yang ada
+                accountsListElement.innerHTML = '<div class="empty-message">Tidak ada akun staff</div>';
+                return;
+            }
+            
             accountsListElement.innerHTML = '';
             
             staffDatabase.forEach(account => {
@@ -694,7 +666,6 @@
                     <div class="account-info">
                         <div class="staff-name">${account.name}</div>
                         <div class="staff-position">${getPositionName(account.position)}</div>
-                        <div class="staff-position">Username: ${account.username}</div>
                     </div>
                     <div class="account-actions">
                         <button class="show-password-btn" data-id="${account.id}">Lihat Password</button>
@@ -854,7 +825,6 @@
                 
                 // Update dashboard
                 updateStaffOutDashboard();
-                updateYesterdayData();
                 updatePermissionCount();
                 
                 // Set nama user di header
@@ -954,7 +924,6 @@
         
         // Inisialisasi saat halaman dimuat
         function initialize() {
-            updateYesterdayData();
             updateClock();
             
             // Jika ada user yang login, tampilkan halaman utama
