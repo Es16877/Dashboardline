@@ -318,6 +318,20 @@
             font-size: 0.9rem;
             opacity: 0.8;
         }
+        
+        .change-password-form {
+            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .profile-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -381,6 +395,32 @@
             <h2>Staff Yang Sedang Keluar</h2>
             <div id="staff-out-container" class="staff-list">
                 <!-- Staff yang sedang keluar akan ditampilkan di sini -->
+            </div>
+            
+            <div class="profile-info">
+                <h3>Profil Saya</h3>
+                <p id="profile-name">Nama: -</p>
+                <p id="profile-position">Posisi: -</p>
+                <button onclick="showChangePasswordForm()">Ganti Password</button>
+            </div>
+            
+            <div id="change-password-form" class="change-password-form hidden">
+                <h3>Ganti Password</h3>
+                <div class="form-group">
+                    <label for="current-password">Password Saat Ini</label>
+                    <input type="password" id="current-password" placeholder="Masukkan password saat ini">
+                </div>
+                <div class="form-group">
+                    <label for="new-password">Password Baru</label>
+                    <input type="password" id="new-password" placeholder="Masukkan password baru">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Konfirmasi Password Baru</label>
+                    <input type="password" id="confirm-password" placeholder="Konfirmasi password baru">
+                </div>
+                <button class="login-btn" onclick="changePassword()">Simpan Perubahan</button>
+                <button onclick="hideChangePasswordForm()">Batal</button>
+                <div id="password-change-error" class="error-message"></div>
             </div>
         </div>
         
@@ -480,13 +520,6 @@
             localStorage.setItem('staffData', JSON.stringify(staffData));
             localStorage.setItem('exitRecords', JSON.stringify(exitRecords));
             localStorage.setItem('currentlyOut', JSON.stringify(currentlyOut));
-            if(currentUser) {
-                // Jangan simpan password admin di localStorage
-                const userToSave = currentUser.position === 'admin' 
-                    ? { ...currentUser, password: '' } 
-                    : currentUser;
-                localStorage.setItem('currentUser', JSON.stringify(userToSave));
-            }
         };
         
         // Fungsi untuk memuat data dari localStorage
@@ -494,37 +527,10 @@
             const savedStaff = localStorage.getItem('staffData');
             const savedRecords = localStorage.getItem('exitRecords');
             const savedOut = localStorage.getItem('currentlyOut');
-            const savedUser = localStorage.getItem('currentUser');
             
             if(savedStaff) staffData = JSON.parse(savedStaff);
             if(savedRecords) exitRecords = JSON.parse(savedRecords);
             if(savedOut) currentlyOut = JSON.parse(savedOut);
-            if(savedUser) {
-                const user = JSON.parse(savedUser);
-                // Jika admin, perlu login ulang
-                if(user.position !== 'admin') {
-                    currentUser = user;
-                }
-            }
-        };
-        
-        // Fungsi untuk auto-login staff (bukan admin)
-        const checkAutoLogin = () => {
-            loadData();
-            if(currentUser) {
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('main-page').classList.remove('hidden');
-                
-                if(currentUser.position === 'admin') {
-                    document.getElementById('admin-panel').classList.remove('hidden');
-                    renderStaffList();
-                    renderExitRecords();
-                }
-                
-                updateCurrentlyOutList();
-                checkExitButtonStatus();
-                updateCounters();
-            }
         };
         
         // Fungsi untuk update counter staff yang sedang keluar
@@ -571,9 +577,12 @@
             
             if (user) {
                 currentUser = user;
-                saveData();
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('main-page').classList.remove('hidden');
+                
+                // Update profil pengguna
+                document.getElementById('profile-name').textContent = `Nama: ${user.name}`;
+                document.getElementById('profile-position').textContent = `Posisi: ${getPositionName(user.position)}`;
                 
                 // Jika admin, tampilkan panel admin
                 if (user.position === 'admin') {
@@ -587,6 +596,7 @@
                 updateCurrentlyOutList();
                 checkExitButtonStatus();
                 updateCounters();
+                saveData();
             } else {
                 errorElement.textContent = 'Username atau password salah!';
             }
@@ -595,7 +605,6 @@
         // Fungsi logout
         function logout() {
             currentUser = null;
-            localStorage.removeItem('currentUser');
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
             document.getElementById('username').value = '';
@@ -918,10 +927,70 @@
             alert(`Staff ${staff.name} telah ${staff.isActive ? 'diaktifkan' : 'dinonaktifkan'}!`);
         }
         
+        // Fungsi untuk menampilkan form ganti password
+        function showChangePasswordForm() {
+            document.getElementById('change-password-form').classList.remove('hidden');
+        }
+        
+        // Fungsi untuk menyembunyikan form ganti password
+        function hideChangePasswordForm() {
+            document.getElementById('change-password-form').classList.add('hidden');
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('password-change-error').textContent = '';
+        }
+        
+        // Fungsi untuk mengganti password
+        function changePassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorElement = document.getElementById('password-change-error');
+            
+            errorElement.textContent = '';
+            
+            if (!currentUser) {
+                errorElement.textContent = 'Anda belum login!';
+                return;
+            }
+            
+            if (currentUser.password !== currentPassword) {
+                errorElement.textContent = 'Password saat ini salah!';
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                errorElement.textContent = 'Password baru tidak cocok!';
+                return;
+            }
+            
+            if (newPassword.length < 3) {
+                errorElement.textContent = 'Password minimal 3 karakter!';
+                return;
+            }
+            
+            // Update password
+            const userIndex = staffData.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                staffData[userIndex].password = newPassword;
+                currentUser.password = newPassword;
+                saveData();
+                hideChangePasswordForm();
+                alert('Password berhasil diubah!');
+            } else {
+                errorElement.textContent = 'Gagal mengubah password!';
+            }
+        }
+        
         // Inisialisasi
         document.addEventListener('DOMContentLoaded', function() {
+            loadData();
             updateClock();
-            checkAutoLogin();
+            
+            // Kosongkan form login saat pertama kali dibuka
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
         });
     </script>
 </body>
