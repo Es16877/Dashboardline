@@ -326,11 +326,11 @@
             <h2>Login Sistem Izin Keluar</h2>
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" placeholder="Masukkan username" value="admin">
+                <input type="text" id="username" placeholder="Masukkan username">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Masukkan password" value="a1">
+                <input type="password" id="password" placeholder="Masukkan password">
             </div>
             <button class="login-btn" onclick="login()">Login</button>
             <div id="login-error" class="error-message"></div>
@@ -480,7 +480,13 @@
             localStorage.setItem('staffData', JSON.stringify(staffData));
             localStorage.setItem('exitRecords', JSON.stringify(exitRecords));
             localStorage.setItem('currentlyOut', JSON.stringify(currentlyOut));
-            if(currentUser) localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            if(currentUser) {
+                // Jangan simpan password admin di localStorage
+                const userToSave = currentUser.position === 'admin' 
+                    ? { ...currentUser, password: '' } 
+                    : currentUser;
+                localStorage.setItem('currentUser', JSON.stringify(userToSave));
+            }
         };
         
         // Fungsi untuk memuat data dari localStorage
@@ -493,15 +499,28 @@
             if(savedStaff) staffData = JSON.parse(savedStaff);
             if(savedRecords) exitRecords = JSON.parse(savedRecords);
             if(savedOut) currentlyOut = JSON.parse(savedOut);
-            if(savedUser) currentUser = JSON.parse(savedUser);
+            if(savedUser) {
+                const user = JSON.parse(savedUser);
+                // Jika admin, perlu login ulang
+                if(user.position !== 'admin') {
+                    currentUser = user;
+                }
+            }
         };
         
-        // Fungsi untuk auto-login staff (kecuali admin)
+        // Fungsi untuk auto-login staff (bukan admin)
         const checkAutoLogin = () => {
             loadData();
-            if(currentUser && currentUser.position !== 'admin') {
+            if(currentUser) {
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('main-page').classList.remove('hidden');
+                
+                if(currentUser.position === 'admin') {
+                    document.getElementById('admin-panel').classList.remove('hidden');
+                    renderStaffList();
+                    renderExitRecords();
+                }
+                
                 updateCurrentlyOutList();
                 checkExitButtonStatus();
                 updateCounters();
@@ -579,8 +598,8 @@
             localStorage.removeItem('currentUser');
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
-            document.getElementById('username').value = 'admin';
-            document.getElementById('password').value = 'a1';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
             document.getElementById('login-error').textContent = '';
         }
         
@@ -758,7 +777,7 @@
                     <td>${staff.name}</td>
                     <td>${getPositionName(staff.position)}</td>
                     <td>${staff.username}</td>
-                    <td>${currentUser.position === 'admin' ? staff.password : '*****'}</td>
+                    <td>${currentUser && currentUser.position === 'admin' ? staff.password : '*****'}</td>
                     <td><span class="status-indicator ${staff.isActive ? 'status-active' : 'status-inactive'}"></span> ${staff.isActive ? 'Aktif' : 'Nonaktif'}</td>
                     <td>
                         <button onclick="editStaff(${staff.id})">Edit</button>
@@ -903,10 +922,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             updateClock();
             checkAutoLogin();
-            
-            // Set nilai default untuk login testing
-            document.getElementById('username').value = 'admin';
-            document.getElementById('password').value = 'a1';
         });
     </script>
 </body>
