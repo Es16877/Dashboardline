@@ -520,6 +520,9 @@
             localStorage.setItem('staffData', JSON.stringify(staffData));
             localStorage.setItem('exitRecords', JSON.stringify(exitRecords));
             localStorage.setItem('currentlyOut', JSON.stringify(currentlyOut));
+            if (currentUser) {
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
         };
         
         // Fungsi untuk memuat data dari localStorage
@@ -527,10 +530,12 @@
             const savedStaff = localStorage.getItem('staffData');
             const savedRecords = localStorage.getItem('exitRecords');
             const savedOut = localStorage.getItem('currentlyOut');
+            const savedUser = localStorage.getItem('currentUser');
             
             if(savedStaff) staffData = JSON.parse(savedStaff);
             if(savedRecords) exitRecords = JSON.parse(savedRecords);
             if(savedOut) currentlyOut = JSON.parse(savedOut);
+            if(savedUser) currentUser = JSON.parse(savedUser);
         };
         
         // Fungsi untuk update counter staff yang sedang keluar
@@ -577,6 +582,7 @@
             
             if (user) {
                 currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
                 document.getElementById('login-page').classList.add('hidden');
                 document.getElementById('main-page').classList.remove('hidden');
                 
@@ -604,6 +610,7 @@
         
         // Fungsi logout
         function logout() {
+            localStorage.removeItem('currentUser');
             currentUser = null;
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
@@ -641,12 +648,6 @@
             });
         }
         
-        // Fungsi untuk memformat waktu
-        function formatTime(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' });
-        }
-        
         // Fungsi untuk mendapatkan nama posisi
         function getPositionName(position) {
             const positions = {
@@ -657,6 +658,12 @@
                 'admin': 'Admin'
             };
             return positions[position] || position;
+        }
+        
+        // Fungsi untuk memformat waktu
+        function formatTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' });
         }
         
         // Fungsi untuk meminta izin keluar
@@ -988,9 +995,30 @@
             loadData();
             updateClock();
             
-            // Kosongkan form login saat pertama kali dibuka
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+            // Cek apakah ada user yang sudah login
+            if (currentUser) {
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('main-page').classList.remove('hidden');
+                
+                // Update profil pengguna
+                document.getElementById('profile-name').textContent = `Nama: ${currentUser.name}`;
+                document.getElementById('profile-position').textContent = `Posisi: ${getPositionName(currentUser.position)}`;
+                
+                // Jika admin, tampilkan panel admin
+                if (currentUser.position === 'admin') {
+                    document.getElementById('admin-panel').classList.remove('hidden');
+                    renderStaffList();
+                    renderExitRecords();
+                }
+                
+                updateCurrentlyOutList();
+                checkExitButtonStatus();
+                updateCounters();
+            } else {
+                // Kosongkan form login
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
         });
     </script>
 </body>
