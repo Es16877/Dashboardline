@@ -208,7 +208,7 @@
             background-color: white;
             border-radius: 8px;
             padding: 15px;
-            box-shadow:  ️0 2px 10px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             display: flex;
             align-items: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -390,13 +390,8 @@
             margin-bottom: 20px;
             border-left: 5px solid var(--warning);
             display: flex;
+            justify-content: space-between;
             align-items: center;
-        }
-        
-        .quota-info::before {
-            content: "ℹ️";
-            margin-right: 10px;
-            font-size: 1.2em;
         }
         
         .quota-info p {
@@ -404,9 +399,15 @@
             color: var(--dark);
         }
         
-        .quota-info span {
+        .quota-count {
             font-weight: bold;
             color: var(--warning);
+        }
+        
+        .quota-warning {
+            color: var(--danger);
+            font-weight: bold;
+            display: none;
         }
         
         .empty-state {
@@ -426,7 +427,6 @@
             font-size: 16px;
         }
         
-        /* History Section Styles */
         .history-section {
             margin-top: 30px;
             background-color: var(--light);
@@ -434,40 +434,10 @@
             padding: 20px;
         }
         
-        .history-tabs {
-            display: flex;
-            border-bottom: 1px solid #bdc3c7;
-            margin-bottom: 15px;
-        }
-        
-        .history-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-        }
-        
-        .history-tab.active {
-            border-bottom-color: var(--primary);
-            font-weight: bold;
-            color: var(--primary);
-        }
-        
-        .history-tab:hover:not(.active) {
-            border-bottom-color: #bdc3c7;
-        }
-        
-        .history-content {
-            display: none;
-        }
-        
-        .history-content.active {
-            display: block;
-        }
-        
         .history-table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 15px;
         }
         
         .history-table th, .history-table td {
@@ -506,24 +476,6 @@
             color: #c0392b;
         }
         
-        /* Online Status Indicator */
-        .online-indicator {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #2ecc71;
-            margin-right: 5px;
-            animation: pulse-online 2s infinite;
-        }
-        
-        @keyframes pulse-online {
-            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
-            70% { box-shadow: 0 0 0 5px rgba(46, 204, 113, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
-        }
-        
-        /* Responsive Styles */
         @media (max-width: 768px) {
             .clock {
                 font-size: 48px;
@@ -595,7 +547,7 @@
             
             <header>
                 <h1>Sistem Izin Keluar</h1>
-                <p>Durasi izin keluar maksimal 15 menit</p>
+                <p>Durasi izin keluar maksimal 15 menit (Maks 4x/hari per staff)</p>
             </header>
             
             <div class="date-display">
@@ -605,8 +557,9 @@
                 </div>
             </div>
             
-            <div class="quota-info" id="quotaInfo">
-                <p>Kuota izin keluar hari ini: <span id="quotaCount">0</span>/4 kali</p>
+            <div class="quota-info">
+                <p>Kuota izin keluar hari ini: <span id="quotaCount" class="quota-count">0</span>/4 kali</p>
+                <p id="quotaWarning" class="quota-warning">Kuota hari ini sudah habis</p>
             </div>
             
             <div class="clock-container">
@@ -620,7 +573,7 @@
             </div>
             
             <div class="dashboard">
-                <h2>Dashboard Staff Yang Sedang Keluar <span class="online-indicator"></span> Online</h2>
+                <h2>Dashboard Staff Yang Sedang Keluar</h2>
                 <div class="staff-list" id="staffList">
                     <div class="empty-state">
                         <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="No staff outside">
@@ -629,54 +582,28 @@
                 </div>
             </div>
             
-            <!-- History Section -->
             <div class="history-section">
-                <div class="history-tabs">
-                    <div class="history-tab active" data-tab="today">Riwayat Hari Ini</div>
-                    <div class="history-tab" data-tab="yesterday">Riwayat Kemarin</div>
-                </div>
-                
-                <div class="history-content active" id="todayHistory">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>Nama</th>
-                                <th>Posisi</th>
-                                <th>Waktu Keluar</th>
-                                <th>Waktu Kembali</th>
-                                <th>Durasi</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="todayHistoryBody">
-                            <!-- Data akan diisi oleh JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="history-content" id="yesterdayHistory">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>Nama</th>
-                                <th>Posisi</th>
-                                <th>Waktu Keluar</th>
-                                <th>Waktu Kembali</th>
-                                <th>Durasi</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="yesterdayHistoryBody">
-                            <!-- Data akan diisi oleh JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
+                <h2>Riwayat Izin Keluar Hari Ini</h2>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Waktu Keluar</th>
+                            <th>Waktu Kembali</th>
+                            <th>Durasi</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script>
-        // User data
+        // Data Staff
         const staffData = [
             {
                 name: "EGI SETIAWAN",
@@ -686,43 +613,34 @@
                 avatar: "ES"
             },
             {
-                name: "HARIANTO ",
-                id: "C4663474",
-                position: "CS",
-                email: "hariantohari6036@gmail.com",
-                avatar: "BLACK"
-            },
-            {
                 name: "SAMSUL MAARIF",
                 id: "C7008737",
                 position: "CS",
                 email: "samsulma874@gmail.com",
                 avatar: "SM"
+            },
+            {
+                name: "BUDI SANTOSO",
+                id: "C1234567",
+                position: "KASIR",
+                email: "budisantoso@gmail.com",
+                avatar: "BS"
             }
         ];
         
-        // Current user
+        // Variabel Global
         let currentUser = null;
-        let exitCount = 0;
         let isOutside = false;
         let exitTime = null;
-        let timerInterval = null;
-        
-        // Staff outside data (simulating online database)
         let staffOutside = {
             CS: [],
             KASIR: [],
             KHEMER: [],
             KAPTEN: []
         };
+        let historyData = [];
         
-        // History data (simulating online database)
-        let historyData = {
-            today: [],
-            yesterday: []
-        };
-        
-        // DOM elements
+        // DOM Elements
         const loginSection = document.getElementById('loginSection');
         const mainContent = document.getElementById('mainContent');
         const loginForm = document.getElementById('loginForm');
@@ -741,12 +659,10 @@
         const staffList = document.getElementById('staffList');
         const quotaInfo = document.getElementById('quotaInfo');
         const quotaCount = document.getElementById('quotaCount');
-        const todayHistoryBody = document.getElementById('todayHistoryBody');
-        const yesterdayHistoryBody = document.getElementById('yesterdayHistoryBody');
-        const historyTabs = document.querySelectorAll('.history-tab');
-        const historyContents = document.querySelectorAll('.history-content');
-        
-        // Initialize the app
+        const quotaWarning = document.getElementById('quotaWarning');
+        const historyBody = document.getElementById('historyBody');
+
+        // Initialize App
         function init() {
             updateClock();
             setInterval(updateClock, 1000);
@@ -755,40 +671,24 @@
             const today = new Date();
             todayDate.textContent = formatDate(today);
             
-            // Load initial data
+            // Load data from localStorage
             loadInitialData();
             
-            // Event listeners
+            // Event Listeners
             loginForm.addEventListener('submit', handleLogin);
             logoutBtn.addEventListener('click', handleLogout);
             exitBtn.addEventListener('click', handleExit);
             returnBtn.addEventListener('click', handleReturn);
             
-            // History tab switching
-            historyTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    historyTabs.forEach(t => t.classList.remove('active'));
-                    historyContents.forEach(c => c.classList.remove('active'));
-                    
-                    tab.classList.add('active');
-                    const tabId = tab.getAttribute('data-tab');
-                    document.getElementById(`${tabId}History`).classList.add('active');
-                });
-            });
-            
             // Check if already logged in
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
-                exitCount = parseInt(localStorage.getItem('exitCount')) || 0;
                 setupUserInterface();
             }
-            
-            // Simulate online updates every 5 seconds
-            setInterval(simulateOnlineUpdates, 5000);
         }
         
-        // Load initial data from localStorage or initialize
+        // Load Initial Data
         function loadInitialData() {
             // Load staff outside data
             const savedStaffOutside = localStorage.getItem('staffOutside');
@@ -818,13 +718,12 @@
                 
                 if (lastHistoryDate !== today) {
                     // New day, move yesterday's data to history
-                    if (historyData.today.length > 0) {
+                    if (historyData.today && historyData.today.length > 0) {
                         // Save yesterday's data
                         const yesterday = new Date();
                         yesterday.setDate(yesterday.getDate() - 1);
                         const yesterdayKey = yesterday.toDateString();
                         
-                        // Keep only last 7 days of history
                         if (!historyData[yesterdayKey]) {
                             historyData[yesterdayKey] = [];
                         }
@@ -840,53 +739,16 @@
                     
                     localStorage.setItem('lastHistoryDate', today);
                 }
-            } else {
-                // Initialize with some sample history data for yesterday
-                const yesterday = new Date();
-                yesterday.setDate(yesterday.getDate() - 1);
-                const yesterdayKey = yesterday.toDateString();
-                
-                historyData[yesterday] = [
-                    {
-                        name: "EGI SETIAWAN",
-                        id: "C8410298",
-                        position: "CS",
-                        exitTime: new Date(yesterday.setHours(10, 30, 0)),
-                        returnTime: new Date(yesterday.setHours(10, 42, 0)),
-                        duration: 12,
-                        status: "on-time"
-                    },
-                    {
-                        name: "HARIANTO",
-                        id: "C4663474",
-                        position: "CS",
-                        exitTime: new Date(yesterday.setHours(10, 30, 0)),
-                        returnTime: new Date(yesterday.setHours(10, 42, 0)),
-                        duration: 12,
-                        status: "on-time"
-                    },                   
-                    {
-                        name: "SAMSUL MAARIF",
-                        id: "C7008737",
-                        position: "CS",
-                        exitTime: new Date(yesterday.setHours(14, 15, 0)),
-                        returnTime: new Date(yesterday.setHours(14, 35, 0)),
-                        duration: 20,
-                        status: "late"
-                    }
-                ];
-                
-                saveHistoryData();
             }
         }
         
-        // Format date
+        // Format Date
         function formatDate(date) {
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             return date.toLocaleDateString('id-ID', options);
         }
         
-        // Format time
+        // Format Time
         function formatTime(date) {
             return date.toLocaleTimeString('id-ID', {
                 hour: '2-digit',
@@ -895,7 +757,7 @@
             });
         }
         
-        // Update clock with colon separator
+        // Update Clock
         function updateClock() {
             const now = new Date();
             
@@ -932,7 +794,7 @@
             }
         }
         
-        // Handle login
+        // Handle Login
         function handleLogin(e) {
             e.preventDefault();
             const email = emailInput.value.trim().toLowerCase();
@@ -943,19 +805,6 @@
             if (user) {
                 currentUser = user;
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                // Reset exit count if it's a new day
-                const lastExitDate = localStorage.getItem('lastExitDate');
-                const today = new Date().toDateString();
-                
-                if (lastExitDate !== today) {
-                    exitCount = 0;
-                    localStorage.setItem('exitCount', '0');
-                    localStorage.setItem('lastExitDate', today);
-                } else {
-                    exitCount = parseInt(localStorage.getItem('exitCount')) || 0;
-                }
-                
                 setupUserInterface();
                 loginError.style.display = 'none';
             } else {
@@ -964,22 +813,19 @@
             }
         }
         
-        // Setup user interface after login
+        // Setup User Interface
         function setupUserInterface() {
             loginSection.style.display = 'none';
             mainContent.style.display = 'block';
             
+            // Set user info
             userName.textContent = currentUser.name;
             userPosition.textContent = `Posisi: ${currentUser.position}`;
             userEmail.textContent = `Email: ${currentUser.email}`;
             userAvatar.textContent = currentUser.avatar;
             
             // Update quota info
-            quotaCount.textContent = exitCount;
-            if (exitCount >= 4) {
-                quotaInfo.innerHTML = '<p>Anda sudah menggunakan semua kuota izin keluar hari ini (4/4)</p>';
-                exitBtn.disabled = true;
-            }
+            updateQuotaInfo();
             
             // Check if user is already outside
             const position = currentUser.position;
@@ -993,31 +839,44 @@
             }
             
             // Load staff outside data
-            loadStaffOutside();
             updateStaffList();
-            
-            // Load history data
-            updateHistoryTables();
+            updateHistoryTable();
         }
         
-        // Handle logout
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            loginSection.style.display = 'block';
-            mainContent.style.display = 'none';
-            emailInput.value = '';
-            loginError.style.display = 'none';
+        // Update Quota Info
+        function updateQuotaInfo() {
+            const todayExits = getTodayExitCount();
+            quotaCount.textContent = todayExits;
             
-            // Clear any running timer
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
+            if (todayExits >= 4) {
+                quotaWarning.style.display = 'block';
+                exitBtn.disabled = true;
+            } else {
+                quotaWarning.style.display = 'none';
+                exitBtn.disabled = false;
             }
         }
         
-        // Handle exit permission
+        // Get Today's Exit Count for Current User
+        function getTodayExitCount() {
+            if (!currentUser) return 0;
+            
+            const today = new Date().toDateString();
+            return historyData.today.filter(entry => 
+                entry.id === currentUser.id &&
+                new Date(entry.exitTime).toDateString() === today
+            ).length;
+        }
+        
+        // Handle Exit Permission
         function handleExit() {
+            // Check daily quota
+            const todayExits = getTodayExitCount();
+            if (todayExits >= 4) {
+                alert('Anda sudah mencapai batas maksimal izin keluar hari ini (4 kali)');
+                return;
+            }
+            
             // Check position limits
             const position = currentUser.position;
             let canExit = true;
@@ -1042,29 +901,9 @@
                 return;
             }
             
-            // Check daily quota
-            if (exitCount >= 4) {
-                alert('Anda sudah mencapai batas maksimal izin keluar hari ini (4 kali)');
-                return;
-            }
-            
             // Proceed with exit
             isOutside = true;
             exitTime = new Date();
-            exitCount++;
-            
-            // Save to localStorage
-            localStorage.setItem('exitCount', exitCount.toString());
-            localStorage.setItem('lastExitDate', new Date().toDateString());
-            
-            // Update UI
-            exitBtn.disabled = true;
-            returnBtn.disabled = false;
-            quotaCount.textContent = exitCount;
-            
-            if (exitCount >= 4) {
-                quotaInfo.innerHTML = '<p>Anda sudah menggunakan semua kuota izin keluar hari ini (4/4)</p>';
-            }
             
             // Add to staff outside
             staffOutside[position].push({
@@ -1075,66 +914,70 @@
                 exitTime: exitTime
             });
             
-            saveStaffOutside();
-            updateStaffList();
-            
-            // Simulate online update
-            simulateOnlineUpdate();
-        }
-        
-        // Handle return permission
-        function handleReturn() {
-            isOutside = false;
-            const returnTime = new Date();
-            const position = currentUser.position;
-            
-            // Calculate duration in minutes
-            const duration = Math.round((returnTime - exitTime) / (60 * 1000));
-            const isLate = duration > 15;
-            
             // Add to history
-            const historyEntry = {
-                name: currentUser.name,
+            historyData.today.push({
                 id: currentUser.id,
+                name: currentUser.name,
                 position: currentUser.position,
                 exitTime: exitTime,
-                returnTime: returnTime,
-                duration: duration,
-                status: isLate ? 'late' : 'on-time'
-            };
+                returnTime: null,
+                duration: null,
+                status: null
+            });
             
-            historyData.today.push(historyEntry);
+            // Save data
+            saveStaffOutside();
             saveHistoryData();
             
             // Update UI
-            exitBtn.disabled = exitCount >= 4;
-            returnBtn.disabled = true;
-            returnBtn.innerHTML = 'IZIN MASUK';
+            exitBtn.disabled = true;
+            returnBtn.disabled = false;
+            updateQuotaInfo();
+            updateStaffList();
+            updateHistoryTable();
+        }
+        
+        // Handle Return Permission
+        function handleReturn() {
+            const returnTime = new Date();
+            const duration = Math.round((returnTime - exitTime) / (60 * 1000));
+            const isLate = duration > 15;
+            const position = currentUser.position;
+            
+            // Update history
+            const exitRecord = historyData.today.find(record => 
+                record.id === currentUser.id && 
+                record.returnTime === null
+            );
+            
+            if (exitRecord) {
+                exitRecord.returnTime = returnTime;
+                exitRecord.duration = duration;
+                exitRecord.status = isLate ? 'late' : 'on-time';
+            }
             
             // Remove from staff outside
             staffOutside[position] = staffOutside[position].filter(
                 staff => staff.id !== currentUser.id
             );
             
+            // Save data
             saveStaffOutside();
-            updateStaffList();
-            updateHistoryTables();
+            saveHistoryData();
             
-            // Simulate online update
-            simulateOnlineUpdate();
+            // Update UI
+            isOutside = false;
+            exitTime = null;
+            exitBtn.disabled = getTodayExitCount() >= 4;
+            returnBtn.disabled = true;
+            returnBtn.innerHTML = 'IZIN MASUK';
+            
+            updateStaffList();
+            updateHistoryTable();
+            updateQuotaInfo();
         }
         
-        // Save staff outside data
-        function saveStaffOutside() {
-            localStorage.setItem('staffOutside', JSON.stringify(staffOutside));
-        }
-        
-        // Save history data
-        function saveHistoryData() {
-            localStorage.setItem('historyData', JSON.stringify(historyData));
-        }
-        
-        // Update staff list display with more attractive design
+        // Update Staff List
         function updateStaffList() {
             staffList.innerHTML = '';
             
@@ -1181,141 +1024,62 @@
             }
         }
         
-        // Update history tables
-        function updateHistoryTables() {
-            // Today's history
-            todayHistoryBody.innerHTML = '';
+        // Update History Table
+        function updateHistoryTable() {
+            historyBody.innerHTML = '';
             
-            if (historyData.today.length === 0) {
-                todayHistoryBody.innerHTML = `
+            if (!currentUser) return;
+            
+            const today = new Date().toDateString();
+            const userHistory = historyData.today.filter(entry => 
+                entry.id === currentUser.id &&
+                new Date(entry.exitTime).toDateString() === today
+            ).sort((a, b) => new Date(b.exitTime) - new Date(a.exitTime));
+            
+            if (userHistory.length === 0) {
+                historyBody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center;">Tidak ada riwayat izin keluar hari ini</td>
+                        <td colspan="5" style="text-align: center;">Belum ada riwayat izin keluar hari ini</td>
                     </tr>
                 `;
             } else {
-                historyData.today.forEach(entry => {
+                userHistory.forEach((entry, index) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${entry.name}</td>
-                        <td>${entry.position}</td>
+                        <td>${index + 1}</td>
                         <td>${formatTime(new Date(entry.exitTime))}</td>
-                        <td>${formatTime(new Date(entry.returnTime))}</td>
-                        <td>${entry.duration} menit</td>
-                        <td><span class="status ${entry.status}">${entry.status === 'on-time' ? 'Tepat Waktu' : 'Terlambat'}</span></td>
+                        <td>${entry.returnTime ? formatTime(new Date(entry.returnTime)) : 'Masih di luar'}</td>
+                        <td>${entry.duration || '-'} menit</td>
+                        <td>
+                            <span class="status ${entry.status || 'on-time'}">
+                                ${!entry.returnTime ? 'Sedang keluar' : 
+                                  entry.status === 'late' ? 'Terlambat' : 'Tepat waktu'}
+                            </span>
+                        </td>
                     `;
-                    todayHistoryBody.appendChild(row);
-                });
-            }
-            
-            // Yesterday's history
-            yesterdayHistoryBody.innerHTML = '';
-            
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayKey = yesterday.toDateString();
-            const yesterdayData = historyData[yesterdayKey] || [];
-            
-            if (yesterdayData.length === 0) {
-                yesterdayHistoryBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" style="text-align: center;">Tidak ada riwayat izin keluar kemarin</td>
-                    </tr>
-                `;
-            } else {
-                yesterdayData.forEach(entry => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${entry.name}</td>
-                        <td>${entry.position}</td>
-                        <td>${formatTime(new Date(entry.exitTime))}</td>
-                        <td>${formatTime(new Date(entry.returnTime))}</td>
-                        <td>${entry.duration} menit</td>
-                        <td><span class="status ${entry.status}">${entry.status === 'on-time' ? 'Tepat Waktu' : 'Terlambat'}</span></td>
-                    `;
-                    yesterdayHistoryBody.appendChild(row);
+                    historyBody.appendChild(row);
                 });
             }
         }
         
-        // Simulate online updates (in a real app, this would be server-side)
-        function simulateOnlineUpdates() {
-            // Randomly add/remove staff to simulate real-time updates
-            if (Math.random() > 0.7 && staffData.length > 0) {
-                const randomStaff = staffData[Math.floor(Math.random() * staffData.length)];
-                const position = randomStaff.position;
-                
-                // Check if staff is already outside
-                const isOutside = staffOutside[position].some(staff => staff.id === randomStaff.id);
-                
-                if (!isOutside && staffOutside[position].length < (position === 'CS' || position === 'KASIR' ? 3 : 1)) {
-                    // Add to outside list
-                    staffOutside[position].push({
-                        name: randomStaff.name,
-                        id: randomStaff.id,
-                        position: randomStaff.position,
-                        avatar: randomStaff.avatar,
-                        exitTime: new Date()
-                    });
-                    
-                    saveStaffOutside();
-                    
-                    // If this is the current user, update UI
-                    if (currentUser && currentUser.id === randomStaff.id) {
-                        isOutside = true;
-                        exitTime = new Date();
-                        exitBtn.disabled = true;
-                        returnBtn.disabled = false;
-                    }
-                } else if (isOutside && Math.random() > 0.5) {
-                    // Remove from outside list
-                    const exitRecord = staffOutside[position].find(staff => staff.id === randomStaff.id);
-                    const returnTime = new Date();
-                    const exitTime = new Date(exitRecord.exitTime);
-                    const duration = Math.round((returnTime - exitTime) / (60 * 1000));
-                    const isLate = duration > 15;
-                    
-                    // Add to history
-                    const historyEntry = {
-                        name: randomStaff.name,
-                        id: randomStaff.id,
-                        position: randomStaff.position,
-                        exitTime: exitTime,
-                        returnTime: returnTime,
-                        duration: duration,
-                        status: isLate ? 'late' : 'on-time'
-                    };
-                    
-                    historyData.today.push(historyEntry);
-                    saveHistoryData();
-                    
-                    // Remove from outside list
-                    staffOutside[position] = staffOutside[position].filter(
-                        staff => staff.id !== randomStaff.id
-                    );
-                    
-                    saveStaffOutside();
-                    
-                    // If this is the current user, update UI
-                    if (currentUser && currentUser.id === randomStaff.id) {
-                        isOutside = false;
-                        exitBtn.disabled = exitCount >= 4;
-                        returnBtn.disabled = true;
-                        returnBtn.innerHTML = 'IZIN MASUK';
-                    }
-                }
-                
-                // Update UI if user is logged in
-                if (currentUser) {
-                    updateStaffList();
-                    updateHistoryTables();
-                }
-            }
+        // Save Staff Outside Data
+        function saveStaffOutside() {
+            localStorage.setItem('staffOutside', JSON.stringify(staffOutside));
         }
         
-        // Simulate a single online update
-        function simulateOnlineUpdate() {
-            // In a real app, this would send data to server
-            console.log("Data updated on server:", { staffOutside, historyData });
+        // Save History Data
+        function saveHistoryData() {
+            localStorage.setItem('historyData', JSON.stringify(historyData));
+        }
+        
+        // Handle Logout
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            loginSection.style.display = 'block';
+            mainContent.style.display = 'none';
+            emailInput.value = '';
+            loginError.style.display = 'none';
         }
         
         // Initialize the app
