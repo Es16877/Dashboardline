@@ -518,6 +518,28 @@
                 margin-top: 15px;
             }
         }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background-color: var(--secondary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background-color: var(--danger);
+        }
     </style>
 </head>
 <body>
@@ -601,10 +623,12 @@
             </div>
         </div>
     </div>
+    
+    <div class="notification" id="notification">Operasi berhasil!</div>
 
     <script>
         // Data Staff
-        const staffData = [
+        let staffData = [
             {
                 name: "EGI SETIAWAN",
                 id: "C8410298",
@@ -628,6 +652,85 @@
             }
         ];
         
+        // Tambahkan staff baru
+        const newStaff = [
+            {name: "SAMUEL KRISTANTO", position: "LEADER", email: "samuelcrissmb888@gmail.com", id: "C1234568", avatar: "SK"},
+            {name: "WIDJAYA", position: "CS", email: "widjaya88.smb88@gmail.com", id: "C6202945", avatar: "WD"},
+            {name: "DAVID", position: "CS", email: "david.smb9856@gmail.com", id: "C6169860", avatar: "DV"},
+            {name: "FALLEN HARDINANSAH TAJU", position: "CS", email: "fallentaju1@gmail.com", id: "C6931386", avatar: "FH"},
+            {name: "CHARLIE", position: "CS", email: "charlie454506@gmail.com", id: "C7377694", avatar: "CH"},
+            {name: "HARIANTO", position: "CS", email: "hariantohari6036@gmail.com", id: "C4663474", avatar: "HR"},
+            {name: "RINAL ABDILLAH NASUTION", position: "CS", email: "rinalabdilah.smb88@gmail.com", id: "C8409170", avatar: "RN"},
+            {name: "ERI HARIANTO", position: "CS", email: "erihari391@gmail.com", id: "C8493406", avatar: "EH"},
+            {name: "MAHENDRAN", position: "CS", email: "mahendranmahh2388@gmail.com", id: "C6813799", avatar: "MH"},
+            {name: "ANDHIKA DWI PUTRA", position: "CS", email: "andhikadwiputra6666@gmail.com", id: "C8543470", avatar: "AD"},
+            {name: "TOMMY HASIM", position: "CS", email: "tommyhasim2304@gmail.com", id: "C6735321", avatar: "TH"},
+            {name: "RANJIT", position: "CS", email: "ranjit230422@gmail.com", id: "X1068990", avatar: "RJ"},
+            {name: "WILLY PERAYUDA", position: "CS", email: "willyperayuda7789@gmail.com", id: "E0089312", avatar: "WP"},
+            {name: "ANGGA AZMAL HARAHAP", position: "CS", email: "anggaazmal.smb88@gmail.com", id: "C9260456", avatar: "AA"},
+            {name: "LALU MUHAMMAD ADNAN ZAKARIA", position: "CS", email: "lalumuhammadsmb888@gmail.com", id: "C7565548", avatar: "LZ"},
+            {name: "ANDI", position: "CS", email: "andibaru536@gmail.com", id: "E4487475", avatar: "AN"},
+            {name: "ALFINO MUKTI", position: "CS", email: "alfinomuk3256@gmail.com", id: "C8493352", avatar: "AM"},
+            {name: "AKAS FARMA", position: "CS", email: "akasfarm87663@gmail.com", id: "C8490102", avatar: "AF"},
+            {name: "ARI ROMANDUS FERNAND", position: "CS", email: "ariromandus12@gmail.com", id: "C8386112", avatar: "AR"},
+            {name: "PARIS AMRULLOH", position: "CS", email: "parisamrulloh26885@gmail.com", id: "E0237731", avatar: "PA"},
+            {name: "SUHAN RAZ", position: "TCS", email: "suhanrazz@example.com", id: "C5862955", avatar: "SR"},
+            {name: "RAHMADI SORMIN", position: "TCS", email: "rahmadisormi.smb888@gmail.com", id: "E0685561", avatar: "RS"},
+            {name: "NOVAL MUTTAWALI HAKIM", position: "KAPTEN KASIR", email: "novalmuttawali354@gmail.com", id: "E1475015", avatar: "NM"},
+            {name: "WILIAM", position: "KAPTEN KASIR", email: "iamwil220@gmail.com", id: "E0227447", avatar: "WL"},
+            {name: "FIQAL KANA", position: "KAPTEN KASIR", email: "fiqalkana6@gmail.com", id: "E1233842", avatar: "FK"},
+            {name: "MARJOKI SANG", position: "KAPTEN KASIR", email: "marjokisang.smb88@gmail.com", id: "C8555336", avatar: "MS"},
+            {name: "DANIEL", position: "KAPTEN KASIR", email: "danielsmb385@gmail.com", id: "E0859998", avatar: "DN"},
+            {name: "RAAZ JESEN STEPANUS", position: "TRAINING KKS", email: "raazjesen88.smb88@gmail.com", id: "C8409387", avatar: "RJ"},
+            {name: "ANNEN", position: "KASIR", email: "annen.smb88@gmail.com", id: "C8486854", avatar: "AN"},
+            {name: "JONROMAN PURBA", position: "KASIR", email: "jonromanpurba0305@gmail.com", id: "C8491005", avatar: "JP"},
+            {name: "M FAJAR SIDDIK", position: "KASIR", email: "mfajjarsiddik69@gmail.com", id: "C8993287", avatar: "FS"},
+            {name: "PUTRA ANUGRAH RIZKI", position: "KASIR", email: "putraanugrahrizki76@gmail.com", id: "E1473204", avatar: "PR"},
+            {name: "PUTRA RAMADHANI", position: "KASIR", email: "pramdhani086@gmail.com", id: "E1988807", avatar: "PR"},
+            {name: "AMRUL", position: "KASIR", email: "aamrul568@gmail.com", id: "E2365928", avatar: "AM"},
+            {name: "RAM KIRAN", position: "KASIR", email: "ramkiran0606@gmail.com", id: "E2620081", avatar: "RK"},
+            {name: "BOBY KASANDRA BANCIN", position: "KASIR", email: "bobykasandrabancin@gmail.com", id: "C8991790", avatar: "BB"},
+            {name: "KIKI YUNITA", position: "KASIR", email: "kikiyunita523@gmail.com", id: "C8245909", avatar: "KY"},
+            {name: "MAHAT SANJAYA HARAHAP", position: "KASIR", email: "mahatsanjayahrp@gmail.com", id: "E4340773", avatar: "MH"},
+            {name: "LAILI MARITSA", position: "KASIR", email: "maritsalaili0@gmail.com", id: "E4398203", avatar: "LM"},
+            {name: "CHARLOIPO MANULLANG", position: "KASIR", email: "charloipom@gmail.com", id: "E0286030", avatar: "CM"},
+            {name: "FAHMI AZIS HARAHAP", position: "KASIR", email: "azisharahapfahmi@gmail.com", id: "E5192858", avatar: "FA"},
+            {name: "FAHRI FIRMANSYAH", position: "KASIR", email: "firmansyahfahri533@gmail.com", id: "E5192174", avatar: "FF"},
+            {name: "GALI PRATAMA", position: "KASIR", email: "galit8158@gmail.com", id: "E3773557", avatar: "GP"},
+            {name: "PRIMA NUGRAHA", position: "KASIR", email: "primanugraha428@gmail.com", id: "E5112965", avatar: "PN"},
+            {name: "ROY DILEN", position: "KASIR", email: "roydilensmb@gmail.com", id: "C5875009", avatar: "RD"},
+            {name: "RIDZKY RAMADHAN", position: "KASIR", email: "ridzkyramadhan550@gmail.com", id: "E6626714", avatar: "RR"},
+            {name: "AGUNG DEDI IRAWAN", position: "KASIR", email: "dediirawanagung@gmail.com", id: "E7089147", avatar: "AI"},
+            {name: "MAICEL TAMPUBOLON", position: "KASIR", email: "maiceltampu210424@gmail.com", id: "E5843197", avatar: "MT"},
+            {name: "ADE CHAIRUNNISA", position: "KASIR", email: "adechairunis260424@gmail.com", id: "E1475210", avatar: "AC"},
+            {name: "M REZI SYAPUTRA", position: "KASIR", email: "rezisyaputrasmb@gmail.com", id: "E6690607", avatar: "MR"},
+            {name: "KHOIRUDDIN", position: "KASIR", email: "khoiruddin8103@gmail.com", id: "C9148103", avatar: "KH"},
+            {name: "BAMBANG AGUNG SUTRISNO", position: "KASIR", email: "bambangagungsutrisno@gmail.com", id: "E7520815", avatar: "BS"},
+            {name: "PUTRA INSANY", position: "KASIR", email: "putrainsany21@gmail.com", id: "E7282317", avatar: "PI"},
+            {name: "ANDRIANUS", position: "KASIR", email: "andrianussmb888@gmail.com", id: "E6638313", avatar: "AN"},
+            {name: "FERA SALMA", position: "KASIR", email: "ferasalma87@gmail.com", id: "E7632631", avatar: "FS"},
+            {name: "RIVLAN RIZKY", position: "KASIR", email: "rizkyrivlan@gmail.com", id: "E6759553", avatar: "RR"},
+            {name: "MAULANA ALI SAID", position: "KASIR", email: "saidmaulanaali90@gmail.com", id: "E7531570", avatar: "MA"},
+            {name: "AHMAD ANDIKA", position: "KASIR", email: "ahmadandika.smb88@gmail.com", id: "E7631720", avatar: "AA"},
+            {name: "ANGGARA K S", position: "KASIR", email: "ksanggara757@gmail.com", id: "E7647305", avatar: "AK"},
+            {name: "DIMAS ADHITYA", position: "KASIR", email: "dimasadhitya127@gmail.com", id: "E6937626", avatar: "DA"},
+            {name: "GABRIEL RONI ARGANTA HUTABALIAN", position: "KASIR", email: "gabrielroni167@gmail.com", id: "E7694857", avatar: "GR"},
+            {name: "DANDI PRAYOGA MANURUNG", position: "KASIR", email: "dandiprayogam@gmail.com", id: "E8260851", avatar: "DM"},
+            {name: "EGA PRAYUDA", position: "KASIR", email: "egaprayuda877@gmail.com", id: "E2703456", avatar: "EP"},
+            {name: "ARJUN PRAISYA", position: "KASIR", email: "arjunpraisya066@gmail.com", id: "E7879939", avatar: "AP"},
+            {name: "ADITYA PANCA", position: "KASIR", email: "panca9244@gmail.com", id: "X3189356", avatar: "AP"},
+            {name: "AUDIS OYONG DUANSYAH", position: "KASIR", email: "audisoyong@gmail.com", id: "E7281571", avatar: "AO"},
+            {name: "ADE OJI SHAPUTRA", position: "KASIR", email: "adeoji24@gmail.com", id: "E8491965", avatar: "AO"},
+            {name: "ALFIANSYAH", position: "KASIR", email: "alfiansyah556677@gmail.com", id: "E9268104", avatar: "AL"},
+            {name: "ANDY PUTRA", position: "KASIR", email: "andyputra556677@gmail.com", id: "X3618101", avatar: "AP"},
+            {name: "VISEY", position: "STAFF LOKAL", email: "viseysmb888@gmail.com", id: "SL001", avatar: "VS"},
+            {name: "REN CHHENGLY", position: "STAFF LOKAL", email: "renchhengly88@gmail.com", id: "SL002", avatar: "RC"},
+            {name: "RET CHANTHORN", position: "STAFF LOKAL", email: "retchanthorn79@gmail.com", id: "SL003", avatar: "RC"}
+        ];
+
+        // Tambahkan staff baru ke data staff
+        staffData = staffData.concat(newStaff);
+
         // Variabel Global
         let currentUser = null;
         let isOutside = false;
@@ -636,9 +739,25 @@
             CS: [],
             KASIR: [],
             KHEMER: [],
-            KAPTEN: []
+            KAPTEN: [],
+            LEADER: [],
+            TCS: [],
+            "TRAINING KKS": [],
+            "STAFF LOKAL": []
         };
         let historyData = [];
+        
+        // Batasan berdasarkan posisi
+        const positionLimits = {
+            'CS': 3,
+            'KASIR': 3,
+            'KHEMER': 1,
+            'KAPTEN': 1,
+            'LEADER': 1,
+            'TCS': 3,
+            'TRAINING KKS': 1,
+            'STAFF LOKAL': 3
+        };
         
         // DOM Elements
         const loginSection = document.getElementById('loginSection');
@@ -661,6 +780,7 @@
         const quotaCount = document.getElementById('quotaCount');
         const quotaWarning = document.getElementById('quotaWarning');
         const historyBody = document.getElementById('historyBody');
+        const notification = document.getElementById('notification');
 
         // Initialize App
         function init() {
@@ -807,6 +927,7 @@
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 setupUserInterface();
                 loginError.style.display = 'none';
+                showNotification("Login berhasil!");
             } else {
                 loginError.textContent = 'Email tidak terdaftar. Hanya email yang sudah diizinkan yang bisa login.';
                 loginError.style.display = 'block';
@@ -829,7 +950,7 @@
             
             // Check if user is already outside
             const position = currentUser.position;
-            const isUserOutside = staffOutside[position].some(staff => staff.id === currentUser.id);
+            const isUserOutside = staffOutside[position] && staffOutside[position].some(staff => staff.id === currentUser.id);
             
             if (isUserOutside) {
                 isOutside = true;
@@ -873,7 +994,7 @@
             // Check daily quota
             const todayExits = getTodayExitCount();
             if (todayExits >= 4) {
-                alert('Anda sudah mencapai batas maksimal izin keluar hari ini (4 kali)');
+                showNotification("Kuota izin hari ini sudah habis!", true);
                 return;
             }
             
@@ -882,22 +1003,10 @@
             let canExit = true;
             let reason = '';
             
-            if (position === 'CS' && staffOutside.CS.length >= 3) {
+            if (positionLimits[position] && staffOutside[position] && staffOutside[position].length >= positionLimits[position]) {
                 canExit = false;
-                reason = 'Staff CS yang keluar sudah mencapai batas maksimal (3 orang)';
-            } else if (position === 'KASIR' && staffOutside.KASIR.length >= 3) {
-                canExit = false;
-                reason = 'Staff Kasir yang keluar sudah mencapai batas maksimal (3 orang)';
-            } else if (position === 'KHEMER' && staffOutside.KHEMER.length >= 1) {
-                canExit = false;
-                reason = 'Staff KHEMER yang keluar sudah mencapai batas maksimal (1 orang)';
-            } else if (position === 'KAPTEN' && staffOutside.KAPTEN.length >= 1) {
-                canExit = false;
-                reason = 'Staff KAPTEN yang keluar sudah mencapai batas maksimal (1 orang)';
-            }
-            
-            if (!canExit) {
-                alert(reason);
+                reason = `Staff ${position} yang keluar sudah mencapai batas maksimal (${positionLimits[position]} orang)`;
+                showNotification(reason, true);
                 return;
             }
             
@@ -906,6 +1015,9 @@
             exitTime = new Date();
             
             // Add to staff outside
+            if (!staffOutside[position]) {
+                staffOutside[position] = [];
+            }
             staffOutside[position].push({
                 name: currentUser.name,
                 id: currentUser.id,
@@ -935,6 +1047,8 @@
             updateQuotaInfo();
             updateStaffList();
             updateHistoryTable();
+            
+            showNotification("Izin keluar berhasil dicatat!");
         }
         
         // Handle Return Permission
@@ -957,9 +1071,11 @@
             }
             
             // Remove from staff outside
-            staffOutside[position] = staffOutside[position].filter(
-                staff => staff.id !== currentUser.id
-            );
+            if (staffOutside[position]) {
+                staffOutside[position] = staffOutside[position].filter(
+                    staff => staff.id !== currentUser.id
+                );
+            }
             
             // Save data
             saveStaffOutside();
@@ -975,6 +1091,8 @@
             updateStaffList();
             updateHistoryTable();
             updateQuotaInfo();
+            
+            showNotification("Izin masuk berhasil dicatat!");
         }
         
         // Update Staff List
@@ -984,34 +1102,38 @@
             let hasStaffOutside = false;
             
             for (const position in staffOutside) {
-                staffOutside[position].forEach(staff => {
-                    hasStaffOutside = true;
-                    
-                    const elapsed = Math.floor((new Date() - new Date(staff.exitTime)) / 1000);
-                    const remaining = Math.max(0, 15 * 60 - elapsed);
-                    const minutes = Math.floor(remaining / 60);
-                    const seconds = remaining % 60;
-                    
-                    const staffCard = document.createElement('div');
-                    staffCard.className = 'staff-card';
-                    
-                    // Determine card color based on position
-                    let cardColor = '#3498db';
-                    if (position === 'KASIR') cardColor = '#e74c3c';
-                    else if (position === 'KHEMER') cardColor = '#9b59b6';
-                    else if (position === 'KAPTEN') cardColor = '#f39c12';
-                    
-                    staffCard.innerHTML = `
-                        <div class="staff-avatar" style="background-color: ${cardColor}">${staff.avatar}</div>
-                        <div class="staff-info">
-                            <h4>${staff.name}</h4>
-                            <p>${staff.position} - ${staff.id}</p>
-                            <p class="timer">Keluar ${minutes}:${seconds.toString().padStart(2, '0')} yang lalu</p>
-                        </div>
-                    `;
-                    
-                    staffList.appendChild(staffCard);
-                });
+                if (staffOutside[position] && staffOutside[position].length > 0) {
+                    staffOutside[position].forEach(staff => {
+                        hasStaffOutside = true;
+                        
+                        const elapsed = Math.floor((new Date() - new Date(staff.exitTime)) / 1000);
+                        const remaining = Math.max(0, 15 * 60 - elapsed);
+                        const minutes = Math.floor(remaining / 60);
+                        const seconds = remaining % 60;
+                        
+                        const staffCard = document.createElement('div');
+                        staffCard.className = 'staff-card';
+                        
+                        // Determine card color based on position
+                        let cardColor = '#3498db';
+                        if (position === 'KASIR') cardColor = '#e74c3c';
+                        else if (position === 'KHEMER') cardColor = '#9b59b6';
+                        else if (position === 'KAPTEN' || position === 'LEADER' || position === 'TRAINING KKS') cardColor = '#f39c12';
+                        else if (position === 'TCS') cardColor = '#1abc9c';
+                        else if (position === 'STAFF LOKAL') cardColor = '#8e44ad';
+                        
+                        staffCard.innerHTML = `
+                            <div class="staff-avatar" style="background-color: ${cardColor}">${staff.avatar}</div>
+                            <div class="staff-info">
+                                <h4>${staff.name}</h4>
+                                <p>${staff.position} - ${staff.id}</p>
+                                <p class="timer">Keluar ${minutes}:${seconds.toString().padStart(2, '0')} yang lalu</p>
+                            </div>
+                        `;
+                        
+                        staffList.appendChild(staffCard);
+                    });
+                }
             }
             
             if (!hasStaffOutside) {
@@ -1080,6 +1202,21 @@
             mainContent.style.display = 'none';
             emailInput.value = '';
             loginError.style.display = 'none';
+            showNotification("Anda berhasil logout");
+        }
+        
+        // Show notification
+        function showNotification(message, isError = false) {
+            notification.textContent = message;
+            notification.className = 'notification';
+            if (isError) {
+                notification.classList.add('error');
+            }
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
         }
         
         // Initialize the app
