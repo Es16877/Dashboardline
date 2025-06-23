@@ -3,53 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAMSUL ARIF  </title>
+    <title>Sistem Izin Keluar - Waktu Indonesia Barat</title>
     <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --dark: #34495e;
+            --light: #ecf0f1;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
+            background-color: #f5f7fa;
             margin: 0;
             padding: 20px;
-            min-height: 100vh;
+            color: #333;
         }
         
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
         }
         
-        .header {
+        header {
             text-align: center;
             margin-bottom: 30px;
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .date-display {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .date-box {
+            background-color: var(--dark);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .date-box h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .date-box p {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
         }
         
         .clock-container {
-            background-color: rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
             border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
             text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
         }
         
-        .time {
-            font-size: 5rem;
+        .clock-container::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: pulse 6s infinite linear;
+        }
+        
+        @keyframes pulse {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .clock {
+            font-size: 72px;
             font-weight: bold;
             margin: 0;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
         
         .date {
-            font-size: 1.5rem;
+            font-size: 24px;
             margin-top: 10px;
-            opacity: 0.8;
+            position: relative;
         }
         
-        .button-container {
+        .permission-section {
             display: flex;
             justify-content: center;
             gap: 20px;
@@ -58,120 +122,205 @@
         
         .btn {
             padding: 15px 30px;
-            font-size: 1.2rem;
             border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
+            border-radius: 8px;
+            font-size: 18px;
             font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
         
-        .btn-exit {
-            background-color: #e74c3c;
+        .btn::after {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
             color: white;
         }
         
-        .btn-enter {
-            background-color: #2ecc71;
+        .btn-secondary {
+            background-color: var(--secondary);
             color: white;
         }
         
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
         }
         
         .btn:disabled {
             background-color: #95a5a6;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+            opacity: 0.7;
+        }
+        
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
         
         .dashboard {
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
+            background-color: var(--light);
+            border-radius: 8px;
             padding: 20px;
             margin-top: 30px;
+            border: 1px solid #dfe6e9;
         }
         
         .dashboard h2 {
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-            padding-bottom: 10px;
             margin-top: 0;
+            color: var(--dark);
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dashboard h2::before {
+            content: "📊";
+            margin-right: 10px;
+            font-size: 1.2em;
         }
         
         .staff-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 15px;
         }
         
         .staff-card {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: white;
             border-radius: 8px;
             padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .staff-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .staff-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .staff-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .staff-info h4 {
+            margin: 0 0 5px 0;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .staff-info p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .timer {
+            font-size: 14px;
+            color: var(--warning);
+            font-weight: bold;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .timer::before {
+            content: "⏱️";
+            margin-right: 5px;
+        }
+        
+        .login-section {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
             display: flex;
             flex-direction: column;
         }
         
-        .staff-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .staff-position {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-bottom: 10px;
-        }
-        
-        .staff-time {
-            font-size: 0.9rem;
-            margin-top: auto;
-        }
-        
-        .login-form {
-            max-width: 400px;
-            margin: 50px auto;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 10px;
-        }
-        
-        .login-form h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
         .form-group label {
-            display: block;
             margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--dark);
         }
         
         .form-group input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
         }
         
         .login-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #3498db;
+            background-color: var(--primary);
             color: white;
+            padding: 12px;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
             font-weight: bold;
+            cursor: pointer;
             transition: background-color 0.3s;
         }
         
@@ -179,847 +328,538 @@
             background-color: #2980b9;
         }
         
-        .hidden {
-            display: none;
-        }
-        
-        .admin-panel {
-            margin-top: 30px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 20px;
-        }
-        
-        .tab-container {
+        .user-info {
             display: flex;
+            align-items: center;
             margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--light);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
         
-        .tab {
-            padding: 10px 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: none;
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--secondary);
             color: white;
-            cursor: pointer;
-            margin-right: 5px;
-            border-radius: 5px 5px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            margin-right: 20px;
+            flex-shrink: 0;
         }
         
-        .tab.active {
-            background-color: rgba(255, 255, 255, 0.3);
+        .user-details {
+            flex-grow: 1;
         }
         
-        .tab-content {
-            display: none;
+        .user-details h3 {
+            margin: 0 0 5px 0;
+            color: var(--dark);
         }
         
-        .tab-content.active {
-            display: block;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        th {
-            background-color: rgba(255, 255, 255, 0.1);
+        .user-details p {
+            margin: 0;
+            color: #7f8c8d;
         }
         
         .logout-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 6px;
             padding: 8px 15px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            margin-left: auto;
             cursor: pointer;
+            transition: background-color 0.3s;
+            flex-shrink: 0;
         }
         
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 5px;
+        .logout-btn:hover {
+            background-color: #c0392b;
         }
         
-        .status-active {
-            background-color: #2ecc71;
-        }
-        
-        .status-inactive {
-            background-color: #e74c3c;
-        }
-        
-        .add-staff-form {
-            margin-top: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 8px;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .form-row .form-group {
-            flex: 1;
-            margin-bottom: 0;
-        }
-        
-        .position-select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        
-        .error-message {
-            color: #ff6b6b;
-            text-align: center;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        
-        .counter-container {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .counter-box {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 10px;
-            width: 22%;
-        }
-        
-        .counter-value {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        
-        .counter-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .change-password-form {
-            margin-top: 30px;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 8px;
-        }
-        
-        .profile-info {
-            background-color: rgba(255, 255, 255, 0.1);
+        .quota-info {
+            background-color: #fff8e1;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
+            border-left: 5px solid var(--warning);
+            display: flex;
+            align-items: center;
+        }
+        
+        .quota-info::before {
+            content: "ℹ️";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .quota-info p {
+            margin: 0;
+            color: var(--dark);
+        }
+        
+        .quota-info span {
+            font-weight: bold;
+            color: var(--warning);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state img {
+            width: 100px;
+            opacity: 0.6;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            .clock {
+                font-size: 48px;
+            }
+            
+            .date {
+                font-size: 18px;
+            }
+            
+            .permission-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .staff-list {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="login-page" class="container">
-        <div class="login-form">
-            <h2>Login Sistem Izin Keluar</h2>
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" placeholder="Masukkan username">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Masukkan password">
-            </div>
-            <button class="login-btn" onclick="login()">Login</button>
-            <div id="login-error" class="error-message"></div>
-        </div>
-    </div>
-
-    <div id="main-page" class="container hidden">
-        <button class="logout-btn" onclick="logout()">Logout</button>
-        <div class="header">
-            <h1>Sistem Izin Keluar</h1>
-            <p>Durasi izin keluar maksimal 15 menit</p>
-        </div>
-        
-        <div class="clock-container">
-            <div class="time" id="time">00:00:00</div>
-            <div class="date" id="date">Senin, 1 Januari 2023</div>
-        </div>
-        
-        <div class="button-container">
-            <button id="exit-btn" class="btn btn-exit" onclick="requestExit()">IZIN KELUAR</button>
-            <button id="enter-btn" class="btn btn-enter" onclick="recordEntry()">IZIN MASUK</button>
-        </div>
-        
-        <div class="dashboard">
-            <div class="counter-container">
-                <div class="counter-box">
-                    <div class="counter-label">Kasir Keluar</div>
-                    <div class="counter-value" id="counter-kasir">0</div>
-                    <div class="counter-label">Maks: 3 orang</div>
-                </div>
-                <div class="counter-box">
-                    <div class="counter-label">CS Keluar</div>
-                    <div class="counter-value" id="counter-cs">0</div>
-                    <div class="counter-label">Maks: 3 orang</div>
-                </div>
-                <div class="counter-box">
-                    <div class="counter-label">Khemer Keluar</div>
-                    <div class="counter-value" id="counter-khemer">0</div>
-                    <div class="counter-label">Maks: 1 orang</div>
-                </div>
-                <div class="counter-box">
-                    <div class="counter-label">Kapten Keluar</div>
-                    <div class="counter-value" id="counter-kapten">0</div>
-                    <div class="counter-label">Maks: 1 orang</div>
-                </div>
-            </div>
-            
-            <h2>Staff Yang Sedang Keluar</h2>
-            <div id="staff-out-container" class="staff-list">
-                <!-- Staff yang sedang keluar akan ditampilkan di sini -->
-            </div>
-            
-            <div class="profile-info">
-                <h3>Profil Saya</h3>
-                <p id="profile-name">Nama: -</p>
-                <p id="profile-position">Posisi: -</p>
-                <button onclick="showChangePasswordForm()">Ganti Password</button>
-            </div>
-            
-            <div id="change-password-form" class="change-password-form hidden">
-                <h3>Ganti Password</h3>
+    <div class="container">
+        <div id="loginSection" class="login-section">
+            <h2>Login dengan Google</h2>
+            <form id="loginForm" class="login-form">
                 <div class="form-group">
-                    <label for="current-password">Password Saat Ini</label>
-                    <input type="password" id="current-password" placeholder="Masukkan password saat ini">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Masukkan email Google" required>
                 </div>
-                <div class="form-group">
-                    <label for="new-password">Password Baru</label>
-                    <input type="password" id="new-password" placeholder="Masukkan password baru">
-                </div>
-                <div class="form-group">
-                    <label for="confirm-password">Konfirmasi Password Baru</label>
-                    <input type="password" id="confirm-password" placeholder="Konfirmasi password baru">
-                </div>
-                <button class="login-btn" onclick="changePassword()">Simpan Perubahan</button>
-                <button onclick="hideChangePasswordForm()">Batal</button>
-                <div id="password-change-error" class="error-message"></div>
-            </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            <div id="loginError" style="color: #e74c3c; margin-top: 10px; display: none;"></div>
         </div>
         
-        <div id="admin-panel" class="admin-panel hidden">
-            <h2>Admin Panel</h2>
-            <div class="tab-container">
-                <button class="tab active" onclick="openTab('staff-management')">Manajemen Staff</button>
-                <button class="tab" onclick="openTab('exit-records')">Rekaman Izin Keluar</button>
+        <div id="mainContent" style="display: none;">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">US</div>
+                <div class="user-details">
+                    <h3 id="userName">Nama Pengguna</h3>
+                    <p id="userPosition">Posisi: -</p>
+                    <p id="userEmail">Email: -</p>
+                </div>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
             </div>
             
-            <div id="staff-management" class="tab-content active">
-                <h3>Daftar Staff</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Posisi</th>
-                            <th>Username</th>
-                            <th>Password</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="staff-list">
-                        <!-- Daftar staff akan ditampilkan di sini -->
-                    </tbody>
-                </table>
-                
-                <div class="add-staff-form">
-                    <h3>Tambah Staff Baru</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="new-staff-name">Nama Lengkap</label>
-                            <input type="text" id="new-staff-name" placeholder="Nama staff">
-                        </div>
-                        <div class="form-group">
-                            <label for="new-staff-position">Posisi</label>
-                            <select id="new-staff-position" class="position-select">
-                                <option value="kasir">Kasir</option>
-                                <option value="cs">Customer Service</option>
-                                <option value="kapten">Kapten</option>
-                                <option value="khemer">Khemer</option>
-                            </select>
-                        </div>
+            <header>
+                <h1>Sistem Izin Keluar</h1>
+                <p>Durasi izin keluar maksimal 15 menit</p>
+            </header>
+            
+            <div class="date-display">
+                <div class="date-box">
+                    <h3>Hari Ini</h3>
+                    <p id="todayDate">-</p>
+                </div>
+            </div>
+            
+            <div class="quota-info" id="quotaInfo">
+                <p>Kuota izin keluar hari ini: <span id="quotaCount">0</span>/4 kali</p>
+            </div>
+            
+            <div class="clock-container">
+                <h2 class="clock" id="clock">00:00:00</h2>
+                <p class="date" id="currentDate">Hari, DD Bulan YYYY</p>
+            </div>
+            
+            <div class="permission-section">
+                <button class="btn btn-primary" id="exitBtn">IZIN KELUAR</button>
+                <button class="btn btn-secondary" id="returnBtn" disabled>IZIN MASUK</button>
+            </div>
+            
+            <div class="dashboard">
+                <h2>Dashboard Staff Yang Sedang Keluar</h2>
+                <div class="staff-list" id="staffList">
+                    <div class="empty-state">
+                        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="No staff outside">
+                        <p>Tidak ada staff yang sedang keluar</p>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="new-staff-username">Username</label>
-                            <input type="text" id="new-staff-username" placeholder="Username">
-                        </div>
-                        <div class="form-group">
-                            <label for="new-staff-password">Password</label>
-                            <input type="password" id="new-staff-password" placeholder="Password">
-                        </div>
-                    </div>
-                    <button class="login-btn" onclick="addStaff()">Tambah Staff</button>
                 </div>
-            </div>
-            
-            <div id="exit-records" class="tab-content">
-                <h3>Riwayat Izin Keluar</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Posisi</th>
-                            <th>Waktu Keluar</th>
-                            <th>Waktu Masuk</th>
-                            <th>Durasi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="exit-records-list">
-                        <!-- Riwayat izin keluar akan ditampilkan di sini -->
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
 
     <script>
-        // Data awal
-        let currentUser = null;
-        let staffData = [
-            { id: 1, name: "Admin", position: "admin", username: "admin", password: "a1", isActive: true },
-            { id: 2, name: "Kasir 1", position: "kasir", username: "kasir1", password: "k1", isActive: true },
-            { id: 3, name: "Kasir 2", position: "kasir", username: "kasir2", password: "k2", isActive: true },
-            { id: 4, name: "CS 1", position: "cs", username: "cs1", password: "c1", isActive: true },
-            { id: 5, name: "Kapten", position: "kapten", username: "kapten1", password: "kap1", isActive: true },
-            { id: 6, name: "Khemer", position: "khemer", username: "khemer1", password: "kh1", isActive: true }
+        // User data
+        const staffData = [
+            {
+                name: "EGI SETIAWAN",
+                id: "C8410298",
+                position: "CS",
+                email: "egis19453@gmail.com",
+                avatar: "ES"
+            },
+            {
+                name: "SAMSUL MAARIF",
+                id: "C7008737",
+                position: "CS",
+                email: "samsulma874@gmail.com",
+                avatar: "SM"
+            }
         ];
         
-        let exitRecords = [];
-        let currentlyOut = [];
+        // Current user
+        let currentUser = null;
+        let exitCount = 0;
+        let isOutside = false;
+        let exitTime = null;
+        let timerInterval = null;
         
-        // Fungsi untuk menyimpan data ke localStorage
-        const saveData = () => {
-            localStorage.setItem('staffData', JSON.stringify(staffData));
-            localStorage.setItem('exitRecords', JSON.stringify(exitRecords));
-            localStorage.setItem('currentlyOut', JSON.stringify(currentlyOut));
-            if (currentUser) {
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            }
+        // Staff outside data
+        let staffOutside = {
+            CS: [],
+            KASIR: [],
+            KHEMER: [],
+            KAPTEN: []
         };
         
-        // Fungsi untuk memuat data dari localStorage
-        const loadData = () => {
-            const savedStaff = localStorage.getItem('staffData');
-            const savedRecords = localStorage.getItem('exitRecords');
-            const savedOut = localStorage.getItem('currentlyOut');
+        // DOM elements
+        const loginSection = document.getElementById('loginSection');
+        const mainContent = document.getElementById('mainContent');
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const loginError = document.getElementById('loginError');
+        const userName = document.getElementById('userName');
+        const userPosition = document.getElementById('userPosition');
+        const userEmail = document.getElementById('userEmail');
+        const userAvatar = document.getElementById('userAvatar');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const clock = document.getElementById('clock');
+        const currentDate = document.getElementById('currentDate');
+        const todayDate = document.getElementById('todayDate');
+        const exitBtn = document.getElementById('exitBtn');
+        const returnBtn = document.getElementById('returnBtn');
+        const staffList = document.getElementById('staffList');
+        const quotaInfo = document.getElementById('quotaInfo');
+        const quotaCount = document.getElementById('quotaCount');
+        
+        // Initialize the app
+        function init() {
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // Set today's date
+            const today = new Date();
+            todayDate.textContent = formatDate(today);
+            
+            // Event listeners
+            loginForm.addEventListener('submit', handleLogin);
+            logoutBtn.addEventListener('click', handleLogout);
+            exitBtn.addEventListener('click', handleExit);
+            returnBtn.addEventListener('click', handleReturn);
+            
+            // Check if already logged in
             const savedUser = localStorage.getItem('currentUser');
-            
-            if(savedStaff) staffData = JSON.parse(savedStaff);
-            if(savedRecords) exitRecords = JSON.parse(savedRecords);
-            if(savedOut) currentlyOut = JSON.parse(savedOut);
-            if(savedUser) currentUser = JSON.parse(savedUser);
-        };
-        
-        // Fungsi untuk update counter staff yang sedang keluar
-        const updateCounters = () => {
-            const kasirOut = currentlyOut.filter(s => s.position === 'kasir').length;
-            const csOut = currentlyOut.filter(s => s.position === 'cs').length;
-            const khemerOut = currentlyOut.filter(s => s.position === 'khemer').length;
-            const kaptenOut = currentlyOut.filter(s => s.position === 'kapten').length;
-            
-            document.getElementById('counter-kasir').textContent = kasirOut;
-            document.getElementById('counter-cs').textContent = csOut;
-            document.getElementById('counter-khemer').textContent = khemerOut;
-            document.getElementById('counter-kapten').textContent = kaptenOut;
-        };
-        
-        // Fungsi untuk update jam dan tanggal
-        function updateClock() {
-            const now = new Date();
-            const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            const timeString = now.toLocaleTimeString('id-ID', options);
-            document.getElementById('time').textContent = timeString;
-            
-            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const dateString = now.toLocaleDateString('id-ID', dateOptions);
-            document.getElementById('date').textContent = dateString;
-            
-            // Update setiap detik
-            setTimeout(updateClock, 1000);
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                exitCount = parseInt(localStorage.getItem('exitCount')) || 0;
+                setupUserInterface();
+            }
         }
         
-        // Fungsi login
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorElement = document.getElementById('login-error');
+        // Format date
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('id-ID', options);
+        }
+        
+        // Update clock with colon separator
+        function updateClock() {
+            const now = new Date();
             
-            errorElement.textContent = '';
+            // Format time with colon separator
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
             
-            const user = staffData.find(staff => 
-                staff.username === username && 
-                staff.password === password && 
-                staff.isActive
-            );
+            const dateString = now.toLocaleDateString('id-ID', {
+                timeZone: 'Asia/Jakarta',
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            clock.textContent = timeString;
+            currentDate.textContent = dateString;
+            
+            // Update timer if outside
+            if (isOutside) {
+                const elapsed = Math.floor((new Date() - exitTime) / 1000);
+                const remaining = 15 * 60 - elapsed;
+                
+                if (remaining <= 0) {
+                    // Auto return when time is up
+                    handleReturn();
+                } else {
+                    const minutes = Math.floor(remaining / 60);
+                    const seconds = remaining % 60;
+                    returnBtn.innerHTML = `IZIN MASUK <span class="timer">(${minutes}:${seconds.toString().padStart(2, '0')})</span>`;
+                }
+            }
+        }
+        
+        // Handle login
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = emailInput.value.trim().toLowerCase();
+            
+            // Find user
+            const user = staffData.find(staff => staff.email.toLowerCase() === email);
             
             if (user) {
                 currentUser = user;
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('main-page').classList.remove('hidden');
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 
-                // Update profil pengguna
-                document.getElementById('profile-name').textContent = `Nama: ${user.name}`;
-                document.getElementById('profile-position').textContent = `Posisi: ${getPositionName(user.position)}`;
+                // Reset exit count if it's a new day
+                const lastExitDate = localStorage.getItem('lastExitDate');
+                const today = new Date().toDateString();
                 
-                // Jika admin, tampilkan panel admin
-                if (user.position === 'admin') {
-                    document.getElementById('admin-panel').classList.remove('hidden');
-                    renderStaffList();
-                    renderExitRecords();
+                if (lastExitDate !== today) {
+                    exitCount = 0;
+                    localStorage.setItem('exitCount', '0');
+                    localStorage.setItem('lastExitDate', today);
                 } else {
-                    document.getElementById('admin-panel').classList.add('hidden');
+                    exitCount = parseInt(localStorage.getItem('exitCount')) || 0;
                 }
                 
-                updateCurrentlyOutList();
-                checkExitButtonStatus();
-                updateCounters();
-                saveData();
+                setupUserInterface();
+                loginError.style.display = 'none';
             } else {
-                errorElement.textContent = 'Username atau password salah!';
+                loginError.textContent = 'Email tidak terdaftar. Hanya email yang sudah diizinkan yang bisa login.';
+                loginError.style.display = 'block';
             }
         }
         
-        // Fungsi logout
-        function logout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-            document.getElementById('main-page').classList.add('hidden');
-            document.getElementById('login-page').classList.remove('hidden');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('login-error').textContent = '';
-        }
-        
-        // Fungsi untuk menampilkan staff yang sedang keluar
-        function updateCurrentlyOutList() {
-            const container = document.getElementById('staff-out-container');
-            container.innerHTML = '';
+        // Setup user interface after login
+        function setupUserInterface() {
+            loginSection.style.display = 'none';
+            mainContent.style.display = 'block';
             
-            if (currentlyOut.length === 0) {
-                container.innerHTML = '<p>Tidak ada staff yang sedang keluar</p>';
-                return;
-            }
+            userName.textContent = currentUser.name;
+            userPosition.textContent = `Posisi: ${currentUser.position}`;
+            userEmail.textContent = `Email: ${currentUser.email}`;
+            userAvatar.textContent = currentUser.avatar;
             
-            currentlyOut.forEach(staff => {
-                const staffCard = document.createElement('div');
-                staffCard.className = 'staff-card';
-                
-                const now = new Date();
-                const exitTime = new Date(staff.exitTime);
-                const timeDiff = now - exitTime;
-                const minutesOut = Math.floor(timeDiff / (1000 * 60));
-                
-                staffCard.innerHTML = `
-                    <div class="staff-name">${staff.name}</div>
-                    <div class="staff-position">${getPositionName(staff.position)}</div>
-                    <div class="staff-time">Keluar: ${formatTime(staff.exitTime)} (${minutesOut} menit lalu)</div>
-                `;
-                
-                container.appendChild(staffCard);
-            });
-        }
-        
-        // Fungsi untuk mendapatkan nama posisi
-        function getPositionName(position) {
-            const positions = {
-                'kasir': 'Kasir',
-                'cs': 'Customer Service',
-                'kapten': 'Kapten',
-                'khemer': 'Khemer',
-                'admin': 'Admin'
-            };
-            return positions[position] || position;
-        }
-        
-        // Fungsi untuk memformat waktu
-        function formatTime(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' });
-        }
-        
-        // Fungsi untuk meminta izin keluar
-        function requestExit() {
-            if (!currentUser) return;
-            
-            // Cek apakah user sudah keluar
-            const alreadyOut = currentlyOut.some(staff => staff.id === currentUser.id);
-            if (alreadyOut) {
-                alert('Anda sudah dalam status keluar!');
-                return;
-            }
-            
-            // Tambahkan ke daftar yang sedang keluar
-            currentlyOut.push({
-                id: currentUser.id,
-                name: currentUser.name,
-                position: currentUser.position,
-                exitTime: new Date().toISOString()
-            });
-            
-            // Tambahkan ke riwayat
-            exitRecords.push({
-                id: Date.now(),
-                staffId: currentUser.id,
-                staffName: currentUser.name,
-                staffPosition: currentUser.position,
-                exitTime: new Date().toISOString(),
-                entryTime: null,
-                duration: null
-            });
-            
-            updateCurrentlyOutList();
-            checkExitButtonStatus();
-            updateCounters();
-            saveData();
-            
-            alert('Izin keluar dicatat. Durasi maksimal 15 menit.');
-        }
-        
-        // Fungsi untuk mencatat kembali masuk
-        function recordEntry() {
-            if (!currentUser) return;
-            
-            // Cari staff yang sedang keluar
-            const staffIndex = currentlyOut.findIndex(staff => staff.id === currentUser.id);
-            
-            if (staffIndex === -1) {
-                alert('Anda tidak dalam status keluar!');
-                return;
-            }
-            
-            // Hapus dari daftar yang sedang keluar
-            currentlyOut.splice(staffIndex, 1);
-            
-            // Update riwayat
-            const now = new Date();
-            const latestExit = exitRecords.filter(record => record.staffId === currentUser.id && record.entryTime === null)
-                                        .sort((a, b) => new Date(b.exitTime) - new Date(a.exitTime))[0];
-            
-            if (latestExit) {
-                latestExit.entryTime = now.toISOString();
-                const exitTime = new Date(latestExit.exitTime);
-                latestExit.duration = Math.floor((now - exitTime) / (1000 * 60)); // dalam menit
-            }
-            
-            updateCurrentlyOutList();
-            checkExitButtonStatus();
-            updateCounters();
-            saveData();
-            
-            if (currentUser.position === 'admin') {
-                renderExitRecords();
-            }
-            
-            alert('Izin masuk dicatat. Selamat bekerja kembali!');
-        }
-        
-        // Fungsi untuk mengecek status tombol izin keluar
-        function checkExitButtonStatus() {
-            if (!currentUser) return;
-            
-            const exitBtn = document.getElementById('exit-btn');
-            const enterBtn = document.getElementById('enter-btn');
-            
-            // Cek apakah user sudah keluar
-            const isOut = currentlyOut.some(staff => staff.id === currentUser.id);
-            
-            if (isOut) {
+            // Update quota info
+            quotaCount.textContent = exitCount;
+            if (exitCount >= 4) {
+                quotaInfo.innerHTML = '<p>Anda sudah menggunakan semua kuota izin keluar hari ini (4/4)</p>';
                 exitBtn.disabled = true;
-                enterBtn.disabled = false;
-            } else {
-                exitBtn.disabled = false;
-                enterBtn.disabled = true;
-                
-                // Cek kuota berdasarkan posisi
-                const position = currentUser.position;
-                const currentOutCount = currentlyOut.filter(staff => staff.position === position).length;
-                
-                if (position === 'kasir' && currentOutCount >= 3) {
-                    exitBtn.disabled = true;
-                    exitBtn.title = 'Kuota izin keluar untuk kasir sudah penuh (maks 3 orang)';
-                } else if (position === 'cs' && currentOutCount >= 3) {
-                    exitBtn.disabled = true;
-                    exitBtn.title = 'Kuota izin keluar untuk CS sudah penuh (maks 3 orang)';
-                } else if (position === 'khemer' && currentOutCount >= 1) {
-                    exitBtn.disabled = true;
-                    exitBtn.title = 'Kuota izin keluar untuk Khemer sudah penuh (maks 1 orang)';
-                } else if (position === 'kapten' && currentOutCount >= 1) {
-                    exitBtn.disabled = true;
-                    exitBtn.title = 'Kuota izin keluar untuk Kapten sudah penuh (maks 1 orang)';
-                } else {
-                    exitBtn.title = '';
-                }
+            }
+            
+            // Load staff outside data
+            loadStaffOutside();
+            updateStaffList();
+        }
+        
+        // Handle logout
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            loginSection.style.display = 'block';
+            mainContent.style.display = 'none';
+            emailInput.value = '';
+            loginError.style.display = 'none';
+            
+            // Clear any running timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
             }
         }
         
-        // Fungsi untuk admin panel - render daftar staff
-        function renderStaffList() {
-            const tbody = document.getElementById('staff-list');
-            tbody.innerHTML = '';
+        // Handle exit permission
+        function handleExit() {
+            // Check position limits
+            const position = currentUser.position;
+            let canExit = true;
+            let reason = '';
             
-            staffData.forEach(staff => {
-                const tr = document.createElement('tr');
-                
-                tr.innerHTML = `
-                    <td>${staff.name}</td>
-                    <td>${getPositionName(staff.position)}</td>
-                    <td>${staff.username}</td>
-                    <td>${currentUser && currentUser.position === 'admin' ? staff.password : '*****'}</td>
-                    <td><span class="status-indicator ${staff.isActive ? 'status-active' : 'status-inactive'}"></span> ${staff.isActive ? 'Aktif' : 'Nonaktif'}</td>
-                    <td>
-                        <button onclick="editStaff(${staff.id})">Edit</button>
-                        <button onclick="toggleStaffStatus(${staff.id})">${staff.isActive ? 'Nonaktifkan' : 'Aktifkan'}</button>
-                    </td>
-                `;
-                
-                tbody.appendChild(tr);
-            });
-        }
-        
-        // Fungsi untuk admin panel - render riwayat izin keluar
-        function renderExitRecords() {
-            const tbody = document.getElementById('exit-records-list');
-            tbody.innerHTML = '';
+            if (position === 'CS' && staffOutside.CS.length >= 3) {
+                canExit = false;
+                reason = 'Staff CS yang keluar sudah mencapai batas maksimal (3 orang)';
+            } else if (position === 'KASIR' && staffOutside.KASIR.length >= 3) {
+                canExit = false;
+                reason = 'Staff Kasir yang keluar sudah mencapai batas maksimal (3 orang)';
+            } else if (position === 'KHEMER' && staffOutside.KHEMER.length >= 1) {
+                canExit = false;
+                reason = 'Staff KHEMER yang keluar sudah mencapai batas maksimal (1 orang)';
+            } else if (position === 'KAPTEN' && staffOutside.KAPTEN.length >= 1) {
+                canExit = false;
+                reason = 'Staff KAPTEN yang keluar sudah mencapai batas maksimal (1 orang)';
+            }
             
-            // Urutkan dari yang terbaru
-            const sortedRecords = [...exitRecords].sort((a, b) => new Date(b.exitTime) - new Date(a.exitTime));
+            if (!canExit) {
+                alert(reason);
+                return;
+            }
             
-            sortedRecords.forEach(record => {
-                const tr = document.createElement('tr');
-                
-                tr.innerHTML = `
-                    <td>${record.staffName}</td>
-                    <td>${getPositionName(record.staffPosition)}</td>
-                    <td>${formatDateTime(record.exitTime)}</td>
-                    <td>${record.entryTime ? formatDateTime(record.entryTime) : 'Belum kembali'}</td>
-                    <td>${record.duration ? `${record.duration} menit` : '-'}</td>
-                `;
-                
-                tbody.appendChild(tr);
-            });
-        }
-        
-        // Fungsi untuk memformat tanggal dan waktu
-        function formatDateTime(dateString) {
-            if (!dateString) return '-';
-            const date = new Date(dateString);
-            return date.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-        }
-        
-        // Fungsi untuk membuka tab di admin panel
-        function openTab(tabId) {
-            // Sembunyikan semua tab content
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
+            // Check daily quota
+            if (exitCount >= 4) {
+                alert('Anda sudah mencapai batas maksimal izin keluar hari ini (4 kali)');
+                return;
+            }
+            
+            // Proceed with exit
+            isOutside = true;
+            exitTime = new Date();
+            exitCount++;
+            
+            // Save to localStorage
+            localStorage.setItem('exitCount', exitCount.toString());
+            localStorage.setItem('lastExitDate', new Date().toDateString());
+            
+            // Update UI
+            exitBtn.disabled = true;
+            returnBtn.disabled = false;
+            quotaCount.textContent = exitCount;
+            
+            if (exitCount >= 4) {
+                quotaInfo.innerHTML = '<p>Anda sudah menggunakan semua kuota izin keluar hari ini (4/4)</p>';
+            }
+            
+            // Add to staff outside
+            staffOutside[position].push({
+                name: currentUser.name,
+                id: currentUser.id,
+                position: currentUser.position,
+                avatar: currentUser.avatar,
+                exitTime: exitTime
             });
             
-            // Nonaktifkan semua tab button
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Aktifkan tab yang dipilih
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            saveStaffOutside();
+            updateStaffList();
         }
         
-        // Fungsi untuk menambah staff baru (admin)
-        function addStaff() {
-            const name = document.getElementById('new-staff-name').value;
-            const position = document.getElementById('new-staff-position').value;
-            const username = document.getElementById('new-staff-username').value;
-            const password = document.getElementById('new-staff-password').value;
+        // Handle return permission
+        function handleReturn() {
+            isOutside = false;
+            exitTime = null;
             
-            if (!name || !position || !username || !password) {
-                alert('Semua field harus diisi!');
-                return;
-            }
+            // Update UI
+            exitBtn.disabled = exitCount >= 4;
+            returnBtn.disabled = true;
+            returnBtn.innerHTML = 'IZIN MASUK';
             
-            // Cek apakah username sudah ada
-            if (staffData.some(staff => staff.username === username)) {
-                alert('Username sudah digunakan!');
-                return;
-            }
+            // Remove from staff outside
+            const position = currentUser.position;
+            staffOutside[position] = staffOutside[position].filter(
+                staff => staff.id !== currentUser.id
+            );
             
-            const newStaff = {
-                id: Date.now(),
-                name,
-                position,
-                username,
-                password,
-                isActive: true
-            };
-            
-            staffData.push(newStaff);
-            renderStaffList();
-            saveData();
-            
-            // Reset form
-            document.getElementById('new-staff-name').value = '';
-            document.getElementById('new-staff-username').value = '';
-            document.getElementById('new-staff-password').value = '';
-            
-            alert('Staff baru berhasil ditambahkan!');
+            saveStaffOutside();
+            updateStaffList();
         }
         
-        // Fungsi untuk mengedit staff (admin)
-        function editStaff(staffId) {
-            const staff = staffData.find(s => s.id === staffId);
-            if (!staff) return;
-            
-            const newName = prompt('Masukkan nama baru:', staff.name);
-            if (newName === null) return;
-            
-            const newUsername = prompt('Masukkan username baru:', staff.username);
-            if (newUsername === null) return;
-            
-            // Cek apakah username baru sudah digunakan oleh staff lain
-            if (newUsername !== staff.username && staffData.some(s => s.username === newUsername && s.id !== staffId)) {
-                alert('Username sudah digunakan oleh staff lain!');
-                return;
-            }
-            
-            const newPassword = prompt('Masukkan password baru (kosongkan jika tidak ingin mengubah):', '');
-            
-            staff.name = newName;
-            staff.username = newUsername;
-            
-            if (newPassword) {
-                staff.password = newPassword;
-            }
-            
-            renderStaffList();
-            saveData();
-            alert('Data staff berhasil diperbarui!');
-        }
-        
-        // Fungsi untuk mengaktifkan/nonaktifkan staff (admin)
-        function toggleStaffStatus(staffId) {
-            const staff = staffData.find(s => s.id === staffId);
-            if (!staff) return;
-            
-            staff.isActive = !staff.isActive;
-            renderStaffList();
-            saveData();
-            
-            alert(`Staff ${staff.name} telah ${staff.isActive ? 'diaktifkan' : 'dinonaktifkan'}!`);
-        }
-        
-        // Fungsi untuk menampilkan form ganti password
-        function showChangePasswordForm() {
-            document.getElementById('change-password-form').classList.remove('hidden');
-        }
-        
-        // Fungsi untuk menyembunyikan form ganti password
-        function hideChangePasswordForm() {
-            document.getElementById('change-password-form').classList.add('hidden');
-            document.getElementById('current-password').value = '';
-            document.getElementById('new-password').value = '';
-            document.getElementById('confirm-password').value = '';
-            document.getElementById('password-change-error').textContent = '';
-        }
-        
-        // Fungsi untuk mengganti password
-        function changePassword() {
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const errorElement = document.getElementById('password-change-error');
-            
-            errorElement.textContent = '';
-            
-            if (!currentUser) {
-                errorElement.textContent = 'Anda belum login!';
-                return;
-            }
-            
-            if (currentUser.password !== currentPassword) {
-                errorElement.textContent = 'Password saat ini salah!';
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                errorElement.textContent = 'Password baru tidak cocok!';
-                return;
-            }
-            
-            if (newPassword.length < 3) {
-                errorElement.textContent = 'Password minimal 3 karakter!';
-                return;
-            }
-            
-            // Update password
-            const userIndex = staffData.findIndex(u => u.id === currentUser.id);
-            if (userIndex !== -1) {
-                staffData[userIndex].password = newPassword;
-                currentUser.password = newPassword;
-                saveData();
-                hideChangePasswordForm();
-                alert('Password berhasil diubah!');
-            } else {
-                errorElement.textContent = 'Gagal mengubah password!';
-            }
-        }
-        
-        // Inisialisasi
-        document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            updateClock();
-            
-            // Cek apakah ada user yang sudah login
-            if (currentUser) {
-                document.getElementById('login-page').classList.add('hidden');
-                document.getElementById('main-page').classList.remove('hidden');
+        // Load staff outside data
+        function loadStaffOutside() {
+            const savedData = localStorage.getItem('staffOutside');
+            if (savedData) {
+                staffOutside = JSON.parse(savedData);
                 
-                // Update profil pengguna
-                document.getElementById('profile-name').textContent = `Nama: ${currentUser.name}`;
-                document.getElementById('profile-position').textContent = `Posisi: ${getPositionName(currentUser.position)}`;
-                
-                // Jika admin, tampilkan panel admin
-                if (currentUser.position === 'admin') {
-                    document.getElementById('admin-panel').classList.remove('hidden');
-                    renderStaffList();
-                    renderExitRecords();
+                // Clean up any expired exits (more than 15 minutes)
+                const now = new Date();
+                for (const position in staffOutside) {
+                    staffOutside[position] = staffOutside[position].filter(staff => {
+                        const exitTime = new Date(staff.exitTime);
+                        return (now - exitTime) < 15 * 60 * 1000;
+                    });
                 }
                 
-                updateCurrentlyOutList();
-                checkExitButtonStatus();
-                updateCounters();
-            } else {
-                // Kosongkan form login
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
+                saveStaffOutside();
             }
-        });
+        }
+        
+        // Save staff outside data
+        function saveStaffOutside() {
+            localStorage.setItem('staffOutside', JSON.stringify(staffOutside));
+        }
+        
+        // Update staff list display with more attractive design
+        function updateStaffList() {
+            staffList.innerHTML = '';
+            
+            let hasStaffOutside = false;
+            
+            for (const position in staffOutside) {
+                staffOutside[position].forEach(staff => {
+                    hasStaffOutside = true;
+                    
+                    const elapsed = Math.floor((new Date() - new Date(staff.exitTime)) / 1000);
+                    const remaining = Math.max(0, 15 * 60 - elapsed);
+                    const minutes = Math.floor(remaining / 60);
+                    const seconds = remaining % 60;
+                    
+                    const staffCard = document.createElement('div');
+                    staffCard.className = 'staff-card';
+                    
+                    // Determine card color based on position
+                    let cardColor = '#3498db';
+                    if (position === 'KASIR') cardColor = '#e74c3c';
+                    else if (position === 'KHEMER') cardColor = '#9b59b6';
+                    else if (position === 'KAPTEN') cardColor = '#f39c12';
+                    
+                    staffCard.innerHTML = `
+                        <div class="staff-avatar" style="background-color: ${cardColor}">${staff.avatar}</div>
+                        <div class="staff-info">
+                            <h4>${staff.name}</h4>
+                            <p>${staff.position} - ${staff.id}</p>
+                            <p class="timer">Keluar ${minutes}:${seconds.toString().padStart(2, '0')} yang lalu</p>
+                        </div>
+                    `;
+                    
+                    staffList.appendChild(staffCard);
+                });
+            }
+            
+            if (!hasStaffOutside) {
+                staffList.innerHTML = `
+                    <div class="empty-state">
+                        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="No staff outside">
+                        <p>Tidak ada staff yang sedang keluar</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Initialize the app
+        init();
     </script>
 </body>
 </html>
