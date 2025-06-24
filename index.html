@@ -3,1224 +3,595 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Izin Keluar - Waktu Indonesia Barat</title>
-    <style>
-        :root {
-            --primary: #3498db;
-            --secondary: #2ecc71;
-            --danger: #e74c3c;
-            --warning: #f39c12;
-            --dark: #34495e;
-            --light: #ecf0f1;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--light);
-            padding-bottom: 20px;
-        }
-        
-        h1 {
-            color: var(--dark);
-            margin-bottom: 5px;
-        }
-        
-        .date-display {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        
-        .date-box {
-            background-color: var(--dark);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .date-box h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-        
-        .date-box p {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0;
-        }
-        
-        .clock-container {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .clock-container::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-            animation: pulse 6s infinite linear;
-        }
-        
-        @keyframes pulse {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .clock {
-            font-size: 72px;
-            font-weight: bold;
-            margin: 0;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-        
-        .date {
-            font-size: 24px;
-            margin-top: 10px;
-            position: relative;
-        }
-        
-        .permission-section {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::after {
-            content: "";
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-        
-        .btn:hover::after {
-            transform: translateX(100%);
-        }
-        
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background-color: var(--secondary);
-            color: white;
-        }
-        
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-        }
-        
-        .btn:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        .btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .dashboard {
-            background-color: var(--light);
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 30px;
-            border: 1px solid #dfe6e9;
-        }
-        
-        .dashboard h2 {
-            margin-top: 0;
-            color: var(--dark);
-            border-bottom: 1px solid #bdc3c7;
-            padding-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .dashboard h2::before {
-            content: "📊";
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
-        
-        .staff-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-        }
-        
-        .staff-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            display: flex;
-            align-items: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 4px solid var(--primary);
-        }
-        
-        .staff-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .staff-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 20px;
-            margin-right: 15px;
-            flex-shrink: 0;
-        }
-        
-        .staff-info {
-            flex-grow: 1;
-            min-width: 0;
-        }
-        
-        .staff-info h4 {
-            margin: 0 0 5px 0;
-            color: var(--dark);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .staff-info p {
-            margin: 0;
-            color: #7f8c8d;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .timer {
-            font-size: 14px;
-            color: var(--warning);
-            font-weight: bold;
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .timer::before {
-            content: "⏱️";
-            margin-right: 5px;
-        }
-        
-        .login-section {
-            background-color: var(--light);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .form-group label {
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: var(--dark);
-        }
-        
-        .form-group input {
-            padding: 12px;
-            border: 1px solid #bdc3c7;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        
-        .form-group input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-            outline: none;
-        }
-        
-        .login-btn {
-            background-color: var(--primary);
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .login-btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: var(--light);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-        
-        .user-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: var(--secondary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 24px;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-        
-        .user-details {
-            flex-grow: 1;
-        }
-        
-        .user-details h3 {
-            margin: 0 0 5px 0;
-            color: var(--dark);
-        }
-        
-        .user-details p {
-            margin: 0;
-            color: #7f8c8d;
-        }
-        
-        .logout-btn {
-            background-color: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 15px;
-            margin-left: auto;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            flex-shrink: 0;
-        }
-        
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
-        
-        .quota-info {
-            background-color: #fff8e1;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 5px solid var(--warning);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .quota-info p {
-            margin: 0;
-            color: var(--dark);
-        }
-        
-        .quota-count {
-            font-weight: bold;
-            color: var(--warning);
-        }
-        
-        .quota-warning {
-            color: var(--danger);
-            font-weight: bold;
-            display: none;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 30px;
-            grid-column: 1 / -1;
-        }
-        
-        .empty-state img {
-            width: 100px;
-            opacity: 0.6;
-            margin-bottom: 15px;
-        }
-        
-        .empty-state p {
-            color: #7f8c8d;
-            font-size: 16px;
-        }
-        
-        .history-section {
-            margin-top: 30px;
-            background-color: var(--light);
-            border-radius: 8px;
-            padding: 20px;
-        }
-        
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        
-        .history-table th, .history-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #dfe6e9;
-        }
-        
-        .history-table th {
-            background-color: var(--dark);
-            color: white;
-        }
-        
-        .history-table tr:nth-child(even) {
-            background-color: rgba(236, 240, 241, 0.5);
-        }
-        
-        .history-table tr:hover {
-            background-color: rgba(52, 152, 219, 0.1);
-        }
-        
-        .status {
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 12px;
-        }
-        
-        .status.on-time {
-            background-color: rgba(46, 204, 113, 0.2);
-            color: #27ae60;
-        }
-        
-        .status.late {
-            background-color: rgba(231, 76, 60, 0.2);
-            color: #c0392b;
-        }
-        
-        @media (max-width: 768px) {
-            .clock {
-                font-size: 48px;
-            }
-            
-            .date {
-                font-size: 18px;
-            }
-            
-            .permission-section {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-            
-            .staff-list {
-                grid-template-columns: 1fr;
-            }
-            
-            .history-table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .user-info {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .user-avatar {
-                margin-right: 0;
-                margin-bottom: 15px;
-            }
-            
-            .logout-btn {
-                margin-left: 0;
-                margin-top: 15px;
-            }
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            background-color: var(--secondary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
-            transform: translateX(120%);
-            transition: transform 0.4s ease;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .notification.error {
-            background-color: var(--danger);
-        }
-    </style>
+    <title>Gambar Cs Line Togel</title>
+    <link rel="stylesheet" href="style.css">
+    
+      <!-- Favicon -->
+      <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+      <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+      <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+      <link rel="manifest" href="favicon/site.webmanifest">
+      <meta name="theme-color" content="#8e44ad">
 </head>
 <body>
     <div class="container">
-        <div id="loginSection" class="login-section">
-            <h2>Login dengan Google</h2>
-            <form id="loginForm" class="login-form">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Masukkan email Google" required>
-                </div>
-                <button type="submit" class="login-btn">Login</button>
-            </form>
-            <div id="loginError" style="color: #e74c3c; margin-top: 10px; display: none;"></div>
+        <header>
+            <div class="logo-container" onclick="showMainMenu()">
+                <img src="https://cdn.areabermain.club/assets/cdn/az4/2025/04/23/20250423/a82bdc6fb564d0dff3671aeb9a4d1da5/logo.png" alt="Togel Logo" class="logo">
+            </div>
+            <h1 class="animated-title">Gambar Cs Line Togel</h1>
+        </header>
+        
+        <!-- Modal untuk preview gambar -->
+        <div id="imageModal">
+            <span id="modalClose">&times;</span>
+            <img id="modalImage" src="">
+            <div id="copyOverlay">Copy Gambar</div>
+            <div id="copyNotification" style="display:none; margin-top: 5px; color: #0f0; font-weight: bold; text-align: center;">
+                Gambar berhasil disalin ke clipboard!
+            </div>
         </div>
         
-        <div id="mainContent" style="display: none;">
-            <div class="user-info">
-                <div class="user-avatar" id="userAvatar">US</div>
-                <div class="user-details">
-                    <h3 id="userName">Nama Pengguna</h3>
-                    <p id="userPosition">Posisi: -</p>
-                    <p id="userEmail">Email: -</p>
+        <!-- Menu Utama -->
+        <div id="main-menu">
+            <div class="menu-row">
+                <div class="menu-card" onclick="showPage('betting-page')">
+                    <h2>Gambar Cara Betting Togel</h2>
+                    <p>Panduan lengkap cara melakukan betting togel.</p>
+                    <button class="btn">Buka</button>
                 </div>
-                <button class="logout-btn" id="logoutBtn">Logout</button>
-            </div>
-            
-            <header>
-                <h1>Sistem Izin Keluar</h1>
-                <p>Durasi izin keluar maksimal 15 menit (Maks 4x/hari per staff)</p>
-            </header>
-            
-            <div class="date-display">
-                <div class="date-box">
-                    <h3>Hari Ini</h3>
-                    <p id="todayDate">-</p>
+                
+                <div class="menu-card" onclick="showPage('event-page')">
+                    <h2>Gambar Event Line Togel</h2>
+                    <p>Lihat gambar event dan line togel terbaru.</p>
+                    <button class="btn">Buka</button>
                 </div>
             </div>
             
-            <div class="quota-info">
-                <p>Kuota izin keluar hari ini: <span id="quotaCount" class="quota-count">0</span>/4 kali</p>
-                <p id="quotaWarning" class="quota-warning">Kuota hari ini sudah habis</p>
+            <div class="menu-row">
+                <div class="menu-card" onclick="showPage('bank-page')">
+                    <h2>Gambar Profile Bank & E-wallet</h2>
+                    <p>Atur data bank Anda untuk transaksi.</p>
+                    <button class="btn">Buka</button>
+                </div>
+                
+                <div class="menu-card" onclick="showPage('qris-page')">
+                    <h2>Gambar RRN Qris</h2>
+                    <p>Informasi mengenai transaksi QRIS.</p>
+                    <button class="btn">Buka</button>
+                </div>
             </div>
+        </div>
+        
+        <!-- Halaman Betting - 5 card per baris -->
+        <div id="betting-page" class="content-page">
+            <h2>Gambar Cara Betting Togel</h2>
+            <p>Pilih jenis betting ditanyakan member :</p>
             
-            <div class="clock-container">
-                <h2 class="clock" id="clock">00:00:00</h2>
-                <p class="date" id="currentDate">Hari, DD Bulan YYYY</p>
-            </div>
-            
-            <div class="permission-section">
-                <button class="btn btn-primary" id="exitBtn">IZIN KELUAR</button>
-                <button class="btn btn-secondary" id="returnBtn" disabled>IZIN MASUK</button>
-            </div>
-            
-            <div class="dashboard">
-                <h2>Dashboard Staff Yang Sedang Keluar</h2>
-                <div class="staff-list" id="staffList">
-                    <div class="empty-state">
-                        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="No staff outside">
-                        <p>Tidak ada staff yang sedang keluar</p>
+            <div class="submenu-grid grid-5">
+                <div class="submenu-card">
+                    <h3>2.1 CARA BETTING 4D 2D 3D</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1CGEeOn2DIA9qDTjlckZFGsdhit1khO2T=w800" alt="Cara Betting 4D">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>2.2 CARA BETTING 2D DEPAN</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1vHktIcS5c1BR5ldH33paXhvzHvfrK6mk=w800" alt="Cara Betting 2D Depan">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>2.3 CARA BETTING 2D TENGAH</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1KzqCfC_iDyk47wBdThfykirpGKVngEfV=w800" alt="Cara Betting 2D Tengah">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>2.4 CARA BETTING COLOK BEBAS</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1AXhTRx99A2YiZaIF5iyywczQJ7up8S3K=w800" alt="Cara Betting Colok Bebas">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>2.5 CARA BETTING COLOK BEBAS 2D</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1jSslB2xJo79CPlPIoO9lURBc6oYekiuD=w800" alt="Cara Betting Colok Bebas 2D">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>2.6 CARA BETTING COLOK NAGA</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/17QoLT1tAXZQW7LLmtAMT-3-WPfnKJ-RZ=w800" alt="Cara Betting Colok Naga">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>2.7 CARA BETTING COLOK JITU</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1UN4zkCAk-ZduCAvLz8AyZ7GV26B_Ynb2=w800" alt="Cara Betting Colok Jitu">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>2.8 CARA BETTING TENGAH TEPI</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1nWpLvgkmeMtJ4iOuorOIop-vfVuO3BlL=w800" alt="Cara Betting Tengah Tepi">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>2.9 CARA BETTING DASAR</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/18xqGDbh4kbinNSKG7FeXc6ESuU4vUUM5=w800" alt="Cara Betting Dasar">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>3.0 CARA BETTING 50 50</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1sTEDd-5P8fWNf5-iyTM7E46jkK64RNLk=w800" alt="Cara Betting 50 50">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>3.1 CARA BETTING SHIO</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1FfNi5CaL3UJdHrAdpIIwapMg_mZFIxFB=w800" alt="Cara Betting Shio">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>3.2 CARA BETTING SILANG HOMO</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1CPst2-gXxzSCsQ5BUcEMLd6aTbif_d4x=w800" alt="Cara Betting Silang Homo">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>3.3 CARA BETTING KEMBANG KEMPIS</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/14myPsmHDTBGBog5aBqGMP5abDfm6W_MA=w800" alt="Cara Betting Kembang Kempis">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>3.4 CARA BETTING KOMBINASI</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1V_1kXTWHbIa0bxR-0y5SmK7fM6wvLdQJ=w800" alt="Cara Betting Kombinasi">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>4.1 CARA BETTING FAST 4D</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1gaRIw0yhs9MaKZiJ8nIRdscWwuBMEVXC=w800" alt="Cara Betting Fast 4D">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>4.2 CARA BETTING ANGKA TARUNG</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1bS7gn6eMqT6HLZ01SbHZkcTbE0E5O6Cx=w800" alt="Cara Betting Angka Tarung">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>4.3 CARA BETTING BBFS</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1TlsZvYjt2gEAPeCywxqywLfjL0o0P5Di=w800" alt="Cara Betting BBFS">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>4.4 CARA BETTING QUICK 2D</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1MLmUQjeiT1jW-HHIwe7hsBG7NGrImoFZ=w800" alt="Cara Betting Quick 2D">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>4.5 CARA BETTING POLA COLOK</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1hlW4ira4hPBQa7bifhQ-LmyE_MRa7JQX=w800" alt="Cara Betting Pola Colok">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>4.7 CARA BETTING MISTIK</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1vhksv8wg79VbeQ1wq0xQoux5XinGgomB=w800" alt="Cara Betting Mistik">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>4.8 CARA BETTING INDEX</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1soYBlXXtuR6SyHn2sjKwQAMd1Hj-WBR9=w800" alt="Cara Betting Index">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>4.9 CARA BETTING TAYSEN</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/13tm2n6YAsJWPzF9UeMnYybJFmxdFzOAl=w800" alt="Cara Betting Taysen">
                     </div>
                 </div>
             </div>
             
-            <div class="history-section">
-                <h2>Riwayat Izin Keluar Hari Ini</h2>
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Waktu Keluar</th>
-                            <th>Waktu Kembali</th>
-                            <th>Durasi</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyBody">
-                        <!-- Data akan diisi oleh JavaScript -->
-                    </tbody>
-                </table>
-            </div>
+            <button class="btn back-btn" onclick="showMainMenu()">Kembali ke Menu</button>
         </div>
+        
+        <!-- Halaman Event - 3 card per baris -->
+        <div id="event-page" class="content-page">
+            <h2>Gambar Event Line Togel</h2>
+            
+            <div class="submenu-grid grid-3">
+                <div class="submenu-card">
+                    <h3>Event Scatter Mahjong Ways I & II</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1skIN0e_yK3DIYX5UkcgJLL0hLYh2sYy4=w800" alt="Event Scatter Mahjong Ways">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Event Buy Spin</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1CSFo7Q1I9aFWfDIZqmM8_Z02_LISmSfP=w800" alt="Event Buy Spin">
+                    </div>
+                </div>
+
+                <div class="submenu-card">
+                    <h3>Event Free Spin</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1YSrkxq5vV69BN1VhOR7wYsKCjaattu6y=w800" alt="Event Free Spin">
+                    </div>
+                </div>
+
+                <div class="submenu-card">
+                    <h3>Screenshot Mendapatkan Scatter</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1s0Qle8gKeQS_TEMAOhC_B9R_S0XL9ftU=w800" alt="Screenshot Mendapatkan Scatter">
+                    </div>
+                </div>
+
+                <div class="submenu-card">
+                    <h3>Screenshot History Kemenangan</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1suZKg3Mxow3c2sFIsPT1rv9-NnaV-wNl=w800" alt="Screenshot History Kemenangan">
+                    </div>
+                </div>
+
+                <div class="submenu-card">
+                    <h3>Screenshot Kemenangan Akhir</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1dck0u8eNfvMQtiV-wKyRLSOL365Vv0Zy=w800" alt="Screenshot Kemenangan Akhir">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn back-btn" onclick="showMainMenu()">Kembali ke Menu</button>
+        </div>
+        
+        <!-- Halaman Bank - 5 card per baris -->
+        <div id="bank-page" class="content-page">
+            <h2>Gambar Profile Bank</h2>
+            
+            <div class="submenu-grid grid-5">
+                <div class="submenu-card">
+                    <h3>PROFILE WONDR</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1aJLwwr4o7tdM8JsrGtywek4bYQtcJoGS=w800" alt="Profile Wondr">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE myBCA</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1xFY1BkPq947CLHFBiAJzzuL5QB2Ih0KS=w800" alt="Profile myBCA">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE m-BCA</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1yjTtKM0hiWIoxA-6TuT0GpHPo2QTwC5N=w800" alt="Profile m-BCA">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE BNI</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1zPUjDpx_7E4JoHv6gOv3GyDE3ANhf5Tc=w800" alt="Profile BNI">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE BRI</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1UiSC-pYXVbXfG_xiuemwIFbl8E_A4b4O=w800" alt="Profile BRI">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE BSI</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1CYQXmttlGyJCb47Wu2cJatPl0o1Mh5NP=w800" alt="Profile BSI">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE CIMB</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1Fcx-TGcXmo0hM9U7SoNgYESANtbhprVj=w800" alt="Profile CIMB">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE DANAMON</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/17Wm7dpYj6ie8jY9u3CL2FP1JiMnkG-0p=w800" alt="Profile Danamon">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE MANDIRI</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1qIJDO1SJFLr2dDHbsIdCNEPRrWxT2HRz=w800" alt="Profile Mandiri">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE MAYBANK</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1qBvxMajD9C8FWguI9VZaanvIgHYaa5-y=w800" alt="Profile Maybank">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>PROFILE SEABANK</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/181za_khovJNiuEDQJgqER8C9s7-xtsy4=w800" alt="Profile SeaBank">
+                    </div>
+                </div>
+            </div>
+            
+            <h2 style="margin-top: 40px; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; text-align: center;">
+                Gambar Profile E-wallet
+            </h2>
+
+            <div class="submenu-grid grid-4" style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
+                <div class="submenu-card" style="flex: 0 0 calc(25% - 15px); max-width: calc(25% - 15px);">
+                    <h3>PROFILE DANA</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1JF8PYmL1yn7DRHznynytOtG09ZDy5-eN=w800" alt="Profile DANA">
+                    </div>
+                </div>
+                <div class="submenu-card" style="flex: 0 0 calc(25% - 15px); max-width: calc(25% - 15px);">
+                    <h3>PROFILE GOPAY</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1ioLHxJTins7VvWE7RDOLf6T6UgoESUzT=w800" alt="Profile GOPAY">
+                    </div>
+                </div>
+                <div class="submenu-card" style="flex: 0 0 calc(25% - 15px); max-width: calc(25% - 15px);">
+                    <h3>PROFILE LINKAJA</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1V-YqdqkHBRE9g_xSFnIGZSk29nUCQwLg=w800" alt="Profile LINKAJA">
+                    </div>
+                </div>
+                <div class="submenu-card" style="flex: 0 0 calc(25% - 15px); max-width: calc(25% - 15px);">
+                    <h3>PROFILE OVO</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1e-MmH2eU3tD1JXrR5MVih7h3Rdsfzujj=w800" alt="Profile OVO">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn back-btn" onclick="showMainMenu()">Kembali ke Menu</button>
+        </div>
+        
+        <!-- Halaman QRIS - 5 card per baris -->
+        <div id="qris-page" class="content-page">
+            <h2>Gambar RRN Qris</h2>
+            
+            <div class="submenu-grid grid-5">
+                <div class="submenu-card">
+                    <h3>Aladin</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1TyfEzPWdQxB3KwZgAgrFCPDSgIw6M40k=w800" alt="QRIS Aladin">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Bank Allobank</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1YJB7H5TAhJKMq6ZsK6qadbxk4HCrEAOM=w800" alt="QRIS Allobank">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Bank BSI</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+Bank+BSI" alt="QRIS Bank BSI">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Bank BTN</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+Bank+BTN" alt="QRIS Bank BTN">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Bank Jago</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+Bank+Jago" alt="QRIS Bank Jago">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Bank Jateng</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+Bank+Jateng" alt="QRIS Bank Jateng">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Bank Mandiri/Livin</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1NeE86ktvuCKK1-k-Vt06hSDXVNapDbXQ=w800" alt="QRIS Bank Mandiri">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Bank OCBC</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1QURTcuEX3u2f4BzBfYFaXhLJty8YQ3PV=w800" alt="QRIS Bank OCBC">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Bank Mega</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1QURTcuEX3u2f4BzBfYFaXhLJty8YQ3PV=w800" alt="QRIS Bank Mega">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>m-BCA</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1_7cYYWKyLxxLSdLRwh1A-O_jL1hRvvmJ=w800" alt="m-BCA">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>my-BCA</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1qFl9vvfyBb71Rl5N5ZArCQJ6U5lvPEtR=w800" alt="my-BCA">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>BNI</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+BNI" alt="QRIS BNI">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>BRI</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1re70qrpgZEFJHIM4AqIUixT0HpfaA7Z3=w800" alt="QRIS BRI">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>CIMB Niaga/Octo Mobile</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+CIMB" alt="QRIS CIMB">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Dana</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/18NnkxClVNNDWm1vdnwDDks6ztKZtU8jy=w800" alt="QRIS Dana">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>DANAMON</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+Danamon" alt="QRIS Danamon">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Gopay</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1ZPHsoUqc7AvhrdfZ9NpIrBhw-u13Qqv1=w800" alt="QRIS Gopay">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>I.Saku</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+I.Saku" alt="QRIS I.Saku">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Jak One Mobile</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+Jak+One" alt="QRIS Jak One">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>LinkAja</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+LinkAja" alt="QRIS LinkAja">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>MAYBANK</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+Maybank" alt="QRIS Maybank">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>OVO</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+OVO" alt="QRIS OVO">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>Sakuku</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+Sakuku" alt="QRIS Sakuku">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>SeaBank</h3>
+                    <div class="image-container">
+                        <img src="https://lh3.googleusercontent.com/d/1PJ1-LQMY4Gj6CULGtdSVTe5aHQ3Mx0fW=w800" alt="QRIS SeaBank">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>ShopeePay</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+ShopeePay" alt="QRIS ShopeePay">
+                    </div>
+                </div>
+                
+                <div class="submenu-card">
+                    <h3>UOB</h3>
+                    <div class="image-container">
+                        <img src="https://via.placeholder.com/600x400?text=Contoh+Gambar+QRIS+UOB" alt="QRIS UOB">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn back-btn" onclick="showMainMenu()">Kembali ke Menu</button>
+        </div>
+        
+        <footer>
+            <p>&copy; Semisalnya masih ada yang gak lengkap info aja ya geys</p>
+        </footer>
     </div>
-    
-    <div class="notification" id="notification">Operasi berhasil!</div>
 
-    <script>
-        // Data Staff
-        let staffData = [
-            {
-                name: "EGI SETIAWAN",
-                id: "C8410298",
-                position: "CS",
-                email: "egis19453@gmail.com",
-                avatar: "ES"
-            },
-            {
-                name: "SAMSUL MAARIF",
-                id: "C7008737",
-                position: "CS",
-                email: "samsulma874@gmail.com",
-                avatar: "SM"
-            },
-            {
-                name: "BUDI SANTOSO",
-                id: "C1234567",
-                position: "KASIR",
-                email: "budisantoso@gmail.com",
-                avatar: "BS"
-            }
-        ];
-        
-        // Tambahkan staff baru
-        const newStaff = [
-            {name: "SAMUEL KRISTANTO", position: "LEADER", email: "samuelcrissmb888@gmail.com", id: "C1234568", avatar: "SK"},
-            {name: "WIDJAYA", position: "CS", email: "widjaya88.smb88@gmail.com", id: "C6202945", avatar: "WD"},
-            {name: "DAVID", position: "CS", email: "david.smb9856@gmail.com", id: "C6169860", avatar: "DV"},
-            {name: "FALLEN HARDINANSAH TAJU", position: "CS", email: "fallentaju1@gmail.com", id: "C6931386", avatar: "FH"},
-            {name: "CHARLIE", position: "CS", email: "charlie454506@gmail.com", id: "C7377694", avatar: "CH"},
-            {name: "HARIANTO", position: "CS", email: "hariantohari6036@gmail.com", id: "C4663474", avatar: "HR"},
-            {name: "RINAL ABDILLAH NASUTION", position: "CS", email: "rinalabdilah.smb88@gmail.com", id: "C8409170", avatar: "RN"},
-            {name: "ERI HARIANTO", position: "CS", email: "erihari391@gmail.com", id: "C8493406", avatar: "EH"},
-            {name: "MAHENDRAN", position: "CS", email: "mahendranmahh2388@gmail.com", id: "C6813799", avatar: "MH"},
-            {name: "ANDHIKA DWI PUTRA", position: "CS", email: "andhikadwiputra6666@gmail.com", id: "C8543470", avatar: "AD"},
-            {name: "TOMMY HASIM", position: "CS", email: "tommyhasim2304@gmail.com", id: "C6735321", avatar: "TH"},
-            {name: "RANJIT", position: "CS", email: "ranjit230422@gmail.com", id: "X1068990", avatar: "RJ"},
-            {name: "WILLY PERAYUDA", position: "CS", email: "willyperayuda7789@gmail.com", id: "E0089312", avatar: "WP"},
-            {name: "ANGGA AZMAL HARAHAP", position: "CS", email: "anggaazmal.smb88@gmail.com", id: "C9260456", avatar: "AA"},
-            {name: "LALU MUHAMMAD ADNAN ZAKARIA", position: "CS", email: "lalumuhammadsmb888@gmail.com", id: "C7565548", avatar: "LZ"},
-            {name: "ANDI", position: "CS", email: "andibaru536@gmail.com", id: "E4487475", avatar: "AN"},
-            {name: "ALFINO MUKTI", position: "CS", email: "alfinomuk3256@gmail.com", id: "C8493352", avatar: "AM"},
-            {name: "AKAS FARMA", position: "CS", email: "akasfarm87663@gmail.com", id: "C8490102", avatar: "AF"},
-            {name: "ARI ROMANDUS FERNAND", position: "CS", email: "ariromandus12@gmail.com", id: "C8386112", avatar: "AR"},
-            {name: "PARIS AMRULLOH", position: "CS", email: "parisamrulloh26885@gmail.com", id: "E0237731", avatar: "PA"},
-            {name: "SUHAN RAZ", position: "TCS", email: "suhanrazz@example.com", id: "C5862955", avatar: "SR"},
-            {name: "RAHMADI SORMIN", position: "TCS", email: "rahmadisormi.smb888@gmail.com", id: "E0685561", avatar: "RS"},
-            {name: "NOVAL MUTTAWALI HAKIM", position: "KAPTEN KASIR", email: "novalmuttawali354@gmail.com", id: "E1475015", avatar: "NM"},
-            {name: "WILIAM", position: "KAPTEN KASIR", email: "iamwil220@gmail.com", id: "E0227447", avatar: "WL"},
-            {name: "FIQAL KANA", position: "KAPTEN KASIR", email: "fiqalkana6@gmail.com", id: "E1233842", avatar: "FK"},
-            {name: "MARJOKI SANG", position: "KAPTEN KASIR", email: "marjokisang.smb88@gmail.com", id: "C8555336", avatar: "MS"},
-            {name: "DANIEL", position: "KAPTEN KASIR", email: "danielsmb385@gmail.com", id: "E0859998", avatar: "DN"},
-            {name: "RAAZ JESEN STEPANUS", position: "TRAINING KKS", email: "raazjesen88.smb88@gmail.com", id: "C8409387", avatar: "RJ"},
-            {name: "ANNEN", position: "KASIR", email: "annen.smb88@gmail.com", id: "C8486854", avatar: "AN"},
-            {name: "JONROMAN PURBA", position: "KASIR", email: "jonromanpurba0305@gmail.com", id: "C8491005", avatar: "JP"},
-            {name: "M FAJAR SIDDIK", position: "KASIR", email: "mfajjarsiddik69@gmail.com", id: "C8993287", avatar: "FS"},
-            {name: "PUTRA ANUGRAH RIZKI", position: "KASIR", email: "putraanugrahrizki76@gmail.com", id: "E1473204", avatar: "PR"},
-            {name: "PUTRA RAMADHANI", position: "KASIR", email: "pramdhani086@gmail.com", id: "E1988807", avatar: "PR"},
-            {name: "AMRUL", position: "KASIR", email: "aamrul568@gmail.com", id: "E2365928", avatar: "AM"},
-            {name: "RAM KIRAN", position: "KASIR", email: "ramkiran0606@gmail.com", id: "E2620081", avatar: "RK"},
-            {name: "BOBY KASANDRA BANCIN", position: "KASIR", email: "bobykasandrabancin@gmail.com", id: "C8991790", avatar: "BB"},
-            {name: "KIKI YUNITA", position: "KASIR", email: "kikiyunita523@gmail.com", id: "C8245909", avatar: "KY"},
-            {name: "MAHAT SANJAYA HARAHAP", position: "KASIR", email: "mahatsanjayahrp@gmail.com", id: "E4340773", avatar: "MH"},
-            {name: "LAILI MARITSA", position: "KASIR", email: "maritsalaili0@gmail.com", id: "E4398203", avatar: "LM"},
-            {name: "CHARLOIPO MANULLANG", position: "KASIR", email: "charloipom@gmail.com", id: "E0286030", avatar: "CM"},
-            {name: "FAHMI AZIS HARAHAP", position: "KASIR", email: "azisharahapfahmi@gmail.com", id: "E5192858", avatar: "FA"},
-            {name: "FAHRI FIRMANSYAH", position: "KASIR", email: "firmansyahfahri533@gmail.com", id: "E5192174", avatar: "FF"},
-            {name: "GALI PRATAMA", position: "KASIR", email: "galit8158@gmail.com", id: "E3773557", avatar: "GP"},
-            {name: "PRIMA NUGRAHA", position: "KASIR", email: "primanugraha428@gmail.com", id: "E5112965", avatar: "PN"},
-            {name: "ROY DILEN", position: "KASIR", email: "roydilensmb@gmail.com", id: "C5875009", avatar: "RD"},
-            {name: "RIDZKY RAMADHAN", position: "KASIR", email: "ridzkyramadhan550@gmail.com", id: "E6626714", avatar: "RR"},
-            {name: "AGUNG DEDI IRAWAN", position: "KASIR", email: "dediirawanagung@gmail.com", id: "E7089147", avatar: "AI"},
-            {name: "MAICEL TAMPUBOLON", position: "KASIR", email: "maiceltampu210424@gmail.com", id: "E5843197", avatar: "MT"},
-            {name: "ADE CHAIRUNNISA", position: "KASIR", email: "adechairunis260424@gmail.com", id: "E1475210", avatar: "AC"},
-            {name: "M REZI SYAPUTRA", position: "KASIR", email: "rezisyaputrasmb@gmail.com", id: "E6690607", avatar: "MR"},
-            {name: "KHOIRUDDIN", position: "KASIR", email: "khoiruddin8103@gmail.com", id: "C9148103", avatar: "KH"},
-            {name: "BAMBANG AGUNG SUTRISNO", position: "KASIR", email: "bambangagungsutrisno@gmail.com", id: "E7520815", avatar: "BS"},
-            {name: "PUTRA INSANY", position: "KASIR", email: "putrainsany21@gmail.com", id: "E7282317", avatar: "PI"},
-            {name: "ANDRIANUS", position: "KASIR", email: "andrianussmb888@gmail.com", id: "E6638313", avatar: "AN"},
-            {name: "FERA SALMA", position: "KASIR", email: "ferasalma87@gmail.com", id: "E7632631", avatar: "FS"},
-            {name: "RIVLAN RIZKY", position: "KASIR", email: "rizkyrivlan@gmail.com", id: "E6759553", avatar: "RR"},
-            {name: "MAULANA ALI SAID", position: "KASIR", email: "saidmaulanaali90@gmail.com", id: "E7531570", avatar: "MA"},
-            {name: "AHMAD ANDIKA", position: "KASIR", email: "ahmadandika.smb88@gmail.com", id: "E7631720", avatar: "AA"},
-            {name: "ANGGARA K S", position: "KASIR", email: "ksanggara757@gmail.com", id: "E7647305", avatar: "AK"},
-            {name: "DIMAS ADHITYA", position: "KASIR", email: "dimasadhitya127@gmail.com", id: "E6937626", avatar: "DA"},
-            {name: "GABRIEL RONI ARGANTA HUTABALIAN", position: "KASIR", email: "gabrielroni167@gmail.com", id: "E7694857", avatar: "GR"},
-            {name: "DANDI PRAYOGA MANURUNG", position: "KASIR", email: "dandiprayogam@gmail.com", id: "E8260851", avatar: "DM"},
-            {name: "EGA PRAYUDA", position: "KASIR", email: "egaprayuda877@gmail.com", id: "E2703456", avatar: "EP"},
-            {name: "ARJUN PRAISYA", position: "KASIR", email: "arjunpraisya066@gmail.com", id: "E7879939", avatar: "AP"},
-            {name: "ADITYA PANCA", position: "KASIR", email: "panca9244@gmail.com", id: "X3189356", avatar: "AP"},
-            {name: "AUDIS OYONG DUANSYAH", position: "KASIR", email: "audisoyong@gmail.com", id: "E7281571", avatar: "AO"},
-            {name: "ADE OJI SHAPUTRA", position: "KASIR", email: "adeoji24@gmail.com", id: "E8491965", avatar: "AO"},
-            {name: "ALFIANSYAH", position: "KASIR", email: "alfiansyah556677@gmail.com", id: "E9268104", avatar: "AL"},
-            {name: "ANDY PUTRA", position: "KASIR", email: "andyputra556677@gmail.com", id: "X3618101", avatar: "AP"},
-            {name: "VISEY", position: "STAFF LOKAL", email: "viseysmb888@gmail.com", id: "SL001", avatar: "VS"},
-            {name: "REN CHHENGLY", position: "STAFF LOKAL", email: "renchhengly88@gmail.com", id: "SL002", avatar: "RC"},
-            {name: "RET CHANTHORN", position: "STAFF LOKAL", email: "retchanthorn79@gmail.com", id: "SL003", avatar: "RC"}
-        ];
-
-        // Tambahkan staff baru ke data staff
-        staffData = staffData.concat(newStaff);
-
-        // Variabel Global
-        let currentUser = null;
-        let isOutside = false;
-        let exitTime = null;
-        let staffOutside = {
-            CS: [],
-            KASIR: [],
-            KHEMER: [],
-            KAPTEN: [],
-            LEADER: [],
-            TCS: [],
-            "TRAINING KKS": [],
-            "STAFF LOKAL": []
-        };
-        let historyData = [];
-        
-        // Batasan berdasarkan posisi
-        const positionLimits = {
-            'CS': 3,
-            'KASIR': 3,
-            'KHEMER': 1,
-            'KAPTEN': 1,
-            'LEADER': 1,
-            'TCS': 3,
-            'TRAINING KKS': 1,
-            'STAFF LOKAL': 3
-        };
-        
-        // DOM Elements
-        const loginSection = document.getElementById('loginSection');
-        const mainContent = document.getElementById('mainContent');
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const loginError = document.getElementById('loginError');
-        const userName = document.getElementById('userName');
-        const userPosition = document.getElementById('userPosition');
-        const userEmail = document.getElementById('userEmail');
-        const userAvatar = document.getElementById('userAvatar');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const clock = document.getElementById('clock');
-        const currentDate = document.getElementById('currentDate');
-        const todayDate = document.getElementById('todayDate');
-        const exitBtn = document.getElementById('exitBtn');
-        const returnBtn = document.getElementById('returnBtn');
-        const staffList = document.getElementById('staffList');
-        const quotaInfo = document.getElementById('quotaInfo');
-        const quotaCount = document.getElementById('quotaCount');
-        const quotaWarning = document.getElementById('quotaWarning');
-        const historyBody = document.getElementById('historyBody');
-        const notification = document.getElementById('notification');
-
-        // Initialize App
-        function init() {
-            updateClock();
-            setInterval(updateClock, 1000);
-            
-            // Set today's date
-            const today = new Date();
-            todayDate.textContent = formatDate(today);
-            
-            // Load data from localStorage
-            loadInitialData();
-            
-            // Event Listeners
-            loginForm.addEventListener('submit', handleLogin);
-            logoutBtn.addEventListener('click', handleLogout);
-            exitBtn.addEventListener('click', handleExit);
-            returnBtn.addEventListener('click', handleReturn);
-            
-            // Check if already logged in
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                setupUserInterface();
-            }
-        }
-        
-        // Load Initial Data
-        function loadInitialData() {
-            // Load staff outside data
-            const savedStaffOutside = localStorage.getItem('staffOutside');
-            if (savedStaffOutside) {
-                staffOutside = JSON.parse(savedStaffOutside);
-                
-                // Clean up any expired exits (more than 15 minutes)
-                const now = new Date();
-                for (const position in staffOutside) {
-                    staffOutside[position] = staffOutside[position].filter(staff => {
-                        const exitTime = new Date(staff.exitTime);
-                        return (now - exitTime) < 15 * 60 * 1000;
-                    });
-                }
-                
-                saveStaffOutside();
-            }
-            
-            // Load history data
-            const savedHistory = localStorage.getItem('historyData');
-            if (savedHistory) {
-                historyData = JSON.parse(savedHistory);
-                
-                // Check if we need to move yesterday's data to history
-                const today = new Date().toDateString();
-                const lastHistoryDate = localStorage.getItem('lastHistoryDate');
-                
-                if (lastHistoryDate !== today) {
-                    // New day, move yesterday's data to history
-                    if (historyData.today && historyData.today.length > 0) {
-                        // Save yesterday's data
-                        const yesterday = new Date();
-                        yesterday.setDate(yesterday.getDate() - 1);
-                        const yesterdayKey = yesterday.toDateString();
-                        
-                        if (!historyData[yesterdayKey]) {
-                            historyData[yesterdayKey] = [];
-                        }
-                        
-                        historyData[yesterdayKey] = historyData.today.concat(historyData[yesterdayKey] || []);
-                        
-                        // Clear today's data
-                        historyData.today = [];
-                        
-                        // Save the change
-                        saveHistoryData();
-                    }
-                    
-                    localStorage.setItem('lastHistoryDate', today);
-                }
-            }
-        }
-        
-        // Format Date
-        function formatDate(date) {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            return date.toLocaleDateString('id-ID', options);
-        }
-        
-        // Format Time
-        function formatTime(date) {
-            return date.toLocaleTimeString('id-ID', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-        }
-        
-        // Update Clock
-        function updateClock() {
-            const now = new Date();
-            
-            // Format time with colon separator
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            const timeString = `${hours}:${minutes}:${seconds}`;
-            
-            const dateString = now.toLocaleDateString('id-ID', {
-                timeZone: 'Asia/Jakarta',
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            
-            clock.textContent = timeString;
-            currentDate.textContent = dateString;
-            
-            // Update timer if outside
-            if (isOutside) {
-                const elapsed = Math.floor((new Date() - exitTime) / 1000);
-                const remaining = 15 * 60 - elapsed;
-                
-                if (remaining <= 0) {
-                    // Auto return when time is up
-                    handleReturn();
-                } else {
-                    const minutes = Math.floor(remaining / 60);
-                    const seconds = remaining % 60;
-                    returnBtn.innerHTML = `IZIN MASUK <span class="timer">(${minutes}:${seconds.toString().padStart(2, '0')})</span>`;
-                }
-            }
-        }
-        
-        // Handle Login
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = emailInput.value.trim().toLowerCase();
-            
-            // Find user
-            const user = staffData.find(staff => staff.email.toLowerCase() === email);
-            
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                setupUserInterface();
-                loginError.style.display = 'none';
-                showNotification("Login berhasil!");
-            } else {
-                loginError.textContent = 'Email tidak terdaftar. Hanya email yang sudah diizinkan yang bisa login.';
-                loginError.style.display = 'block';
-            }
-        }
-        
-        // Setup User Interface
-        function setupUserInterface() {
-            loginSection.style.display = 'none';
-            mainContent.style.display = 'block';
-            
-            // Set user info
-            userName.textContent = currentUser.name;
-            userPosition.textContent = `Posisi: ${currentUser.position}`;
-            userEmail.textContent = `Email: ${currentUser.email}`;
-            userAvatar.textContent = currentUser.avatar;
-            
-            // Update quota info
-            updateQuotaInfo();
-            
-            // Check if user is already outside
-            const position = currentUser.position;
-            const isUserOutside = staffOutside[position] && staffOutside[position].some(staff => staff.id === currentUser.id);
-            
-            if (isUserOutside) {
-                isOutside = true;
-                exitTime = new Date(staffOutside[position].find(staff => staff.id === currentUser.id).exitTime);
-                exitBtn.disabled = true;
-                returnBtn.disabled = false;
-            }
-            
-            // Load staff outside data
-            updateStaffList();
-            updateHistoryTable();
-        }
-        
-        // Update Quota Info
-        function updateQuotaInfo() {
-            const todayExits = getTodayExitCount();
-            quotaCount.textContent = todayExits;
-            
-            if (todayExits >= 4) {
-                quotaWarning.style.display = 'block';
-                exitBtn.disabled = true;
-            } else {
-                quotaWarning.style.display = 'none';
-                exitBtn.disabled = false;
-            }
-        }
-        
-        // Get Today's Exit Count for Current User
-        function getTodayExitCount() {
-            if (!currentUser) return 0;
-            
-            const today = new Date().toDateString();
-            return historyData.today.filter(entry => 
-                entry.id === currentUser.id &&
-                new Date(entry.exitTime).toDateString() === today
-            ).length;
-        }
-        
-        // Handle Exit Permission
-        function handleExit() {
-            // Check daily quota
-            const todayExits = getTodayExitCount();
-            if (todayExits >= 4) {
-                showNotification("Kuota izin hari ini sudah habis!", true);
-                return;
-            }
-            
-            // Check position limits
-            const position = currentUser.position;
-            let canExit = true;
-            let reason = '';
-            
-            if (positionLimits[position] && staffOutside[position] && staffOutside[position].length >= positionLimits[position]) {
-                canExit = false;
-                reason = `Staff ${position} yang keluar sudah mencapai batas maksimal (${positionLimits[position]} orang)`;
-                showNotification(reason, true);
-                return;
-            }
-            
-            // Proceed with exit
-            isOutside = true;
-            exitTime = new Date();
-            
-            // Add to staff outside
-            if (!staffOutside[position]) {
-                staffOutside[position] = [];
-            }
-            staffOutside[position].push({
-                name: currentUser.name,
-                id: currentUser.id,
-                position: currentUser.position,
-                avatar: currentUser.avatar,
-                exitTime: exitTime
-            });
-            
-            // Add to history
-            historyData.today.push({
-                id: currentUser.id,
-                name: currentUser.name,
-                position: currentUser.position,
-                exitTime: exitTime,
-                returnTime: null,
-                duration: null,
-                status: null
-            });
-            
-            // Save data
-            saveStaffOutside();
-            saveHistoryData();
-            
-            // Update UI
-            exitBtn.disabled = true;
-            returnBtn.disabled = false;
-            updateQuotaInfo();
-            updateStaffList();
-            updateHistoryTable();
-            
-            showNotification("Izin keluar berhasil dicatat!");
-        }
-        
-        // Handle Return Permission
-        function handleReturn() {
-            const returnTime = new Date();
-            const duration = Math.round((returnTime - exitTime) / (60 * 1000));
-            const isLate = duration > 15;
-            const position = currentUser.position;
-            
-            // Update history
-            const exitRecord = historyData.today.find(record => 
-                record.id === currentUser.id && 
-                record.returnTime === null
-            );
-            
-            if (exitRecord) {
-                exitRecord.returnTime = returnTime;
-                exitRecord.duration = duration;
-                exitRecord.status = isLate ? 'late' : 'on-time';
-            }
-            
-            // Remove from staff outside
-            if (staffOutside[position]) {
-                staffOutside[position] = staffOutside[position].filter(
-                    staff => staff.id !== currentUser.id
-                );
-            }
-            
-            // Save data
-            saveStaffOutside();
-            saveHistoryData();
-            
-            // Update UI
-            isOutside = false;
-            exitTime = null;
-            exitBtn.disabled = getTodayExitCount() >= 4;
-            returnBtn.disabled = true;
-            returnBtn.innerHTML = 'IZIN MASUK';
-            
-            updateStaffList();
-            updateHistoryTable();
-            updateQuotaInfo();
-            
-            showNotification("Izin masuk berhasil dicatat!");
-        }
-        
-        // Update Staff List
-        function updateStaffList() {
-            staffList.innerHTML = '';
-            
-            let hasStaffOutside = false;
-            
-            for (const position in staffOutside) {
-                if (staffOutside[position] && staffOutside[position].length > 0) {
-                    staffOutside[position].forEach(staff => {
-                        hasStaffOutside = true;
-                        
-                        const elapsed = Math.floor((new Date() - new Date(staff.exitTime)) / 1000);
-                        const remaining = Math.max(0, 15 * 60 - elapsed);
-                        const minutes = Math.floor(remaining / 60);
-                        const seconds = remaining % 60;
-                        
-                        const staffCard = document.createElement('div');
-                        staffCard.className = 'staff-card';
-                        
-                        // Determine card color based on position
-                        let cardColor = '#3498db';
-                        if (position === 'KASIR') cardColor = '#e74c3c';
-                        else if (position === 'KHEMER') cardColor = '#9b59b6';
-                        else if (position === 'KAPTEN' || position === 'LEADER' || position === 'TRAINING KKS') cardColor = '#f39c12';
-                        else if (position === 'TCS') cardColor = '#1abc9c';
-                        else if (position === 'STAFF LOKAL') cardColor = '#8e44ad';
-                        
-                        staffCard.innerHTML = `
-                            <div class="staff-avatar" style="background-color: ${cardColor}">${staff.avatar}</div>
-                            <div class="staff-info">
-                                <h4>${staff.name}</h4>
-                                <p>${staff.position} - ${staff.id}</p>
-                                <p class="timer">Keluar ${minutes}:${seconds.toString().padStart(2, '0')} yang lalu</p>
-                            </div>
-                        `;
-                        
-                        staffList.appendChild(staffCard);
-                    });
-                }
-            }
-            
-            if (!hasStaffOutside) {
-                staffList.innerHTML = `
-                    <div class="empty-state">
-                        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="No staff outside">
-                        <p>Tidak ada staff yang sedang keluar</p>
-                    </div>
-                `;
-            }
-        }
-        
-        // Update History Table
-        function updateHistoryTable() {
-            historyBody.innerHTML = '';
-            
-            if (!currentUser) return;
-            
-            const today = new Date().toDateString();
-            const userHistory = historyData.today.filter(entry => 
-                entry.id === currentUser.id &&
-                new Date(entry.exitTime).toDateString() === today
-            ).sort((a, b) => new Date(b.exitTime) - new Date(a.exitTime));
-            
-            if (userHistory.length === 0) {
-                historyBody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center;">Belum ada riwayat izin keluar hari ini</td>
-                    </tr>
-                `;
-            } else {
-                userHistory.forEach((entry, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${formatTime(new Date(entry.exitTime))}</td>
-                        <td>${entry.returnTime ? formatTime(new Date(entry.returnTime)) : 'Masih di luar'}</td>
-                        <td>${entry.duration || '-'} menit</td>
-                        <td>
-                            <span class="status ${entry.status || 'on-time'}">
-                                ${!entry.returnTime ? 'Sedang keluar' : 
-                                  entry.status === 'late' ? 'Terlambat' : 'Tepat waktu'}
-                            </span>
-                        </td>
-                    `;
-                    historyBody.appendChild(row);
-                });
-            }
-        }
-        
-        // Save Staff Outside Data
-        function saveStaffOutside() {
-            localStorage.setItem('staffOutside', JSON.stringify(staffOutside));
-        }
-        
-        // Save History Data
-        function saveHistoryData() {
-            localStorage.setItem('historyData', JSON.stringify(historyData));
-        }
-        
-        // Handle Logout
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            loginSection.style.display = 'block';
-            mainContent.style.display = 'none';
-            emailInput.value = '';
-            loginError.style.display = 'none';
-            showNotification("Anda berhasil logout");
-        }
-        
-        // Show notification
-        function showNotification(message, isError = false) {
-            notification.textContent = message;
-            notification.className = 'notification';
-            if (isError) {
-                notification.classList.add('error');
-            }
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Initialize the app
-        init();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
